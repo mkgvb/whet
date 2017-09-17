@@ -57,7 +57,13 @@ while True:
   pwm.set_pwm(0, 0, dim_max)
   time.sleep(random.uniform(0, 1))
   pwm.set_pwm(0, 0, 0)
-  time.sleep(random.uniform(0, .05))
+  time.sleep(random.uniform(0, .002))
+
+
+  pwm.set_all_pwm(0, dim_max)
+  time.sleep(random.uniform(0, 1))
+  pwm.set_all_pwm(0, 0)
+  time.sleep(random.uniform(0, .002))
 
     #while cur < dim_max:
     # pwm.set_pwm(0, 1000, 0)

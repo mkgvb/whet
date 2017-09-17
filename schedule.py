@@ -6,7 +6,6 @@ from __future__ import division
 import time
 from datetime import datetime
 import random
-import numpy
 import math
 import logging
 import Adafruit_PCA9685
@@ -36,9 +35,7 @@ for x in range(w):
 #import logging
 #logging.basicConfig(level=logging.DEBUG)
 
-# Initialise the PCA9685 using the default address (0x40).
-pwm = Adafruit_PCA9685.PCA9685()
-pwm.set_pwm(0, 0, 4095)
+
 
 # Alternatively specify a different address and/or bus:
 #pwm = Adafruit_PCA9685.PCA9685(address=0x41, busnum=2)
@@ -50,7 +47,18 @@ dim_max = 4095   # Max pulse length out of 4096
 # Helper function to make setting a servo pulse width simpler.
 
 
-# Set frequency to 60hz, good for servos.
+# Initialise the PCA9685 using the default address (0x40).
+pwm = Adafruit_PCA9685.PCA9685()
+
+
+# Set frequency to 60hz for servos / 1000hz LEDS.
+pwm.set_pwm_freq(1000)
+pwm.set_all_pwm( 0, dim_max)
+time.sleep(1)
+
+
+
+
 
 def percent(percent):
         if (percent == 0):
@@ -64,9 +72,11 @@ def percent(percent):
 
 #time
 curHour = datetime.now().hour
-curTime = datetime.now().strftime('%H:%M:%S')
 cur = dim_max
 
+
+def timeStr():
+  return datetime.now().strftime('%H:%M:%S')
 
 
 def catchup(cur):
@@ -84,13 +94,12 @@ def catchup(cur):
   return cur
 
 def main(cur):
-  print(curTime + ' : Starting main...')
+  print(datetime.now().strftime('%H:%M:%S') + ' : Starting main...')
   while True:
     
     goal = percent(Matrix[datetime.now().hour+1][0]);
 
-    print("Goal = "+ str(goal))
-    print("Cur = " + str(cur))
+    print("Hour = " + str(datetime.now().hour) + " | " + "Goal = "+ str(goal) + " | " + "Cur = " + str(cur))
   	
     if (cur > goal ):
    	cur -= 1 ;
@@ -118,7 +127,7 @@ def main(cur):
 try:
   cur = catchup(cur)
   cur = main(cur)
-except:
+except KeyboardInterrupt:
   logging.debug(datetime.now().strftime('%H:%M:%S') +' : Quitting')
   pwm.set_pwm(0,0,dim_max)
 
