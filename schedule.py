@@ -1,17 +1,49 @@
+<<<<<<< Updated upstream
 # Simple demo of of the PCA9685 PWM servo/LED controller library.
 # This will move channel 0 from min to max position repeatedly.
 # Author: Tony DiCola
 # License: Public Domain
+=======
+#!/usr/bin/env python3
+
+>>>>>>> Stashed changes
 from __future__ import division
 import time
 from datetime import datetime
 import random
 import math
 import logging
+<<<<<<< Updated upstream
 import Adafruit_PCA9685
 
 
 logging.basicConfig(filename= 'logs/' + str(datetime.now()) + '.log',level=logging.INFO)
+=======
+import threading
+import os
+from weatherType import WeatherType
+import PCA9685
+import sys
+
+
+
+logDir = 'logs/'
+if not os.path.exists(logDir):
+    os.makedirs(logDir)
+logging.basicConfig(filename= logDir + str(datetime.now()) + '.log',level=logging.INFO)
+
+pid = str(os.getpid())
+pidfile = "/tmp/whet.pid"
+
+if os.path.isfile(pidfile):
+    logging.info("%s already exists, exiting" % pidfile)
+    print("%s already exists, exiting" % pidfile)
+    sys.exit()
+open(pidfile, 'w').write(pid)
+
+
+
+>>>>>>> Stashed changes
 
 
 w, h = 16, 24;
@@ -30,28 +62,36 @@ for x in range(w):
   Matrix[20][x] = 10
   Matrix[21][x] = 00 #9PM
 
-
-# Uncomment to enable debug output.
-#import logging
-#logging.basicConfig(level=logging.DEBUG)
-
-
-
 # Alternatively specify a different address and/or bus:
 #pwm = Adafruit_PCA9685.PCA9685(address=0x41, busnum=2)
 
+<<<<<<< Updated upstream
 # Configure min and max servo pulse lengths
 dim_min = 0  # Min pulse length out of 4096
 dim_max = 4095   # Max pulse length out of 4096
 
 # Helper function to make setting a servo pulse width simpler.
+=======
+
+# Configure min and max brightness values
+dim_min = 0  # Min pulse length out of 4096
+dim_max = 4095   # Max pulse length out of 4096
+
+
+#if set to false threads kill themselves
+run = True
+
+#default weather
+weather = WeatherType.normal
+
+>>>>>>> Stashed changes
 
 
 # Initialise the PCA9685 using the default address (0x40).
-pwm = Adafruit_PCA9685.PCA9685()
+pwm = PCA9685.PCA9685()
 
 
-# Set frequency to 60hz for servos / 1000hz LEDS.
+# Set frequency to 1000hz for LEDS.
 pwm.set_pwm_freq(1000)
 pwm.set_all_pwm( 0, dim_max)
 time.sleep(1)
@@ -73,6 +113,47 @@ def percent(percent):
 #time
 curHour = datetime.now().hour
 cur = dim_max
+<<<<<<< Updated upstream
+=======
+def channel_worker(channel):
+  print(timeStr(datetime.now()) + '|Channel = {0}| Starting main...  '.format(channel) )
+  cur = dim_max
+  while run:
+
+
+
+    curTime = datetime.now()
+    nextHour = curTime + timedelta(hours=1)
+    curHour = curTime.hour
+    goal = percent(Matrix[(nextHour.hour)][channel]);
+    remainSeconds = 3600 - (curTime.minute * 60 + curTime.second)
+    delta = abs(cur - goal)
+    sleepTime = int(remainSeconds / delta ) if delta != 0 else 60
+
+    print( timeStr(curTime)
+      + "|Channel = {0}".format(channel)
+      + "|Hour = {0}".format(curHour)
+      + "|Goal = {0}({1}%)".format(goal, toBrightnessPercent(goal))
+      + "|Cur = " + str(cur) + "(" + str(toBrightnessPercent(cur)) + "%)"
+      + "|Sleep = " + str(sleepTime)
+      + "|Delta = " + str(delta)
+      + "|Seconds Remain = " + str(remainSeconds))
+
+    logging.info( timeStr(curTime)
+      + "|Channel = " + str(channel)
+      + "|Hour = " + str(curHour)
+      + "|Goal = "+ str(goal) + "(" + str(toBrightnessPercent(goal)) + "%)"
+      + "|Cur = " + str(cur) + "(" + str(toBrightnessPercent(cur)) + "%)"
+      + "|Sleep = " + str(sleepTime)
+      + "|Delta = " + str(delta)
+      + "|Seconds Remain = " + str(remainSeconds))
+
+    if (cur > goal ):
+      cur -= 1 ;
+    if (cur < goal):
+      cur += 1;
+
+>>>>>>> Stashed changes
 
 
 def timeStr():
@@ -99,6 +180,7 @@ def main(cur):
     
     goal = percent(Matrix[datetime.now().hour+1][0]);
 
+<<<<<<< Updated upstream
     print("Hour = " + str(datetime.now().hour) + " | " + "Goal = "+ str(goal) + " | " + "Cur = " + str(cur))
   	
     if (cur > goal ):
@@ -121,6 +203,33 @@ def main(cur):
   return cur
 
 
+=======
+def thunderstorm_worker(channel, cur):
+  while (weather == WeatherType.storm and run):
+
+    #dim to percentage of normal weather
+    #TODO
+    tmpPwm = dim_min
+
+
+    if (random.randint(1,5) == 3):
+
+      pwm.set_pwm(channel, 0, dim_max)
+      time.sleep(random.uniform(0, 1))  #valley
+
+      pwm.set_pwm(channel, 0, dim_min)
+      time.sleep(random.uniform(0, .02))  #peak
+
+      
+      if (random.randint(1, 5) == 3):
+        while tmpPwm > dim_max:
+          tmpPwm -= 10
+          pwm.set_pwm(channel, 0, tmpPwm) #quick ramp down effect
+
+      print( timeStr(datetime.now())
+        + "|Channel = " + str(channel)
+        + "|Lightning Strike!")
+>>>>>>> Stashed changes
 
 
 
