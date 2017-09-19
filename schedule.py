@@ -191,14 +191,12 @@ try:
       time.sleep(cloudLength)
 
     #STORM
-    if (datetime.now().hour > 21):
-      if (random.randint(1,100) == 5):
-        weather = WeatherType.storm
-        stormLength = random.randint(100,500)
-        print(timeStr(datetime.now()) + ' : Starting thunderstorm... Length = '+ str(stormLength))
-        logging.info(timeStr(datetime.now()) + ' : Starting thunderstorm... Length = '+ str(stormLength))
-
-        time.sleep(stormLength)
+    if ((datetime.now().hour > 20) and random.randint(1,100) == 5):
+      weather = WeatherType.storm
+      stormLength = random.randint(100,500)
+      print(timeStr(datetime.now()) + ' : Starting thunderstorm... Length = '+ str(stormLength))
+      logging.info(timeStr(datetime.now()) + ' : Starting thunderstorm... Length = '+ str(stormLength))
+      time.sleep(stormLength)
 
 
 
