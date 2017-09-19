@@ -180,7 +180,7 @@ try:
 
   #keep main thread alive
   while True:
-    time.sleep(1)
+    time.sleep(60)
 
     #CLOUDY
     if (random.randint(1,20) == 5):
@@ -191,7 +191,7 @@ try:
       time.sleep(cloudLength)
 
     #STORM
-    if ((datetime.now().hour > 20) and random.randint(1,100) == 5):
+    if ((datetime.now().hour > 20) and random.randint(1,1000) == 5):
       weather = WeatherType.storm
       stormLength = random.randint(100,500)
       print(timeStr(datetime.now()) + ' : Starting thunderstorm... Length = '+ str(stormLength))
