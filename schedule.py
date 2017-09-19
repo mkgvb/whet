@@ -9,7 +9,18 @@ import logging
 import threading
 import os
 from weatherType import WeatherType
-#import Adafruit_PCA9685
+import Adafruit_PCA9685
+import sys
+
+
+pid = str(os.getpid())
+pidfile = "/tmp/whet.pid"
+
+if os.path.isfile(pidfile):
+    print "%s already exists, exiting" % pidfile
+    sys.exit()
+file(pidfile, 'w').write(pid)
+
 
 logDir = 'logs/'
 if not os.path.exists(logDir):
@@ -21,22 +32,22 @@ w, h = 16, 24;
 Matrix = [[0 for x in range(w)] for y in range(h)]
 
 for x in range(w):
-  Matrix[ 8][x] = 10 #8AM
+  Matrix[ 8][x] = 0 #8AM
   Matrix[ 9][x] = 0
-  Matrix[10][x] = 100
-  Matrix[11][x] = 50
-  Matrix[12][x] = 100
+  Matrix[10][x] = 0
+  Matrix[11][x] = 0
+  Matrix[12][x] = 0
   Matrix[13][x] = 10 #01PM
-  Matrix[14][x] = 90
+  Matrix[14][x] = 30
   Matrix[15][x] = 30
   Matrix[16][x] = 80
-  Matrix[17][x] = 40
-  Matrix[18][x] = 70
-  Matrix[19][x] = 0
-  Matrix[20][x] = 35
-  Matrix[21][x] = 99 #9PM
-  Matrix[22][x] = 1
-  Matrix[23][x] = 42
+  Matrix[17][x] = 100 #05PM
+  Matrix[18][x] = 100
+  Matrix[19][x] = 100
+  Matrix[20][x] = 80
+  Matrix[21][x] = 50 #9PM
+  Matrix[22][x] = 0
+  Matrix[23][x] = 0
 
 
 
@@ -59,16 +70,17 @@ weather = WeatherType.normal
 
 
 # Initialise the PCA9685 using the default address (0x40).
-#pwm = Adafruit_PCA9685.PCA9685()
+pwm = Adafruit_PCA9685.PCA9685()
 
 
 # Set frequency to 60hz for servos / 1000hz LEDS.
-#pwm.set_pwm_freq(1000)
-#pwm.set_all_pwm( 0, dim_max)
+pwm.set_pwm_freq(1000)
+pwm.set_all_pwm( 0, dim_max)
 time.sleep(1)
 
 
-
+def toBrightnessPercent(pwm_val):
+  return round((1 - (pwm_val/dim_max)) * 100, 2)
 
 
 def percent(percent):
@@ -102,8 +114,17 @@ def channel_worker(channel):
     print( timeStr(curTime)
       + "|Channel = " + str(channel)
       + "|Hour = " + str(curHour)
-      + "|Goal = "+ str(goal)
-      + "|Cur = " + str(cur)
+      + "|Goal = "+ str(goal) + "(" + str(toBrightnessPercent(goal)) + "%)"
+      + "|Cur = " + str(cur) + "(" + str(toBrightnessPercent(cur)) + "%)"
+      + "|Sleep = " + str(sleepTime)
+      + "|Delta = " + str(delta)
+      + "|Seconds Remain = " + str(remainSeconds))
+
+    logging.info( timeStr(curTime)
+      + "|Channel = " + str(channel)
+      + "|Hour = " + str(curHour)
+      + "|Goal = "+ str(goal) + "(" + str(toBrightnessPercent(goal)) + "%)"
+      + "|Cur = " + str(cur) + "(" + str(toBrightnessPercent(cur)) + "%)"
       + "|Sleep = " + str(sleepTime)
       + "|Delta = " + str(delta)
       + "|Seconds Remain = " + str(remainSeconds))
@@ -121,7 +142,7 @@ def channel_worker(channel):
 
     #happy path
     #set
-    #pwm.set_pwm(channel,0,cur)
+    pwm.set_pwm(channel,0,cur)
     time.sleep(sleepTime)
 
 
@@ -134,13 +155,15 @@ def thunderstorm_worker(channel, cur):
 
 
     if (random.randint(1,5) == 3):
-          #pwm.set_pwm(channel, 0, dim_max)
+      pwm.set_pwm(channel, 0, dim_max)
       time.sleep(random.uniform(0, 1))
-      #pwm.set_pwm(channel, 0, dim_min)
+      pwm.set_pwm(channel, 0, dim_min)
       time.sleep(random.uniform(0, .02))
       print( timeStr(datetime.now())
         + "|Channel = " + str(channel)
         + "|Lightning Strike!")
+
+
 
 try:
 
@@ -164,15 +187,18 @@ try:
       weather= WeatherType.cloudy
       cloudLength = random.randint(30, 60)
       print(timeStr(datetime.now()) + ' : Starting clouds... Length = '+ str(cloudLength))
+      logging.info(timeStr(datetime.now()) + ' : Starting clouds... Length = '+ str(cloudLength))
       time.sleep(cloudLength)
 
     #STORM
-    #if (datetime.now().hour > 21):
-    if (random.randint(1,100) == 5):
-      weather = WeatherType.storm
-      stormLength = random.randint(100,500)
-      print(timeStr(datetime.now()) + ' : Starting thunderstorm... Length = '+ str(stormLength))
-      time.sleep(stormLength)
+    if (datetime.now().hour > 21):
+      if (random.randint(1,100) == 5):
+        weather = WeatherType.storm
+        stormLength = random.randint(100,500)
+        print(timeStr(datetime.now()) + ' : Starting thunderstorm... Length = '+ str(stormLength))
+        logging.info(timeStr(datetime.now()) + ' : Starting thunderstorm... Length = '+ str(stormLength))
+
+        time.sleep(stormLength)
 
 
 
@@ -180,7 +206,14 @@ try:
 
                                          # ...Wait 0.9 seconds before starting another
 except KeyboardInterrupt:
-  print("Stopping Threads")
-  logging.debug(datetime.now().strftime('%H:%M:%S') +' : Quitting')
+  logging.info(datetime.now().strftime('%H:%M:%S') +' : KeyboardInterrupt Quit')
   run = False
-  #pwm.set_all_pwm(0, dim_max)
+  pwm.set_all_pwm(0, dim_max)
+
+
+finally:
+  logging.info(datetime.now().strftime('%H:%M:%S') +' : finally Quit')
+  run = False
+  pwm.set_all_pwm(0, dim_max)
+  os.unlink(pidfile)
+  
