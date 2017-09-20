@@ -11,6 +11,7 @@ import os
 from weatherType import WeatherType
 import Adafruit_PCA9685
 import sys
+import pygame
 
 
 pid = str(os.getpid())
@@ -28,7 +29,7 @@ if not os.path.exists(logDir):
 logging.basicConfig(filename= logDir + str(datetime.now()) + '.log',level=logging.INFO)
 
 
-w, h = 16, 24;
+w, h = 16, 24
 Matrix = [[0 for x in range(w)] for y in range(h)]
 
 for x in range(w):
@@ -75,7 +76,7 @@ pwm = Adafruit_PCA9685.PCA9685()
 
 # Set frequency to 60hz for servos / 1000hz LEDS.
 pwm.set_pwm_freq(1000)
-pwm.set_all_pwm( 0, dim_max)
+pwm.set_all_pwm(0, dim_max)
 time.sleep(1)
 
 
@@ -148,6 +149,11 @@ def channel_worker(channel):
 
 
 def thunderstorm_worker(channel, cur):
+
+  if (channel == 0):
+    pygame.mixer.init()
+    pygame.mixer.music.load("sounds/chip.mp3")
+    pygame.mixer.music.play()
   while (weather == WeatherType.storm and run):
 
     #dim to percentage of normal weather
@@ -163,6 +169,18 @@ def thunderstorm_worker(channel, cur):
         + "|Channel = " + str(channel)
         + "|Lightning Strike!")
 
+      if (random.randint(1,5) == 2):
+        x = 0
+        r = random.randint(-200,200)
+        y = random.randint(100,2000)
+        while (x < y):
+          r = random.randint(-100,200)
+          pwm.set_pwm(channel, 0, x)
+          x = x+r
+          pwm.set_pwm(channel, 0, dim_max)
+          time.sleep(random.uniform(0, .09))
+
+        time.sleep(random.uniform(0, 4))
 
 
 try:
@@ -175,7 +193,7 @@ try:
     t = threading.Thread(target=channel_worker, args=(x,))
     threads.append(t)
     t.start()                                   # ...Start the thread
-    time.sleep(2.1)
+    time.sleep(1.1)
 
 
   #keep main thread alive
@@ -191,9 +209,9 @@ try:
       time.sleep(cloudLength)
 
     #STORM
-    if ((datetime.now().hour > 20) and random.randint(1,1000) == 5):
+    if ((datetime.now().hour > 20) and random.randint(1,1000) == 5 or weather == WeatherType.storm):
       weather = WeatherType.storm
-      stormLength = random.randint(100,500)
+      stormLength = random.randint(60, 120)
       print(timeStr(datetime.now()) + ' : Starting thunderstorm... Length = '+ str(stormLength))
       logging.info(timeStr(datetime.now()) + ' : Starting thunderstorm... Length = '+ str(stormLength))
       time.sleep(stormLength)
