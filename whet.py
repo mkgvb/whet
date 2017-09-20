@@ -1,20 +1,21 @@
 from __future__ import division
-import time
-from datetime import datetime
-from datetime import timedelta
+
 import datetime as dt
-import random
-import math
 import logging
-import threading
+import math
 import os
-from weatherType import WeatherType
+import random
+import sys
+import threading
+import time
+from datetime import datetime, timedelta
+
+import pygame  # sounds
+
 import PCA9685
 import PCA9685_dummy
-import sys
-import pygame   #sounds
 import schedule
-
+from weatherType import WeatherType
 
 pid = str(os.getpid())
 pidfile = "/tmp/whet.pid"
@@ -29,7 +30,7 @@ file(pidfile, 'w').write(pid)
 logDir = 'logs/'
 if not os.path.exists(logDir):
     os.makedirs(logDir)
-logging.basicConfig(filename= logDir + str(datetime.now()) + '.log',level=logging.INFO)
+logging.basicConfig(filename=logDir + str(datetime.now()) + '.log', level=logging.INFO)
 # Uncomment to enable debug output.
 #import logging
 #logging.basicConfig(level=logging.DEBUG)
@@ -85,6 +86,22 @@ cur = led_min
 def channel_worker(channel):
   print(timeStr(datetime.now()) + ' : Starting main...')
   cur = led_min
+  
+
+
+  #catchup - runs once
+  catchup_steps = 255 
+  catchup_time = 5
+  x = 1
+  print(timeStr(datetime.now()) + ' : Catching up...')
+  while cur < toPwmValue(Matrix[datetime.now().hour][channel]):
+    cur += toPwmValue(Matrix[datetime.now().hour][channel])/catchup_steps
+    cur = int(min(led_max, cur)) #TODO fix this its going over led_max because of rounding
+    pwm.set_s(channel,cur)
+    x += 1
+    time.sleep(catchup_time/catchup_steps)
+    
+
   while run:
 
 
@@ -123,7 +140,7 @@ def channel_worker(channel):
 
 
     if (weather == WeatherType.storm):
-      thunderstorm_worker(channel, cur)
+      thunderstorm_worker( channel, cur)
 
 
     #happy path
@@ -173,7 +190,7 @@ try:
   threads = []
 
 
-  for x in range(2):
+  for x in range(schedule.channels):
     print(x)                                     # Four times...
     t = threading.Thread(target=channel_worker, args=(x,))
     threads.append(t)
@@ -205,7 +222,6 @@ try:
 
     weather = WeatherType.normal
 
-                                         # ...Wait 0.9 seconds before starting another
 except KeyboardInterrupt:
   logging.info(datetime.now().strftime('%H:%M:%S') +' : KeyboardInterrupt Quit')
   run = False
@@ -217,4 +233,3 @@ finally:
   run = False
   pwm.set_all(led_min)
   os.unlink(pidfile)
-  

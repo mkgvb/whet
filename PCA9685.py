@@ -50,7 +50,8 @@ OUTDRV             = 0x04
 
 
 logger = logging.getLogger(__name__)
-
+max_val = 4095
+min_val = 0
 
 def software_reset(i2c=None, **kwargs):
     """Sends a software reset (SWRST) command to all servo drivers on the bus."""
@@ -63,8 +64,7 @@ def software_reset(i2c=None, **kwargs):
 
 
 class PCA9685(object):
-    """PCA9685 PWM LED/servo controller."""
-    max_val = 4095
+    """PCA9685 PWM LED/servo controller.""" 
 
     def __init__(self, address=PCA9685_ADDRESS, i2c=None, **kwargs):
         """Initialize the PCA9685."""
