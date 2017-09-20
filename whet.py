@@ -9,7 +9,8 @@ import logging
 import threading
 import os
 from weatherType import WeatherType
-import Adafruit_PCA9685
+import PCA9685
+import PCA9685_dummy
 import sys
 import pygame
 
@@ -17,16 +18,33 @@ import pygame
 pid = str(os.getpid())
 pidfile = "/tmp/whet.pid"
 
+#PID CHECK
 if os.path.isfile(pidfile):
     print "%s already exists, exiting" % pidfile
     sys.exit()
 file(pidfile, 'w').write(pid)
 
-
+# LOGGING
 logDir = 'logs/'
 if not os.path.exists(logDir):
     os.makedirs(logDir)
 logging.basicConfig(filename= logDir + str(datetime.now()) + '.log',level=logging.INFO)
+
+# Initialise the PCA9685, if cant use a dummy (for testing on machine that is not pi)
+try:
+  pwm = PCA9685.PCA9685()
+except:
+  msg = "WARNING - unable to load PWM chip... no values will set!"
+  logging.info(msg)
+  print(msg)
+  pwm = PCA9685_dummy.PCA9685()
+
+
+
+
+
+
+
 
 
 w, h = 16, 24
@@ -62,44 +80,43 @@ for x in range(w):
 #pwm = Adafruit_PCA9685.PCA9685(address=0x41, busnum=2)
 
 
-# Configure min and max servo pulse lengths
-dim_min = 0  # Min pulse length out of 4096
-dim_max = 4095   # Max pulse length out of 4096
+# Configure min and max, initial weather pattern
+led_max = 4095  # Max Brightness
+led_min = 0     # Min Brightness (off)
 run = True
 weather = WeatherType.normal
-# Helper function to make setting a servo pulse width simpler.
 
 
-# Initialise the PCA9685 using the default address (0x40).
-pwm = Adafruit_PCA9685.PCA9685()
+
+
 
 
 # Set frequency to 60hz for servos / 1000hz LEDS.
 pwm.set_pwm_freq(1000)
-pwm.set_all_pwm(0, dim_max)
+pwm.set_all(led_min)
 time.sleep(1)
 
 
-def toBrightnessPercent(pwm_val):
-  return round((1 - (pwm_val/dim_max)) * 100, 2)
+def toPercentValue(pwm_val):
+  return round(pwm_val/led_max * 100, 2)
 
 
-def percent(percent):
+def toPwmValue(percent):
   if (percent == 0):
-   return dim_max
+   return led_min
   if (percent == 100):
-   return dim_min
+   return led_max
 
   percent = percent / 100
-  return int(dim_max - dim_max * percent)
+  return int(led_max * percent)
 
 def timeStr(t):
   return t.strftime('%H:%M:%S')
 
-cur = dim_max
+cur = led_min
 def channel_worker(channel):
   print(timeStr(datetime.now()) + ' : Starting main...')
-  cur = dim_max
+  cur = led_min
   while run:
 
 
@@ -107,7 +124,7 @@ def channel_worker(channel):
     curTime = datetime.now()
     nextHour = curTime + timedelta(hours=1)
     curHour = curTime.hour
-    goal = percent(Matrix[(nextHour.hour)][channel]);
+    goal = toPwmValue(Matrix[(nextHour.hour)][channel]);
     remainSeconds = 3600 - (curTime.minute * 60 + curTime.second)
     delta = abs(cur - goal)
     sleepTime = int(remainSeconds / delta ) if delta != 0 else 1
@@ -115,8 +132,8 @@ def channel_worker(channel):
     print( timeStr(curTime)
       + "|Channel = " + str(channel)
       + "|Hour = " + str(curHour)
-      + "|Goal = "+ str(goal) + "(" + str(toBrightnessPercent(goal)) + "%)"
-      + "|Cur = " + str(cur) + "(" + str(toBrightnessPercent(cur)) + "%)"
+      + "|Goal = "+ str(goal) + "(" + str(toPercentValue(goal)) + "%)"
+      + "|Cur = " + str(cur) + "(" + str(toPercentValue(cur)) + "%)"
       + "|Sleep = " + str(sleepTime)
       + "|Delta = " + str(delta)
       + "|Seconds Remain = " + str(remainSeconds))
@@ -124,16 +141,16 @@ def channel_worker(channel):
     logging.info( timeStr(curTime)
       + "|Channel = " + str(channel)
       + "|Hour = " + str(curHour)
-      + "|Goal = "+ str(goal) + "(" + str(toBrightnessPercent(goal)) + "%)"
-      + "|Cur = " + str(cur) + "(" + str(toBrightnessPercent(cur)) + "%)"
+      + "|Goal = "+ str(goal) + "(" + str(toPercentValue(goal)) + "%)"
+      + "|Cur = " + str(cur) + "(" + str(toPercentValue(cur)) + "%)"
       + "|Sleep = " + str(sleepTime)
       + "|Delta = " + str(delta)
       + "|Seconds Remain = " + str(remainSeconds))
 
     if (cur > goal ):
-      cur -= 1 ;
+      cur -= 1
     if (cur < goal):
-      cur += 1;
+      cur += 1
 
 
 
@@ -143,7 +160,7 @@ def channel_worker(channel):
 
     #happy path
     #set
-    pwm.set_pwm(channel,0,cur)
+    pwm.set_s(channel,cur)
     time.sleep(sleepTime)
 
 
@@ -161,9 +178,9 @@ def thunderstorm_worker(channel, cur):
 
 
     if (random.randint(1,5) == 3):
-      pwm.set_pwm(channel, 0, dim_max)
+      pwm.set_s(channel, led_min)
       time.sleep(random.uniform(0, 1))
-      pwm.set_pwm(channel, 0, dim_min)
+      pwm.set_s(channel, led_max)
       time.sleep(random.uniform(0, .02))
       print( timeStr(datetime.now())
         + "|Channel = " + str(channel)
@@ -175,9 +192,9 @@ def thunderstorm_worker(channel, cur):
         y = random.randint(100,2000)
         while (x < y):
           r = random.randint(-100,200)
-          pwm.set_pwm(channel, 0, x)
+          pwm.set_s(channel, x)
           x = x+r
-          pwm.set_pwm(channel, 0, dim_max)
+          pwm.set_s(channel, led_min)
           time.sleep(random.uniform(0, .09))
 
         time.sleep(random.uniform(0, 4))
@@ -224,12 +241,12 @@ try:
 except KeyboardInterrupt:
   logging.info(datetime.now().strftime('%H:%M:%S') +' : KeyboardInterrupt Quit')
   run = False
-  pwm.set_all_pwm(0, dim_max)
+  pwm.set_all(led_min)
 
 
 finally:
   logging.info(datetime.now().strftime('%H:%M:%S') +' : finally Quit')
   run = False
-  pwm.set_all_pwm(0, dim_max)
+  pwm.set_all(led_min)
   os.unlink(pidfile)
   

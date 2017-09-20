@@ -64,6 +64,7 @@ def software_reset(i2c=None, **kwargs):
 
 class PCA9685(object):
     """PCA9685 PWM LED/servo controller."""
+    max_val = 4095
 
     def __init__(self, address=PCA9685_ADDRESS, i2c=None, **kwargs):
         """Initialize the PCA9685."""
@@ -72,7 +73,7 @@ class PCA9685(object):
             import Adafruit_GPIO.I2C as I2C
             i2c = I2C
         self._device = i2c.get_i2c_device(address, **kwargs)
-        self.set_all_pwm(0, 0)
+        self.set_all_pwm(0, max_val)
         self._device.write8(MODE2, OUTDRV)
         self._device.write8(MODE1, ALLCALL)
         time.sleep(0.005)  # wait for oscillator
@@ -101,12 +102,7 @@ class PCA9685(object):
 
     def set_pwm(self, channel, on, off):
         """Sets a single PWM channel."""
-        if (off == 0):
-            off = 4095
-        elif (off == 4095):
-            off = 0
-        else:
-            off = 4095 - off
+        off = abs(off - max_val)
         self._device.write8(LED0_ON_L+4*channel, on & 0xFF)
         self._device.write8(LED0_ON_H+4*channel, on >> 8)
         self._device.write8(LED0_OFF_L+4*channel, off & 0xFF)
@@ -114,16 +110,23 @@ class PCA9685(object):
 
     def set_all_pwm(self, on, off):
         """Sets all PWM channels."""
-        if (off == 0):
-            off = 4095
-        elif (off == 4095):
-            off = 0
-        else:
-            off = 4095 - off
+        off = abs(off - max_val)
         self._device.write8(ALL_LED_ON_L, on & 0xFF)
         self._device.write8(ALL_LED_ON_H, on >> 8)
         self._device.write8(ALL_LED_OFF_L, off & 0xFF)
         self._device.write8(ALL_LED_OFF_H, off >> 8)
 
-    def get_pwm(self, channel):
-        print self._device.readU8(ALL_LED_OFF_H )
+    def set_s(self, channel, off):
+        """Sets a single PWM channel."""
+        off = abs(off - max_val)
+        self._device.write8(LED0_ON_L+4*channel, 0 & 0xFF)
+        self._device.write8(LED0_ON_H+4*channel, 0 >> 8)
+        self._device.write8(LED0_OFF_L+4*channel, off & 0xFF)
+        self._device.write8(LED0_OFF_H+4*channel, off >> 8)
+
+    def set_all(self, off):
+        off = abs(off - max_val)
+        self._device.write8(ALL_LED_ON_L, 0 & 0xFF)
+        self._device.write8(ALL_LED_ON_H, 0 >> 8)
+        self._device.write8(ALL_LED_OFF_L, off & 0xFF)
+        self._device.write8(ALL_LED_OFF_H, off >> 8)
