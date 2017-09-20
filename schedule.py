@@ -1,5 +1,5 @@
 
-channels = 16
+channels = 2
 hours = 24
 schedule = [[0 for x in range(channels)] for y in range(hours)]
 

@@ -15,16 +15,10 @@ import pygame  # sounds
 import PCA9685
 import PCA9685_dummy
 import schedule
+import Pid
 from weatherType import WeatherType
 
-pid = str(os.getpid())
-pidfile = "/tmp/whet.pid"
-
-#PID CHECK
-if os.path.isfile(pidfile):
-    print "%s already exists, exiting" % pidfile
-    sys.exit()
-file(pidfile, 'w').write(pid)
+Pid = Pid.Pid()
 
 # LOGGING
 logDir = 'logs/'
@@ -232,4 +226,4 @@ finally:
   logging.info(datetime.now().strftime('%H:%M:%S') +' : finally Quit')
   run = False
   pwm.set_all(led_min)
-  os.unlink(pidfile)
+  Pid.kill()
