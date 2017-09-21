@@ -8,18 +8,17 @@ import random
 import threading
 import time
 from datetime import datetime, timedelta
-import simpleaudio as sa
 
 #import pygame  # sounds
 
 import PCA9685
 import PCA9685_dummy
 import Pid
-import schedule
+import LightSchedule
 from WeatherType import WeatherType
 
 Pid = Pid.Pid()
-
+ls = LightSchedule.LightSchedule()
 
 
 # LOGGING
@@ -49,27 +48,12 @@ LED_MAX = 4095  # Max Brightness
 LED_MIN = 0     # Min Brightness (off)
 RUN = True
 WEATHER = WeatherType.normal
-SCHEDULE = schedule.schedule
 
 
 # Set frequency to 1000hz... LEDS.
 pwm.set_pwm_freq(1000)
 pwm.set_all(LED_MIN)
 time.sleep(1)
-
-
-def toPercentValue(pwm_val):
-    return round(pwm_val / LED_MAX * 100, 2)
-
-
-def toPwmValue(percent):
-    if (percent == 0):
-        return LED_MIN
-    if (percent == 100):
-        return LED_MAX
-
-    percent = percent / 100
-    return int(LED_MAX * percent)
 
 
 def timeStr(_t):
@@ -88,9 +72,8 @@ def channel_worker(channel):
     catchup_time = 5
     x = 1
     print(timeStr(datetime.now()) + ' : Catching up...')
-    while cur < toPwmValue(SCHEDULE[datetime.now().hour][channel]):
-        cur += toPwmValue(SCHEDULE[datetime.now().hour][channel]) / catchup_steps
-        # TODO fix this its going over led_max because of rounding
+    while cur < ls.GetPwm(channel, datetime.now().hour):
+        cur += ls.GetPwm(channel, datetime.now().hour) / catchup_steps
         cur = int(min(LED_MAX, cur))
         pwm.set_s(channel, cur)
         x += 1
@@ -99,9 +82,9 @@ def channel_worker(channel):
     while RUN:
 
         curTime = datetime.now()
-        nextHour = curTime + timedelta(hours=1)
         curHour = curTime.hour
-        goal = toPwmValue(SCHEDULE[(nextHour.hour)][channel])
+        nextHour = curHour+1     
+        goal = ls.GetPwm(channel,nextHour)
         remainSeconds = 3600 - (curTime.minute * 60 + curTime.second)
         delta = abs(cur - goal)
         sleepTime = int(remainSeconds / delta) if delta != 0 else 1
@@ -110,8 +93,8 @@ def channel_worker(channel):
         msg += timeStr(curTime)
         msg += "|Channel = " + str(channel)
         msg += "|Hour = " + str(curHour)
-        msg += "|Goal = " + str(goal) + "(" + str(toPercentValue(goal)) + "%)"
-        msg += "|Cur = " + str(cur) + "(" + str(toPercentValue(cur)) + "%)"
+        msg += "|Goal = " + str(goal) + "(" + str(ls.GetPercent(channel, nextHour)) + "%)"
+        msg += "|Cur = " + str(cur) + "(" + str(ls.GetPercent(channel, curHour)) + "%)"
         msg += "|Sleep = " + str(sleepTime)
         msg += "|Delta = " + str(delta)
         msg += "|Seconds Remain = " + str(remainSeconds)
@@ -170,8 +153,7 @@ def thunderstorm_worker(channel, cur):
 try:
 
     threads = []
-
-    for x in range(schedule.CHANNELS):
+    for x in range(ls.GetNumberOfChannels()):
         print(x)                                     # Four times...
         t = threading.Thread(target=channel_worker, args=(x,))
         threads.append(t)
@@ -183,7 +165,7 @@ try:
         time.sleep(60)
 
         # CLOUDY
-        if (random.randint(1, 20) == 5):
+        if (random.randint(1, 20) == 5 or WEATHER == WeatherType.cloudy):
             WEATHER = WeatherType.cloudy
             cloudLength = random.randint(30, 60)
             print(timeStr(datetime.now()) +
