@@ -73,7 +73,7 @@ class PCA9685(object):
             import Adafruit_GPIO.I2C as I2C
             i2c = I2C
         self._device = i2c.get_i2c_device(address, **kwargs)
-        self.set_all_pwm(0, max_val)
+        self.set_all_pwm(0, min_val)
         self._device.write8(MODE2, OUTDRV)
         self._device.write8(MODE1, ALLCALL)
         time.sleep(0.005)  # wait for oscillator
@@ -125,6 +125,7 @@ class PCA9685(object):
         self._device.write8(LED0_OFF_H+4*channel, off >> 8)
 
     def set_all(self, off):
+        """Sets all PWM channels."""
         off = abs(off - max_val)
         self._device.write8(ALL_LED_ON_L, 0 & 0xFF)
         self._device.write8(ALL_LED_ON_H, 0 >> 8)
