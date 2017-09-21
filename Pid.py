@@ -9,9 +9,9 @@ class Pid(object):
     def __init__(self):
         #PID CHECK
         if os.path.isfile(pidfile):
-            print "%s already exists, exiting" % pidfile
+            print ("%s already exists, exiting" % pidfile)
             sys.exit()
-        file(pidfile, 'w').write(process_id)
+        open(pidfile, 'w').write(process_id)
 
     def kill(self):
         """ Deletes the pid, call when shutdown safely """

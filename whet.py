@@ -7,8 +7,9 @@ import random
 import threading
 import time
 from datetime import datetime, timedelta
+import simpleaudio as sa
 
-import pygame  # sounds
+#import pygame  # sounds
 
 import PCA9685
 import PCA9685_dummy
@@ -17,6 +18,8 @@ import schedule
 from WeatherType import WeatherType
 
 Pid = Pid.Pid()
+
+
 
 # LOGGING
 logDir = 'logs/'
@@ -113,7 +116,8 @@ def channel_worker(channel):
         msg += "|Seconds Remain = " + str(remainSeconds)
 
         print(msg)
-        logging.info(msg)
+        if(datetime.now().second == 0):
+            logging.info(msg)
 
         if (cur > goal):
             cur -= 1
@@ -132,9 +136,8 @@ def channel_worker(channel):
 def thunderstorm_worker(channel, cur):
 
     if (channel == 0):
-        pygame.mixer.init()
-        pygame.mixer.music.load("sounds/chip.mp3")
-        pygame.mixer.music.play()
+        wave_obj = sa.WaveObject.from_wave_file("sound/t"+ str(random.randint(1,5)) + ".wav")
+        play_obj = wave_obj.play()
     while (WEATHER == WeatherType.storm and RUN):
 
         # dim to percentage of normal weather
