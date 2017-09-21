@@ -72,8 +72,8 @@ def channel_worker(channel):
     catchup_time = 5
     x = 1
     print(timeStr(datetime.now()) + ' : Catching up...')
-    while cur < ls.GetPwm(channel, datetime.now().hour):
-        cur += ls.GetPwm(channel, datetime.now().hour) / catchup_steps
+    while cur < ls.get_pwm(channel, datetime.now().hour):
+        cur += ls.get_pwm(channel, datetime.now().hour) / catchup_steps
         cur = int(min(LED_MAX, cur))
         pwm.set_s(channel, cur)
         x += 1
@@ -84,7 +84,7 @@ def channel_worker(channel):
         curTime = datetime.now()
         curHour = curTime.hour
         nextHour = curHour+1     
-        goal = ls.GetPwm(channel,nextHour)
+        goal = ls.get_pwm(channel,nextHour)
         remainSeconds = 3600 - (curTime.minute * 60 + curTime.second)
         delta = abs(cur - goal)
         sleepTime = int(remainSeconds / delta) if delta != 0 else 1
@@ -93,8 +93,8 @@ def channel_worker(channel):
         msg += timeStr(curTime)
         msg += "|Channel = " + str(channel)
         msg += "|Hour = " + str(curHour)
-        msg += "|Goal = " + str(goal) + "(" + str(ls.GetPercent(channel, nextHour)) + "%)"
-        msg += "|Cur = " + str(cur) + "(" + str(ls.GetPercent(channel, curHour)) + "%)"
+        msg += "|Goal = " + str(goal) + "(" + str(ls.get_percent(channel, nextHour)) + "%)"
+        msg += "|Cur = " + str(cur) + "(" + str(ls.get_percent(channel, curHour)) + "%)"    #Todo the percentage is broken
         msg += "|Sleep = " + str(sleepTime)
         msg += "|Delta = " + str(delta)
         msg += "|Seconds Remain = " + str(remainSeconds)
@@ -153,8 +153,7 @@ def thunderstorm_worker(channel, cur):
 try:
 
     threads = []
-    for x in range(ls.GetNumberOfChannels()):
-        print(x)                                     # Four times...
+    for x in range(ls.get_number_of_channels()):
         t = threading.Thread(target=channel_worker, args=(x,))
         threads.append(t)
         t.start()                                   # ...Start the thread
