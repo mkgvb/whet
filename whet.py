@@ -94,12 +94,13 @@ def channel_worker(channel):
         msg += "|Channel = " + str(channel)
         msg += "|Hour = " + str(curHour)
         msg += "|Goal = " + str(goal) + "(" + str(ls.get_percent(channel, nextHour)) + "%)"
-        msg += "|Cur = " + str(cur) + "(" + str(ls.get_percent(channel, curHour)) + "%)"    #Todo the percentage is broken
+        msg += "|Cur = " + str(cur) + "(" + str(ls.get_percent_cur(cur)) + "%)"    #Todo the percentage is broken
         msg += "|Sleep = " + str(sleepTime)
         msg += "|Delta = " + str(delta)
         msg += "|Seconds Remain = " + str(remainSeconds)
 
-        print(msg)
+        if (datetime.now().second == channel + )
+        print(msg, end='\r')
         if(datetime.now().second == 0):
             logging.info(msg)
 
@@ -157,7 +158,7 @@ try:
         t = threading.Thread(target=channel_worker, args=(x,))
         threads.append(t)
         t.start()                                   # ...Start the thread
-        time.sleep(1.1)
+
 
     # keep main thread alive
     while True:

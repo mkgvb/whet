@@ -1,18 +1,26 @@
 import json
 import math
-#import Settings
-import Settings2
 
 fileloc = 'json/schedule.json'
 
 
 HOURS = 24
 
+#s = Settings2.Settings2()
+#s.refresh_data()
+#s.print_data()
+#s.bogus = 32
+#s.save_data()
+
+
+LED_MAX=4095
+LED_MIN=0
+
 class LightSchedule(object):
     """Class to hold lighting schedule"""
 
-    def __init__(self):
-        print("")
+    #def __init__(self):
+        
 
     def get_data(self):
         """gets a current copy of the schedule"""
@@ -40,9 +48,13 @@ class LightSchedule(object):
             return min(100, max(r, 0))
         return
 
+    def get_percent_cur(self, pwm_val):
+        '''gets percent value of pwm_val'''
+        return int(round((pwm_val / LED_MAX) * 100, 1))
+
     def get_pwm(self, channel, hour):
         """gets the pwm value of a channel at a certain hour"""
-        return int(round((self.get_percent(channel, hour) / 100) * 4095))
+        return int(round((self.get_percent(channel, hour) / 100) * LED_MAX))
 
     def get_number_of_channels(self):
         """gets total number of active channels"""
