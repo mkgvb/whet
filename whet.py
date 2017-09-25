@@ -9,12 +9,10 @@ import threading
 import time
 from datetime import datetime, timedelta
 
-#import pygame  # sounds
-
+import LightSchedule
 import PCA9685
 import PCA9685_dummy
 import Pid
-import LightSchedule
 from WeatherType import WeatherType
 
 Pid = Pid.Pid()
@@ -63,28 +61,40 @@ def timeStr(_t):
 cur = LED_MIN
 
 
-def channel_worker(channel):
-    print(timeStr(datetime.now()) + ' : Starting main...')
-    cur = LED_MIN
+def catchup_worker(channel, catchup_steps=255, catchup_time=5):
+    print(timeStr(datetime.now()) + ' : Catching up...')
+
+    curPwm = LED_MIN
+    curTime = datetime.now()
+    curHour = curTime.hour
+    nextHour = (curTime + timedelta(hours=1)).hour
+    curGoal = ls.get_pwm(channel, curHour)
+    nextGoal = ls.get_pwm(channel, nextHour)
+    delta = nextGoal - curGoal
+    catchupGoal = curGoal + delta * (curTime.minute / 60)
 
     # catchup - runs once
-    catchup_steps = 255
-    catchup_time = 5
-    x = 1
-    print(timeStr(datetime.now()) + ' : Catching up...')
-    while cur < ls.get_pwm(channel, datetime.now().hour):
-        cur += ls.get_pwm(channel, datetime.now().hour) / catchup_steps
-        cur = int(min(LED_MAX, cur))
-        pwm.set_s(channel, cur)
-        x += 1
+    while curPwm < catchupGoal:
+        curPwm += round(catchupGoal / catchup_steps)
+        pwm.set_s(channel, curPwm)
+        #time.sleep(abs(delta) / catchup_steps)
         time.sleep(catchup_time / catchup_steps)
+        print(curPwm)
+
+    return curPwm
+
+
+def channel_worker(channel):
+    print(timeStr(datetime.now()) + ' : Starting main...')
+
+    cur = catchup_worker(channel)
 
     while RUN:
 
         curTime = datetime.now()
         curHour = curTime.hour
-        nextHour = curHour+1     
-        goal = ls.get_pwm(channel,nextHour)
+        nextHour = (curTime + timedelta(hours=1)).hour
+        goal = ls.get_pwm(channel, nextHour)
         remainSeconds = 3600 - (curTime.minute * 60 + curTime.second)
         delta = abs(cur - goal)
         sleepTime = int(remainSeconds / delta) if delta != 0 else 1
@@ -93,14 +103,16 @@ def channel_worker(channel):
         msg += timeStr(curTime)
         msg += "|Channel = " + str(channel)
         msg += "|Hour = " + str(curHour)
-        msg += "|Goal = " + str(goal) + "(" + str(ls.get_percent(channel, nextHour)) + "%)"
-        msg += "|Cur = " + str(cur) + "(" + str(ls.get_percent_cur(cur)) + "%)"    #Todo the percentage is broken
+        msg += "|Goal = " + \
+            str(goal) + "(" + str(ls.get_percent(channel, nextHour)) + "%)"
+        # Todo the percentage is broken
+        msg += "|Cur = " + str(cur) + "(" + str(ls.get_percent_cur(cur)) + "%)"
         msg += "|Sleep = " + str(sleepTime)
         msg += "|Delta = " + str(delta)
         msg += "|Seconds Remain = " + str(remainSeconds)
 
-        if (datetime.now().second == channel + )
-        print(msg, end='\r')
+        #print(msg, end='\r')
+        print(msg)
         if(datetime.now().second == 0):
             logging.info(msg)
 
@@ -121,8 +133,12 @@ def channel_worker(channel):
 def thunderstorm_worker(channel, cur):
 
     if (channel == 0):
-        wave_obj = sa.WaveObject.from_wave_file("sound/t"+ str(random.randint(1,5)) + ".wav")
-        play_obj = wave_obj.play()
+        try:
+            import simpleaudio as sa
+            wave_obj = sa.WaveObject.from_wave_file("sound/t" + str(random.randint(1, 5)) + ".wav")
+            play_obj = wave_obj.play()
+        except:
+            print("Cant play thunderstorm audio")
     while (WEATHER == WeatherType.storm and RUN):
 
         # dim to percentage of normal weather
@@ -158,7 +174,6 @@ try:
         t = threading.Thread(target=channel_worker, args=(x,))
         threads.append(t)
         t.start()                                   # ...Start the thread
-
 
     # keep main thread alive
     while True:
