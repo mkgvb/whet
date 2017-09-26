@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from __future__ import division
 
 import logging
 import math
@@ -124,15 +123,42 @@ def channel_worker(channel):
         if (WEATHER == WeatherType.storm):
             thunderstorm_worker(channel, cur)
 
+        if (WEATHER == WeatherType.cloudy):
+            cur = cloud_worker(channel, cur)
+
         # happy path
         # set
         pwm.set_s(channel, cur)
         time.sleep(sleepTime)
 
+def cloud_worker(channel, c_cur, dim_percent = .20, dim_resolution = 255, dim_speed = .05):
+    '''makes a cloud'''
+    init_cur = c_cur
+    if channel == random.randint(0, ls.get_number_of_channels()):
+        print("{} Cloud Coverage begin channel {} : Cur = {}".format(datetime.now(), channel, c_cur))
+        dimTo = round(c_cur * dim_percent)
+        dimInterval = round(c_cur / dim_resolution)
+        
+
+        while RUN:
+            while c_cur > dimTo and WEATHER == WeatherType.cloudy:
+                c_cur -= dimInterval
+                pwm.set_s(channel, c_cur)
+                time.sleep(dim_speed)
+            while c_cur < init_cur:
+                    c_cur += dimInterval
+                    pwm.set_s(channel, c_cur)
+                    time.sleep(dim_speed)
+            if WEATHER != WeatherType.cloudy:
+                return init_cur
+            
+    return init_cur
+
 
 def thunderstorm_worker(channel, cur):
+    '''makes a thunderstorm'''
 
-    if (channel == 0):
+    if channel == 0:
         try:
             import simpleaudio as sa
             wave_obj = sa.WaveObject.from_wave_file("sound/t" + str(random.randint(1, 5)) + ".wav")
@@ -178,13 +204,11 @@ try:
     # keep main thread alive
     while True:
         time.sleep(60)
-
         # CLOUDY
         if (random.randint(1, 20) == 5 or WEATHER == WeatherType.cloudy):
             WEATHER = WeatherType.cloudy
             cloudLength = random.randint(30, 60)
-            print(timeStr(datetime.now()) +
-                  ' : Starting clouds... Length = ' + str(cloudLength))
+            print(timeStr(datetime.now()) + ' : Starting clouds... Length = ' + str(cloudLength))
             logging.info(timeStr(datetime.now()) +
                          ' : Starting clouds... Length = ' + str(cloudLength))
             time.sleep(cloudLength)
