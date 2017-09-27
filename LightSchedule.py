@@ -6,7 +6,6 @@ fileloc = 'json/schedule.json'
 
 HOURS = 24
 
-#s = Settings2.Settings2()
 #s.refresh_data()
 #s.print_data()
 #s.bogus = 32

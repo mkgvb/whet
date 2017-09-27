@@ -12,10 +12,12 @@ import LightSchedule
 import PCA9685
 import PCA9685_dummy
 import Pid
+import Settings
 from WeatherType import WeatherType
 
 Pid = Pid.Pid()
 ls = LightSchedule.LightSchedule()
+s = Settings.Settings()
 
 
 # LOGGING
@@ -60,7 +62,7 @@ def timeStr(_t):
 cur = LED_MIN
 
 
-def catchup_worker(channel, catchup_steps=255, catchup_time=5):
+def catchup_worker(channel, catchup_steps = s.catchup_steps, catchup_time= s.catchup_time):
     print(timeStr(datetime.now()) + ' : Catching up...')
 
     curPwm = LED_MIN
@@ -131,8 +133,15 @@ def channel_worker(channel):
         pwm.set_s(channel, cur)
         time.sleep(sleepTime)
 
-def cloud_worker(channel, c_cur, dim_percent = .20, dim_resolution = 255, dim_speed = .05):
+def cloud_worker(channel, c_cur, dim_percent = s.clouds_dim_percent, dim_resolution = s.clouds_dim_resolution, dim_speed = s.clouds_dim_speed):
     '''makes a cloud'''
+    try:
+        import simpleaudio as sa
+        wave_obj = sa.WaveObject.from_wave_file("sound/c1.wav")
+        play_obj = wave_obj.play()
+    except:
+        print("Cant play cloud audio")
+
     init_cur = c_cur
     if channel == random.randint(0, ls.get_number_of_channels()):
         print("{} Cloud Coverage begin channel {} : Cur = {}".format(datetime.now(), channel, c_cur))
@@ -158,7 +167,7 @@ def cloud_worker(channel, c_cur, dim_percent = .20, dim_resolution = 255, dim_sp
 def thunderstorm_worker(channel, cur):
     '''makes a thunderstorm'''
 
-    if channel == 0:
+    if s.sound_on and channel == 0:
         try:
             import simpleaudio as sa
             wave_obj = sa.WaveObject.from_wave_file("sound/t" + str(random.randint(1, 5)) + ".wav")
@@ -204,8 +213,9 @@ try:
     # keep main thread alive
     while True:
         time.sleep(60)
+        s.load_file()
         # CLOUDY
-        if (random.randint(1, 20) == 5 or WEATHER == WeatherType.cloudy):
+        if (random.randint(1, 20) == 1 or WEATHER == WeatherType.cloudy):
             WEATHER = WeatherType.cloudy
             cloudLength = random.randint(30, 60)
             print(timeStr(datetime.now()) + ' : Starting clouds... Length = ' + str(cloudLength))
@@ -214,7 +224,7 @@ try:
             time.sleep(cloudLength)
 
         # STORM
-        if ((datetime.now().hour > 20) and random.randint(1, 1000) == 5 or WEATHER == WeatherType.storm):
+        if s.weather=="storm" or (s.storms_random_on and datetime.now().hour >= s.storms_random_start_time and random.randint(1, s.storms_random_freq) == 1):
             WEATHER = WeatherType.storm
             stormLength = random.randint(60, 120)
             print(timeStr(datetime.now()) +
