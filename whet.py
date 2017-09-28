@@ -135,12 +135,7 @@ def channel_worker(channel):
 
 def cloud_worker(channel, c_cur, dim_percent = s.clouds_dim_percent, dim_resolution = s.clouds_dim_resolution, dim_speed = s.clouds_dim_speed):
     '''makes a cloud'''
-    try:
-        import simpleaudio as sa
-        wave_obj = sa.WaveObject.from_wave_file("sound/c1.wav")
-        play_obj = wave_obj.play()
-    except:
-        print("Cant play cloud audio")
+
 
     init_cur = c_cur
     if channel == random.randint(0, ls.get_number_of_channels()):
@@ -215,7 +210,13 @@ try:
         time.sleep(60)
         s.load_file()
         # CLOUDY
-        if (random.randint(1, 20) == 1 or WEATHER == WeatherType.cloudy):
+        if (random.randint(1, 50) == 1 or WEATHER == WeatherType.cloudy):
+            try:
+                import simpleaudio as sa
+                wave_obj = sa.WaveObject.from_wave_file("sound/c1.wav")
+                play_obj = wave_obj.play()
+            except:
+                print("Cant play cloud audio")
             WEATHER = WeatherType.cloudy
             cloudLength = random.randint(30, 60)
             print(timeStr(datetime.now()) + ' : Starting clouds... Length = ' + str(cloudLength))
