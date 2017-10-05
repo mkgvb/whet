@@ -1,21 +1,8 @@
 import json
 import math
+import Web
 from WeatherType import WeatherType
 
-
-
-# class EnumEncoder(json.JSONEncoder):
-#     def default(self, obj):
-#         if type(obj) in WeatherType.values():
-#             return {"__enum__": str(obj)}
-#         return json.JSONEncoder.default(self, obj)
-
-# def as_enum(d):
-#     if "__enum__" in d:
-#         name, member = d["__enum__"].split(".")
-#         return getattr(WeatherType[name], member)
-#     else:
-#         return d
 
 fileloc = 'json/settings.json'
 
@@ -57,3 +44,13 @@ class Settings(object):
     def load_file(self):
         with open(fileloc) as data_file:
             self.__dict__ = json.load(data_file)
+
+    def web_send(self):
+        with open(fileloc) as data_file:
+            string = json.dumps(
+                self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+            Web.msg(string)
+
+    def web_read(self):
+        Web.response()
+        

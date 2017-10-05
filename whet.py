@@ -207,6 +207,11 @@ try:
 
     # keep main thread alive
     while True:
+        s.web_send()
+        s.web_read()
+        s.web_read()
+        s.web_read()
+        
         time.sleep(60)
         s.load_file()
         # CLOUDY
