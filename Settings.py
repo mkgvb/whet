@@ -1,6 +1,5 @@
 import json
 import math
-import Web
 from WeatherType import WeatherType
 
 
@@ -44,13 +43,4 @@ class Settings(object):
     def load_file(self):
         with open(fileloc) as data_file:
             self.__dict__ = json.load(data_file)
-
-    def web_send(self):
-        with open(fileloc) as data_file:
-            string = json.dumps(
-                self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
-            Web.msg(string)
-
-    def web_read(self):
-        Web.response()
         

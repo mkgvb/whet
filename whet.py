@@ -6,6 +6,7 @@ import os
 import random
 import threading
 import time
+import wsclient
 from datetime import datetime, timedelta
 
 import LightSchedule
@@ -18,7 +19,6 @@ from WeatherType import WeatherType
 Pid = Pid.Pid()
 ls = LightSchedule.LightSchedule()
 s = Settings.Settings()
-
 
 # LOGGING
 logDir = 'logs/'
@@ -87,7 +87,7 @@ def catchup_worker(channel, catchup_steps = s.catchup_steps, catchup_time= s.cat
 
 def channel_worker(channel):
     print(timeStr(datetime.now()) + ' : Starting main...')
-
+    ws = wsclient
     cur = catchup_worker(channel)
 
     while RUN:
@@ -113,6 +113,7 @@ def channel_worker(channel):
         msg += "|Seconds Remain = " + str(remainSeconds)
 
         #print(msg, end='\r')
+        ws.send(msg)
         print(msg)
         if(datetime.now().second == 0):
             logging.info(msg)
@@ -207,10 +208,6 @@ try:
 
     # keep main thread alive
     while True:
-        s.web_send()
-        s.web_read()
-        s.web_read()
-        s.web_read()
         
         time.sleep(60)
         s.load_file()
