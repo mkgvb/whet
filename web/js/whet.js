@@ -29,11 +29,16 @@ $(function () {
 
             if (eparsed.type == "user")
                 log("User did something");
+
+            if(eparsed.channel != null)
+            {
+                draw_pwmChannel(eparsed.channel)
+            }
+
             
             if (eparsed.channels != null)
             {
-                channels = eparsed.channels;
-                lightSchedule_Table(channels);
+                lightSchedule_Table(eparsed.channels);
             }
 
             if (eparsed.settings != null)
@@ -87,6 +92,14 @@ $(function () {
         $('#text').val('').focus();
         return false;
     });
+
+    function draw_pwmChannel(settings)
+    {
+        var content = $("#channel-stati");
+        var div_wrap = document.createElement('div');
+        div_wrap.innerText = settings.c_id + " : " + settings.cur;
+        content.append(div_wrap);
+    }
 
     function draw_settings(settings) {
 

@@ -13,10 +13,10 @@ class Settings(object):
     def __init__(self):
         try:
             self.load_file()
+            self.broadcast()
         except IOError:
             print("No settings file found... using defaults")
 
-            self.active = True
             self.weather = "normal"  # todo make this the enum
             self.catchup_on = True
             self.catchup_steps = 255

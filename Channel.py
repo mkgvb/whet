@@ -3,14 +3,20 @@ from threading import Thread
 import time
 from datetime import datetime, timedelta
 import random
+import json
 
 from WeatherType import WeatherType
 import LightSchedule
 import Settings
+import wsclient
+
+s = Settings.Settings()
+ws = wsclient
 
 class Channel(Thread):
     LED_MIN=0
     LED_MAX=4095
+    
 
 
     def __init__(self, c_id, pwm):
@@ -30,7 +36,6 @@ class Channel(Thread):
         """Overloaded Thread.run"""
 
         while not self.cancelled:
-
             self.curTime = datetime.now()
             self.curHour = self.curTime.hour
             self.nextHour = (self.curTime + timedelta(hours=1)).hour
@@ -59,15 +64,16 @@ class Channel(Thread):
             if (self.cur < self.goal):
                 self.cur += 1
 
-            if (Settings.Settings().weather == "storm"):
+            if (s.weather == "storm"):
                 self.thunderstorm_worker()
 
-            if (Settings.Settings().weather == "cloudy"):
+            if (s.weather == "cloudy"):
                 self.cloud_worker()
 
             # happy path
             # set
             self.pwm.set_s(self.c_id, self.cur)
+            self.broadcast()
             time.sleep(self.sleepTime)
             
       
@@ -80,10 +86,23 @@ class Channel(Thread):
         """Update the counters"""
         print("running thread class!")
 
+    def broadcast(self):
+
+        obj = {}
+        obj['cur'] = self.cur
+        obj['c_id'] = self.c_id
+        ws.send(
+            '{"channel":'
+            + json.dumps(obj, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+            + '}'
+        )
+            
+        
+
     def catchup_worker(self):
         
-        catchup_steps = Settings.Settings().catchup_steps
-        catchup_time= Settings.Settings().catchup_time
+        catchup_steps = s.catchup_steps
+        catchup_time= s.catchup_time
 
         curTime = datetime.now()
         curHour = curTime.hour
@@ -103,9 +122,9 @@ class Channel(Thread):
     def cloud_worker(self):
         '''makes a cloud'''
 
-        dim_percent = Settings.Settings().clouds_dim_percent
-        dim_resolution = Settings.Settings().clouds_dim_resolution
-        dim_speed = Settings.Settings().clouds_dim_speed
+        dim_percent = s.clouds_dim_percent
+        dim_resolution = s.clouds_dim_resolution
+        dim_speed = s.clouds_dim_speed
         init_cur = self.cur
 
         print("{} Cloud Coverage begin channel {} : Cur = {}".format(datetime.now(), self.c_id, self.cur))
@@ -113,7 +132,7 @@ class Channel(Thread):
         dimInterval = round(self.cur / dim_resolution)
 
         while not self.cancelled:
-            while self.cur > dimTo and Settings.Settings().weather == "cloudy":
+            while self.cur > dimTo and s.weather == "cloudy":
                 self.cur -= dimInterval
                 self.pwm.set_s(self.c_id, self.cur)
                 time.sleep(dim_speed)
@@ -125,7 +144,7 @@ class Channel(Thread):
     def thunderstorm_worker(self):
         '''makes a thunderstorm'''
 
-        if Settings.Settings().sound_on and self.c_id == 0:
+        if s.sound_on and self.c_id == 0:
             try:
                 import simpleaudio as sa
                 wave_obj = sa.WaveObject.from_wave_file("sound/t1.wav")
@@ -133,7 +152,7 @@ class Channel(Thread):
                 play_obj = wave_obj.play()
             except:
                 print("Cant play thunderstorm audio")
-        while (Settings.Settings().weather == "storm"):
+        while (s.weather == "storm"):
 
             # dim to percentage of normal weather
             # TODO
