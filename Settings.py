@@ -1,10 +1,11 @@
 import json
 import math
+import wsclient
 from WeatherType import WeatherType
 
 
 fileloc = 'json/settings.json'
-
+ws = wsclient
 
 class Settings(object):
     """Class to hold settings"""
@@ -12,6 +13,7 @@ class Settings(object):
     def __init__(self):
         try:
             self.load_file()
+            self.broadcast()
         except IOError:
             print("No settings file found... using defaults")
 
@@ -43,4 +45,17 @@ class Settings(object):
     def load_file(self):
         with open(fileloc) as data_file:
             self.__dict__ = json.load(data_file)
+
+    def broadcast(self):
+        with open(fileloc, 'r') as data_file:
+            ws.send(
+                '{"settings":'
+                + data_file.read()
+                + '}'
+
+
+                
+                )
+
+
         

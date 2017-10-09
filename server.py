@@ -5,14 +5,17 @@
 """
 import tornado.ioloop
 import tornado.web
-
 import sockjs.tornado
+
+
+import json
 
 
 class IndexHandler(tornado.web.RequestHandler):
     """Regular HTTP handler to serve the chatroom page"""
     def get(self):
-        self.render('index.html')
+        self.render('web/index.html')
+
 
 
 class ChatConnection(sockjs.tornado.SockJSConnection):
@@ -22,7 +25,8 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
 
     def on_open(self, info):
         # Send that someone joined
-        self.broadcast(self.participants, "Someone joined.")
+        json_msg = {'type': 'user', 'server_message': 'Someone joined'}
+        self.broadcast(self.participants, json.dumps(json_msg))
 
         # Add client to the clients list
         self.participants.add(self)
@@ -34,8 +38,8 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
     def on_close(self):
         # Remove client from the clients list and broadcast leave message
         self.participants.remove(self)
-
-        self.broadcast(self.participants, "Someone left.")
+        json_msg = {'type': 'user', 'server_message': 'Someone left'}
+        self.broadcast(self.participants, json.dumps(json_msg))
 
 if __name__ == "__main__":
     import logging
@@ -46,7 +50,14 @@ if __name__ == "__main__":
 
     # 2. Create Tornado application
     app = tornado.web.Application(
-            [(r"/", IndexHandler)] + ChatRouter.urls
+            [
+                (r"/", IndexHandler),
+                (r"/web/(.*)",tornado.web.StaticFileHandler,{"path":r"web/"})
+            ] 
+            + ChatRouter.urls, debug=True
+
+
+            #tornado.web.StaticFileHandler, {"path":r"../web/"}),]) 
     )
 
     # 3. Make Tornado app listen on port 8080

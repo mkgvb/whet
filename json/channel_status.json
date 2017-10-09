@@ -1,0 +1,12 @@
+{
+    "channel_status":
+        {
+            "id": 0,
+            "hour": 0,
+            "goal": 0,
+            "pwm_value": 0,
+            "percentage": 0,
+            "sleep_interval": 0
+
+        }
+}

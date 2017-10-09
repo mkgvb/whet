@@ -1,17 +1,11 @@
 import json
 import math
+import wsclient
 
 fileloc = 'json/schedule.json'
-
+ws = wsclient
 
 HOURS = 24
-
-#s.refresh_data()
-#s.print_data()
-#s.bogus = 32
-#s.save_data()
-
-
 LED_MAX=4095
 LED_MIN=0
 
@@ -62,3 +56,6 @@ class LightSchedule(object):
         for x in data['channels']:
             c += 1
         return c
+    def broadcast(self):
+        with open(fileloc, 'r') as data_file:
+            ws.send(data_file.read())

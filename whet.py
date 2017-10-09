@@ -14,11 +14,13 @@ import PCA9685
 import PCA9685_dummy
 import Pid
 import Settings
+import Channel
 from WeatherType import WeatherType
 
 Pid = Pid.Pid()
 ls = LightSchedule.LightSchedule()
 s = Settings.Settings()
+ws = wsclient
 
 # LOGGING
 logDir = 'logs/'
@@ -61,6 +63,11 @@ def timeStr(_t):
 
 cur = LED_MIN
 
+channelObj = Channel.Channel(3, pwm)
+channelObj.start()
+time.sleep(10)
+channelObj.cancel()
+
 
 def catchup_worker(channel, catchup_steps = s.catchup_steps, catchup_time= s.catchup_time):
     print(timeStr(datetime.now()) + ' : Catching up...')
@@ -87,7 +94,6 @@ def catchup_worker(channel, catchup_steps = s.catchup_steps, catchup_time= s.cat
 
 def channel_worker(channel):
     print(timeStr(datetime.now()) + ' : Starting main...')
-    ws = wsclient
     cur = catchup_worker(channel)
 
     while RUN:
@@ -113,7 +119,6 @@ def channel_worker(channel):
         msg += "|Seconds Remain = " + str(remainSeconds)
 
         #print(msg, end='\r')
-        ws.send(msg)
         print(msg)
         if(datetime.now().second == 0):
             logging.info(msg)
@@ -205,12 +210,14 @@ try:
         t = threading.Thread(target=channel_worker, args=(x,))
         threads.append(t)
         t.start()                                   # ...Start the thread
-
+    
     # keep main thread alive
     while True:
         
-        time.sleep(60)
+        time.sleep(15)
         s.load_file()
+        s.broadcast()
+        ls.broadcast()
         # CLOUDY
         if (random.randint(1, 50) == 1 or WEATHER == WeatherType.cloudy):
             try:
