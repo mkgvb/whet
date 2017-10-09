@@ -14,5 +14,5 @@
     "storms_random_freq": 1000,
     "storms_random_on": true,
     "storms_random_start_time": 21,
-    "weather": "storm"
+    "weather": "normal"
 }

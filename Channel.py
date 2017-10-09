@@ -23,7 +23,7 @@ class Channel(Thread):
         self.c_id = c_id
         self.cur = 0
         self.curTime = datetime.now()
-        self.weather = Settings.Settings().weather
+        #self.weather = Settings.Settings().weather
 
 
     def run(self):
@@ -59,10 +59,10 @@ class Channel(Thread):
             if (self.cur < self.goal):
                 self.cur += 1
 
-            if (self.weather == "storm"):
+            if (Settings.Settings().weather == "storm"):
                 self.thunderstorm_worker()
 
-            if (self.weather == "cloudy"):
+            if (Settings.Settings().weather == "cloudy"):
                 self.cloud_worker()
 
             # happy path
@@ -113,7 +113,7 @@ class Channel(Thread):
         dimInterval = round(self.cur / dim_resolution)
 
         while not self.cancelled:
-            while self.cur > dimTo and self.weather == "cloudy":
+            while self.cur > dimTo and Settings.Settings().weather == "cloudy":
                 self.cur -= dimInterval
                 self.pwm.set_s(self.c_id, self.cur)
                 time.sleep(dim_speed)
@@ -133,7 +133,7 @@ class Channel(Thread):
                 play_obj = wave_obj.play()
             except:
                 print("Cant play thunderstorm audio")
-        while (self.weather == "storm"):
+        while (Settings.Settings().weather == "storm"):
 
             # dim to percentage of normal weather
             # TODO
