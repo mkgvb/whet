@@ -8,10 +8,10 @@ import json
 from WeatherType import WeatherType
 import LightSchedule
 import Settings
-import wsclient
+from websocket import create_connection
 
+ws = create_connection("ws://localhost:8080/chat/websocket")
 s = Settings.Settings()
-ws = wsclient
 LED_MIN=0
 LED_MAX=4095
 
@@ -45,8 +45,8 @@ class Channel(Thread):
             self.sleepTime = int(self.remainSeconds / self.delta) if self.delta != 0 else 1
 
 
-            if self.delta > 2000 and self.cur < self.goal:
-                self.catchup_worker()
+            #if self.delta > 2000 and self.cur < self.goal:
+            #    self.catchup_worker()
 
 
             msg = ""
@@ -95,19 +95,20 @@ class Channel(Thread):
         obj['c_id'] = self.c_id
         obj['cur'] = self.cur
         obj['percent'] = round((self.cur / LED_MAX * 100))
-        
         ws.send(
             '{"channel":'
             + json.dumps(obj, default=lambda o: o.__dict__, sort_keys=True, indent=4)
             + '}'
         )
+        
+       
             
         
 
     def catchup_worker(self):
         
-        catchup_steps = s.catchup_steps
         catchup_time= s.catchup_time
+        catchup_steps = s.catchup_steps
 
         curTime = datetime.now()
         curHour = curTime.hour
@@ -118,11 +119,13 @@ class Channel(Thread):
         catchupGoal = curGoal + catchup_delta * (curTime.minute / 60)
 
         # catchup - idealy runs once unless something is wrong
-        while self.cur < catchupGoal:
+        i = 0
+        while i <= catchup_steps:
             self.cur += round(catchupGoal / catchup_steps)
             self.pwm.set_s(self.c_id, self.cur)
             time.sleep(catchup_time / catchup_steps)
-            print(self.cur)
+            print(i)
+            i += 1
 
     def cloud_worker(self):
         '''makes a cloud'''
