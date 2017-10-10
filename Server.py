@@ -6,6 +6,7 @@
 import tornado.ioloop
 import tornado.web
 import sockjs.tornado
+from threading import Thread
 
 
 import json
@@ -41,27 +42,34 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
         json_msg = {'type': 'user', 'server_message': 'Someone left'}
         self.broadcast(self.participants, json.dumps(json_msg))
 
-if __name__ == "__main__":
-    import logging
-    logging.getLogger().setLevel(logging.DEBUG)
+class Server(Thread):
 
-    # 1. Create chat router
-    ChatRouter = sockjs.tornado.SockJSRouter(ChatConnection, '/chat')
+    def __init__(self):
+        super(Server, self).__init__()
+        import logging
+        logging.getLogger().setLevel(logging.DEBUG)
 
-    # 2. Create Tornado application
-    app = tornado.web.Application(
-            [
-                (r"/", IndexHandler),
-                (r"/web/(.*)",tornado.web.StaticFileHandler,{"path":r"web/"})
-            ] 
-            + ChatRouter.urls, debug=True
+        # 1. Create chat router
+        ChatRouter = sockjs.tornado.SockJSRouter(ChatConnection, '/chat')
+
+        # 2. Create Tornado application
+        app = tornado.web.Application(
+                [
+                    (r"/", IndexHandler),
+                    (r"/web/(.*)",tornado.web.StaticFileHandler,{"path":r"web/"})
+                ] 
+                + ChatRouter.urls, debug=True
 
 
-            #tornado.web.StaticFileHandler, {"path":r"../web/"}),]) 
-    )
+                #tornado.web.StaticFileHandler, {"path":r"../web/"}),]) 
+        )
 
-    # 3. Make Tornado app listen on port 8080
-    app.listen(8080)
+        # 3. Make Tornado app listen on port 8080
+        app.listen(8080)
 
-    # 4. Start IOLoop
-    tornado.ioloop.IOLoop.instance().start()
+    def run(self):
+        # 4. Start IOLoop
+        tornado.ioloop.IOLoop.instance().start()
+
+    def stop(self):
+        tornado.ioloop.IOLoop.instance().stop()

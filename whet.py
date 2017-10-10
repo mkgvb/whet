@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
+import Server
+import time
+Server = Server.Server()
+Server.start()
+time.sleep(3)
+print("still goin")
 
 import logging
 import math
 import os
 import random
 import threading
-import time
 import wsclient
 from datetime import datetime, timedelta
 
@@ -120,3 +125,4 @@ finally:
         threads[i].cancel()
     pwm.set_all(LED_MIN)
     Pid.kill()
+    Server.stop()
