@@ -32,7 +32,7 @@ $(function () {
 
             if(eparsed.channel != null)
             {
-                draw_pwmChannel(eparsed.channel)
+                draw_pwmChannel(eparsed.channel);
             }
 
             
@@ -43,7 +43,7 @@ $(function () {
 
             if (eparsed.settings != null)
             {
-                draw_settings(eparsed.settings)
+                draw_settings(eparsed.settings);
             }
 
            
@@ -93,12 +93,22 @@ $(function () {
         return false;
     });
 
+
     function draw_pwmChannel(settings)
     {
-        var content = $("#channel-stati");
-        var div_wrap = document.createElement('div');
-        div_wrap.innerText = settings.c_id + " : " + settings.cur;
-        content.append(div_wrap);
+        var content = $("#channel-statuses");
+
+        var row = content.find("#" + settings.c_id);
+        var channel = row.find(".channel-id");
+        var pwm_val = row.find('.pwm-value');
+        var progress = row.find('.progress-bar');
+        var progress_text = row.find(".progress-text");
+        
+        $(channel).text(settings.c_id);
+        $(pwm_val).text(settings.cur);
+        $(progress).attr("aria-valuenow",settings.percent);
+        $(progress).attr("style","width:"+ settings.percent + "%");
+        $(progress_text).text(settings.percent +"%");
     }
 
     function draw_settings(settings) {

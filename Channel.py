@@ -12,10 +12,10 @@ import wsclient
 
 s = Settings.Settings()
 ws = wsclient
+LED_MIN=0
+LED_MAX=4095
 
 class Channel(Thread):
-    LED_MIN=0
-    LED_MAX=4095
     
 
 
@@ -44,7 +44,8 @@ class Channel(Thread):
             self.delta = abs(self.cur - self.goal)
             self.sleepTime = int(self.remainSeconds / self.delta) if self.delta != 0 else 1
 
-            if self.cur < LightSchedule.LightSchedule().get_pwm(self.c_id, self.curHour):
+
+            if self.delta > 2000 and self.cur < self.goal:
                 self.catchup_worker()
 
 
@@ -89,8 +90,10 @@ class Channel(Thread):
     def broadcast(self):
 
         obj = {}
-        obj['cur'] = self.cur
         obj['c_id'] = self.c_id
+        obj['cur'] = self.cur
+        obj['percent'] = round((self.cur / LED_MAX * 100))
+        
         ws.send(
             '{"channel":'
             + json.dumps(obj, default=lambda o: o.__dict__, sort_keys=True, indent=4)
@@ -114,7 +117,7 @@ class Channel(Thread):
 
         # catchup - idealy runs once unless something is wrong
         while self.cur < catchupGoal:
-            self.cur += round(self.goal / catchup_steps)
+            self.cur += round(curGoal / catchup_steps)
             self.pwm.set_s(self.c_id, self.cur)
             time.sleep(catchup_time / catchup_steps)
             print(self.cur)
@@ -158,9 +161,9 @@ class Channel(Thread):
             # TODO
 
             if (random.randint(1, 5) == 3):
-                self.pwm.set_s(self.c_id, self.LED_MIN)
+                self.pwm.set_s(self.c_id, LED_MIN)
                 time.sleep(random.uniform(0, 1))
-                self.pwm.set_s(self.c_id, self.LED_MAX)
+                self.pwm.set_s(self.c_id, LED_MAX)
                 time.sleep(random.uniform(0, .02))
                 print(datetime.now().strftime('%H:%M:%S')
                     + "|Channel = " + str(self.c_id)
@@ -174,7 +177,7 @@ class Channel(Thread):
                         r = random.randint(-100, 200)
                         self.pwm.set_s(self.c_id, x)
                         x = x + r
-                        self.pwm.set_s(self.c_id, self.LED_MIN)
+                        self.pwm.set_s(self.c_id, LED_MIN)
                         time.sleep(random.uniform(0, .09))
 
                     time.sleep(random.uniform(0, 4))

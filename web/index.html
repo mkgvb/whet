@@ -2,72 +2,147 @@
 <html>
 
 <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-        <link href="web/css/bootstrap3/bootstrap-switch.css" rel="stylesheet">
-        
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+        crossorigin="anonymous">
+    <link href="web/css/bootstrap3/bootstrap-switch.css" rel="stylesheet">
+
 </head>
 
 <body>
-<div class="container">
-        <h3>Whet!</h3>
-
-    
-        <div>
-            <a id="connect" href="#">Connect</a>&nbsp;|&nbsp;Status: <span id="status">disconnected</span>
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Whet</h1>
+            <div>
+                <a id="connect" href="#">Connect</a>&nbsp;|&nbsp;Status: <span id="status">disconnected</span>
+            </div>
         </div>
-        <div id="log" style="width: 60em; height: 20em; overflow:auto; border: 1px solid black">
+
+
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                <span class="sr-only">70% Complete</span>
+            </div>
         </div>
-        <form id="chatform">
-            <input id="text" type="text" />
-            <input type="submit" />
-        </form>
-        <div id="channel-stati"> </div>
-        <table class="table table-striped" > <tbody id="lightSchedule-content"> </tbody> </table>
-        <div id="settings-content"> </div>
+<br /><br />
+
+        <div id="channel-statuses">
+            <div id="0" class="row">
+                <div class="channel-id col-2">text</div>
+                <div class="pwm-value col-2">text</div>
+                <div class="progress col-8">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                        <span class="progress-text">70%</span>
+                    </div>
+                </div>
+            </div>
+            <div id="1" class="row">
+                <div class="channel-id col-2">text</div>
+                <div class="pwm-value col-2">text</div>
+                <div class="progress col-8">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                        <span class="progress-text">70%</span>
+                    </div>
+                </div>
+            </div>
+            <div id="2" class="row">
+                <div class="channel-id col-2">text</div>
+                <div class="pwm-value col-2">text</div>
+                <div class="progress col-8">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                        <span class="progress-text">70%</span>
+                    </div>
+                </div>
+            </div>
+            <div id="3" class="row">
+                <div class="channel-id col-2">text</div>
+                <div class="pwm-value col-2">text</div>
+                <div class="progress col-8">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                        <span class="progress-text">70%</span>
+                    </div>
+                </div>
+            </div>
+            <div id="4" class="row">
+                <div class="channel-id col-2">dummy</div>
+                <div class="pwm-value col-2">
+                    <p>text <span class="glyphicon glyphicon-arrow-up"></span></p>
+                </div>
+                <div class="progress col-8">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                        <span class="progress-text">100%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="light-schedule">
+            <h3> Schedule </h3>
+            <table class="table table-striped">
+                <tbody id="lightSchedule-content"> </tbody>
+            </table>
+        </div>
+
+        <div id="settings">
+            <h3>Settings</h3>
+            <div id="settings-content"></div>
+        </div>
 
 
 
+
+        <div class="form-group">
+            <h3>Log</h3>
+            <div id="log" style="width: 60em; height: 20em; overflow:auto; border: 1px solid black">
+            </div>
+            <form id="chatform">
+                <input id="text" type="text" class="form-control" />
+                <input type="submit" class="form-control" />
+            </form>
+        </div>
 
         <div id="protocols" class="invisible">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <input id="websocket" type="checkbox" value="websocket" checked="checked"></input>
-                        <label for="websocket">websocket</label>
-                    </li>
-                    <li class="list-group-item">
-                        <input id="xhr-streaming" type="checkbox" value="xhr-streaming" checked="checked"></input>
-                        <label for="xhr-streaming">xhr-streaming</label>
-                    </li>
-                    <li class="list-group-item">
-                        <input id="iframe-eventsource" type="checkbox" value="iframe-eventsource" checked="checked"></input>
-                        <label for="iframe-eventsource">iframe-eventsource</label>
-                    </li>
-                    <li class="list-group-item">
-                        <input id="iframe-htmlfile" type="checkbox" value="iframe-htmlfile" checked="checked"></input>
-                        <label for="iframe-htmlfile">iframe-htmlfile</label>
-                    </li>
-                    <li class="list-group-item">
-                        <input id="xhr-polling" type="checkbox" value="xhr-polling" checked="checked"></input>
-                        <label for="xhr-polling">xhr-polling</label>
-                    </li>
-                    <li class="list-group-item">
-                        <input id="iframe-xhr-polling" type="checkbox" value="iframe-xhr-polling" checked="checked"></input>
-                        <label for="iframe-xhr-polling">iframe-xhr-polling</label>
-                    </li>
-                    <li class="list-group-item">
-                        <input id="jsonp-polling" type="checkbox" value="jsonp-polling" checked="checked"></input>
-                        <label for="jsonp-polling">jsonp-polling</label>
-                    </li>
-                </ul>
-            </div>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <input id="websocket" type="checkbox" value="websocket" checked="checked"></input>
+                    <label for="websocket">websocket</label>
+                </li>
+                <li class="list-group-item">
+                    <input id="xhr-streaming" type="checkbox" value="xhr-streaming" checked="checked"></input>
+                    <label for="xhr-streaming">xhr-streaming</label>
+                </li>
+                <li class="list-group-item">
+                    <input id="iframe-eventsource" type="checkbox" value="iframe-eventsource" checked="checked"></input>
+                    <label for="iframe-eventsource">iframe-eventsource</label>
+                </li>
+                <li class="list-group-item">
+                    <input id="iframe-htmlfile" type="checkbox" value="iframe-htmlfile" checked="checked"></input>
+                    <label for="iframe-htmlfile">iframe-htmlfile</label>
+                </li>
+                <li class="list-group-item">
+                    <input id="xhr-polling" type="checkbox" value="xhr-polling" checked="checked"></input>
+                    <label for="xhr-polling">xhr-polling</label>
+                </li>
+                <li class="list-group-item">
+                    <input id="iframe-xhr-polling" type="checkbox" value="iframe-xhr-polling" checked="checked"></input>
+                    <label for="iframe-xhr-polling">iframe-xhr-polling</label>
+                </li>
+                <li class="list-group-item">
+                    <input id="jsonp-polling" type="checkbox" value="jsonp-polling" checked="checked"></input>
+                    <label for="jsonp-polling">jsonp-polling</label>
+                </li>
+            </ul>
+        </div>
 
-</div class"container">    
+    </div>
 </body>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+    crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
+    crossorigin="anonymous"></script>
 <script src="http://cdn.jsdelivr.net/sockjs/0.3/sockjs.min.js"></script>
 <script src="web/js/bootstrap-switch.js"></script>
 <script src="web/js/whet.js"></script>
