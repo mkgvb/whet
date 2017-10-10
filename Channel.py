@@ -74,8 +74,10 @@ class Channel(Thread):
             # happy path
             # set
             self.pwm.set_s(self.c_id, self.cur)
-            self.broadcast()
             time.sleep(self.sleepTime)
+
+            if (self.sleepTime > 0):
+                self.broadcast()
             
       
 
@@ -117,7 +119,7 @@ class Channel(Thread):
 
         # catchup - idealy runs once unless something is wrong
         while self.cur < catchupGoal:
-            self.cur += round(curGoal / catchup_steps)
+            self.cur += round(catchupGoal / catchup_steps)
             self.pwm.set_s(self.c_id, self.cur)
             time.sleep(catchup_time / catchup_steps)
             print(self.cur)
