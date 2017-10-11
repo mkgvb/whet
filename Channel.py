@@ -20,7 +20,7 @@ class Channel(Thread):
 
 
     def __init__(self, c_id, pwm):
-        super(Channel, self).__init__()
+        super(Channel, self).__init__(name=str(c_id))
         self.daemon = True
         self.cancelled = False
 

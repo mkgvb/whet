@@ -1,4 +1,4 @@
-{
+{"settings":{
     "catchup_on": true,
     "catchup_steps": 255,
     "catchup_time": 5,
@@ -15,4 +15,4 @@
     "storms_random_on": true,
     "storms_random_start_time": 21,
     "weather": "normal"
-}
+}}

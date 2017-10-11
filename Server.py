@@ -36,7 +36,11 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
     def on_message(self, message):
         # Broadcast message
 
-        j_obj = json.loads(message)
+        j_obj = json.loads('{"error":"Malformed json received"}')
+        try:
+            j_obj = json.loads(message)
+        except (ValueError):
+            logging.info("Malformed json received")
 
         if "request" in j_obj:
             request = j_obj["request"]
@@ -58,7 +62,7 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
 class Server(Thread):
 
     def __init__(self):
-        super(Server, self).__init__()
+        super(Server, self).__init__(name="Server")
         import logging
         logging.getLogger().setLevel(logging.DEBUG)
 
