@@ -85,7 +85,7 @@ try:
         ls.broadcast()
 
         # RANDOM CLOUDY
-        if (random.randint(1, 50) == 1 or WEATHER == WeatherType.cloudy):
+        if (WEATHER == WeatherType.cloudy):
             try:
                 import simpleaudio as sa
                 wave_obj = sa.WaveObject.from_wave_file("sound/c1.wav")
