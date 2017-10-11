@@ -4,8 +4,6 @@ from websocket import create_connection
 ws = create_connection("ws://localhost:8080/chat/websocket")
 
 
-print("Sending 'Hello, World'...")
-print("Receiving...")
 #result =  ws.recv()
 #print("Received '%s'" % result)
 

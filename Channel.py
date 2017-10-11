@@ -1,5 +1,5 @@
 from threading import Thread
-
+import logging
 import time
 from datetime import datetime, timedelta
 import random
@@ -58,7 +58,7 @@ class Channel(Thread):
             msg += "|Delta = " + str(self.delta)
             msg += "|Seconds Remain = " + str(self.remainSeconds)
 
-            print(msg)
+            logging.debug(msg)
 
             if (self.cur > self.goal):
                 self.cur -= 1
@@ -159,7 +159,7 @@ class Channel(Thread):
                 # wave_obj = sa.WaveObject.from_wave_file("sound/t" + str(random.randint(1, 5)) + ".wav")
                 play_obj = wave_obj.play()
             except:
-                print("Cant play thunderstorm audio")
+                logging.info("Cant play thunderstorm audio")
         while (s.weather == "storm"):
 
             # dim to percentage of normal weather

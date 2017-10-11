@@ -1,11 +1,10 @@
+import logging
 import json
 import math
-import wsclient
 from WeatherType import WeatherType
 
 
 fileloc = 'json/settings.json'
-ws = wsclient
 
 class Settings(object):
     """Class to hold settings"""
@@ -13,9 +12,8 @@ class Settings(object):
     def __init__(self):
         try:
             self.load_file()
-            self.broadcast()
         except IOError:
-            print("No settings file found... using defaults")
+            logging.info("No settings file found...using defaults and creating file ")
 
             self.weather = "normal"  # todo make this the enum
             self.catchup_on = True
@@ -38,24 +36,15 @@ class Settings(object):
 
     def dump_file(self):
         with open(fileloc, 'w') as data_file:
-            string = json.dumps(
+            string = '{"settings":'
+            string += json.dumps(
                 self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+            string += '}'
             data_file.write(string)
 
     def load_file(self):
         with open(fileloc) as data_file:
-            self.__dict__ = json.load(data_file)
-
-    def broadcast(self):
-        with open(fileloc, 'r') as data_file:
-            ws.send(
-                '{"settings":'
-                + data_file.read()
-                + '}'
-
-
-                
-                )
+            self.__dict__ = json.load(data_file)["settings"]
 
 
         

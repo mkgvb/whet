@@ -6,11 +6,12 @@
 import tornado.ioloop
 import tornado.web
 import sockjs.tornado
+import logging
 from threading import Thread
-
-
 import json
 
+light_schedule_file = 'json/schedule.json'
+settings_file = 'json/settings.json'
 
 class IndexHandler(tornado.web.RequestHandler):
     """Regular HTTP handler to serve the chatroom page"""
@@ -34,7 +35,19 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
 
     def on_message(self, message):
         # Broadcast message
-        self.broadcast(self.participants, message)
+
+        j_obj = json.loads(message)
+
+        if "request" in j_obj:
+            request = j_obj["request"]
+            if request == "light_schedule":
+                with open(light_schedule_file, 'r') as data_file:
+                    self.broadcast(self.participants, data_file.read())
+            if request == "settings":
+                with open(settings_file, 'r') as data_file:
+                    self.broadcast(self.participants, data_file.read())
+        else:
+            self.broadcast(self.participants, message)
 
     def on_close(self):
         # Remove client from the clients list and broadcast leave message

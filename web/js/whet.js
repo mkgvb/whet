@@ -20,6 +20,8 @@ $(function () {
         log('Connecting...');
         conn.onopen = function () {
             log('Connected.');
+            conn.send('{"request":"light_schedule"}');
+            conn.send('{"request":"settings"}')
             update_ui();
         };
         conn.onmessage = function (e) {
