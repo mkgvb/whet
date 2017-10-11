@@ -3,8 +3,7 @@ import Server
 import time
 Server = Server.Server()
 Server.start()
-time.sleep(3)
-print("still goin")
+time.sleep(1)
 
 import logging
 import math
