@@ -1,5 +1,7 @@
 $(function () {
     var channels = [];
+    var lightSchedule = {};
+    var settings = {};
     var conn = null;
 
     if (conn == null)
@@ -38,12 +40,14 @@ $(function () {
 
 
             if (eparsed.channels != null) {
-                lightSchedule_Table(eparsed.channels);
-                draw_lightSchedule_graph(eparsed.channels);
+                lightSchedule = eparsed.channels;
+                draw_lightSchedule_Table(lightSchedule);
+                draw_lightSchedule_graph(lightSchedule);
             }
 
             if (eparsed.settings != null) {
-                draw_settings(eparsed.settings);
+                settings = eparsed.settings;
+                draw_settings(settings);
             }
 
             var d = new Date();
@@ -92,30 +96,34 @@ $(function () {
         var text = $('#text').val();
         log('Sending: ' + text);
         conn.send(text);
+        var tosend = JSON.stringify(lightSchedule);
+        toSend = '{"update":' + tosend + "}";
+        var skip = 0;
+        conn.send(toSend);
         $('#text').val('').focus();
         return false;
     });
 
 
-    function draw_pwmChannel(settings) {
+    function draw_pwmChannel(c_obj) {
         var content = $("#channel-statuses");
 
-        var row = content.find("#" + settings.c_id);
+        var row = content.find("#" + c_obj.c_id);
         var channel = row.find(".channel-id");
         var pwm_val = row.find('.pwm-value');
         var progress = row.find('.progress-bar');
         var progress_text = row.find(".progress-text");
 
-        $(channel).text(settings.c_id);
-        $(pwm_val).text(settings.cur);
-        $(progress).attr("aria-valuenow", settings.percent);
-        $(progress).attr("style", "width:" + settings.percent + "%");
-        $(progress_text).text(settings.percent + "%");
+        $(channel).text(c_obj.c_id);
+        $(pwm_val).text(c_obj.cur);
+        $(progress).attr("aria-valuenow", c_obj.percent);
+        $(progress).attr("style", "width:" + c_obj.percent + "%");
+        $(progress_text).text(c_obj.percent + "%");
     }
 
     function draw_settings(settings) {
 
-        var content = $("#settings-content")
+        var content = $("#settings-content");
         content.empty();
 
         for (var property in settings) {
@@ -167,7 +175,7 @@ $(function () {
     }
 
 
-    function lightSchedule_Table(channels) {
+    function draw_lightSchedule_Table(channels) {
 
         var content = $("#lightSchedule-content")
         content.empty();
@@ -183,7 +191,14 @@ $(function () {
 
             for (var j = 0; j < channels[i].schedule.length; j++) {
                 var column = document.createElement('td');
-                column.innerText = channels[i].schedule[j].percent;
+                var input = document.createElement("input");
+                //$(input).attr("class","form-control");
+                $(input).attr("type", "number");
+                // $(input).attr("size","3");
+                $(input).attr("max","100");
+                $(input).attr("value", channels[i].schedule[j].percent);
+                column.appendChild(input);
+                //column.innerText = channels[i].schedule[j].percent;
                 row.appendChild(column);
             }
 

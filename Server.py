@@ -11,6 +11,7 @@ from threading import Thread
 import json
 
 light_schedule_file = 'json/schedule.json'
+light_schedule_file2 = 'json/schedule2.json'
 settings_file = 'json/settings.json'
 
 class IndexHandler(tornado.web.RequestHandler):
@@ -42,6 +43,9 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
         except (ValueError):
             logging.info("Malformed json received")
 
+        if "channels" in j_obj:
+            print("update")
+
         if "request" in j_obj:
             request = j_obj["request"]
             if request == "light_schedule":
@@ -50,8 +54,15 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
             if request == "settings":
                 with open(settings_file, 'r') as data_file:
                     self.broadcast(self.participants, data_file.read())
-        else:
-            self.broadcast(self.participants, message)
+
+        if "update" in j_obj:
+            update = j_obj["update"]
+            if update == "light_schedule":
+                with open(light_schedule_file2, 'w') as data_file:
+                    data_file.write(j_obj)
+
+
+        self.broadcast(self.participants, message)
 
     def on_close(self):
         # Remove client from the clients list and broadcast leave message

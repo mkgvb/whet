@@ -84,7 +84,7 @@ SUBADR2	../PCA9685.py	/^SUBADR2            = 0x03$/;"	kind:variable	line:32
 SUBADR2	../PCA9685_dummy.py	/^SUBADR2            = 0x03$/;"	kind:variable	line:33
 SUBADR3	../PCA9685.py	/^SUBADR3            = 0x04$/;"	kind:variable	line:33
 SUBADR3	../PCA9685_dummy.py	/^SUBADR3            = 0x04$/;"	kind:variable	line:34
-Server	../Server.py	/^class Server(Thread):$/;"	kind:class	line:58
+Server	../Server.py	/^class Server(Thread):$/;"	kind:class	line:62
 Server	../whet.py	/^Server = Server.Server()$/;"	kind:variable	line:35
 Server	../whet.py	/^import Server$/;"	kind:namespace	line:3
 Server.py	../Server.py	1;"	kind:file	line:1
@@ -109,7 +109,7 @@ __init__	../Channel.py	/^    def __init__(self, c_id, pwm):$/;"	kind:member	line
 __init__	../PCA9685.py	/^    def __init__(self, address=PCA9685_ADDRESS, i2c=None, **kwargs):$/;"	kind:member	line:69
 __init__	../PCA9685_dummy.py	/^    def __init__(self, address=PCA9685_ADDRESS, i2c=None, **kwargs):$/;"	kind:member	line:61
 __init__	../Pid.py	/^    def __init__(self):$/;"	kind:member	line:9
-__init__	../Server.py	/^    def __init__(self):$/;"	kind:member	line:60
+__init__	../Server.py	/^    def __init__(self):$/;"	kind:member	line:64
 __init__	../Settings.py	/^    def __init__(self):$/;"	kind:member	line:12
 backupCount	../whet.py	/^                                    backupCount=2)$/;"	kind:variable	line:27
 backupCount	../whet.py	/^                                backupCount=7)$/;"	kind:variable	line:19
@@ -160,7 +160,7 @@ logger	../whet.py	/^logger = logging.getLogger()$/;"	kind:variable	line:12
 logging	../Channel.py	/^import logging$/;"	kind:namespace	line:2
 logging	../PCA9685.py	/^import logging$/;"	kind:namespace	line:22
 logging	../PCA9685_dummy.py	/^import logging$/;"	kind:namespace	line:23
-logging	../Server.py	/^        import logging$/;"	kind:namespace	line:62
+logging	../Server.py	/^        import logging$/;"	kind:namespace	line:66
 logging	../Server.py	/^import logging$/;"	kind:namespace	line:9
 logging	../Settings.py	/^import logging$/;"	kind:namespace	line:1
 logging	../test.py	/^import logging$/;"	kind:namespace	line:3
@@ -178,7 +178,7 @@ min_val	../PCA9685.py	/^min_val = 0$/;"	kind:variable	line:54
 msg	../test.py	/^    msg = "WARNING - unable to load PWM chip... no values will set!"$/;"	kind:variable	line:25
 msg	../whet.py	/^    msg = "UNABLE TO LOAD PCA9685... no pwm values will set!"$/;"	kind:variable	line:68
 normal	../WeatherType.py	/^    normal = 1$/;"	kind:variable	line:6
-on_close	../Server.py	/^    def on_close(self):$/;"	kind:member	line:52
+on_close	../Server.py	/^    def on_close(self):$/;"	kind:member	line:56
 on_message	../Server.py	/^    def on_message(self, message):$/;"	kind:member	line:36
 on_message	../wsclient.py	/^def on_message(ws, message):$/;"	kind:function	line:25
 on_open	../Server.py	/^    def on_open(self, info):$/;"	kind:member	line:28
@@ -197,7 +197,7 @@ random	../Channel.py	/^import random$/;"	kind:namespace	line:5
 random	../test.py	/^import random$/;"	kind:namespace	line:6
 random	../whet.py	/^import random$/;"	kind:namespace	line:40
 run	../Channel.py	/^    def run(self):$/;"	kind:member	line:35
-run	../Server.py	/^    def run(self):$/;"	kind:member	line:83
+run	../Server.py	/^    def run(self):$/;"	kind:member	line:87
 s	../Channel.py	/^s = Settings.Settings()$/;"	kind:variable	line:14
 s	../whet.py	/^s = Settings.Settings()$/;"	kind:variable	line:55
 sa	../Channel.py	/^                import simpleaudio as sa$/;"	kind:namespace	line:157
@@ -216,7 +216,7 @@ set_s	../PCA9685_dummy.py	/^    def set_s(self, channel, off):$/;"	kind:member	l
 settings_file	../Server.py	/^settings_file = 'json\/settings.json'$/;"	kind:variable	line:14
 sockjs	../Server.py	/^import sockjs.tornado$/;"	kind:namespace	line:8
 software_reset	../PCA9685.py	/^def software_reset(i2c=None, **kwargs):$/;"	kind:function	line:56
-stop	../Server.py	/^    def stop(self):$/;"	kind:member	line:87
+stop	../Server.py	/^    def stop(self):$/;"	kind:member	line:91
 storm	../WeatherType.py	/^    storm = 3$/;"	kind:variable	line:8
 stormLength	../whet.py	/^            stormLength = random.randint(60, 120)$/;"	kind:variable	line:114
 sys	../Pid.py	/^import sys$/;"	kind:namespace	line:2
