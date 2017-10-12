@@ -52,7 +52,7 @@ $(function () {
 
             var d = new Date();
             var n = "(" + d.getHours() + ")" + d.toLocaleTimeString();
-            $("#time").text(n);
+            $("#time").text(d);
 
 
 
