@@ -1,24 +1,34 @@
 import json
 import math
+import os
+import logging
 
 fileloc = 'json/schedule.json'
 
 HOURS = 24
-LED_MAX=4095
-LED_MIN=0
+LED_MAX= 4095
+LED_MIN= 0
 
 class LightSchedule(object):
     """Class to hold lighting schedule"""
 
-    #def __init__(self):
-        
+    # def __init__(self):
+    #     pass:
+    last_access_time = 0
+    data = None
+
 
     def get_data(self):
-        """gets a current copy of the schedule"""
-        with open(fileloc) as data_file:
-            data = json.load(data_file)
+        """gets a current copy of the schedule if it has changed"""
+        if self.last_access_time != os.stat(fileloc).st_mtime:
+            self.last_access_time = os.stat(fileloc).st_mtime
+            with open(fileloc) as data_file:
+                self.data = json.load(data_file)
+                logging.info("Channel Schedule Changed " + str(os.stat(fileloc).st_mtime))
+                print("Channel Schedule Changed " + str(os.stat(fileloc).st_mtime))
 
-        return data['channels']
+        return self.data['channels']
+
 
     def get_percent(self, channel, hour):
         """gets percentage value from schedule"""

@@ -25,6 +25,7 @@ class Channel(Thread):
         self.cancelled = False
 
         # do other initialization here
+        self.ls = LightSchedule.LightSchedule()
         self.pwm = pwm
         self.c_id = c_id
         self.cur = 0
@@ -39,7 +40,7 @@ class Channel(Thread):
             self.curTime = datetime.now()
             self.curHour = self.curTime.hour
             self.nextHour = (self.curTime + timedelta(hours=1)).hour
-            self.goal = LightSchedule.LightSchedule().get_pwm(self.c_id, self.nextHour)
+            self.goal = self.ls.get_pwm(self.c_id, self.nextHour)
             self.remainSeconds = 3600 - (self.curTime.minute * 60 + self.curTime.second)
             self.delta = abs(self.cur - self.goal)
             self.sleepTime = int(self.remainSeconds / self.delta) if self.delta != 0 else 1
@@ -92,10 +93,15 @@ class Channel(Thread):
 
     def broadcast(self):
 
+
         obj = {}
         obj['c_id'] = self.c_id
         obj['cur'] = self.cur
+        obj['goal'] = self.goal
+        obj['sleepTime'] = self.sleepTime
+        obj['delta'] = self.delta
         obj['percent'] = round((self.cur / LED_MAX * 100))
+
         ws.send(
             '{"channel":'
             + json.dumps(obj, default=lambda o: o.__dict__, sort_keys=True, indent=4)
@@ -114,8 +120,8 @@ class Channel(Thread):
         curTime = datetime.now()
         curHour = curTime.hour
         nextHour = (curTime + timedelta(hours=1)).hour
-        curGoal = LightSchedule.LightSchedule().get_pwm(self.c_id, curHour)
-        nextGoal = LightSchedule.LightSchedule().get_pwm(self.c_id, nextHour)
+        curGoal = self.ls.get_pwm(self.c_id, curHour)
+        nextGoal = self.ls.get_pwm(self.c_id, nextHour)
         catchup_delta = nextGoal - curGoal
         catchupGoal = curGoal + catchup_delta * (curTime.minute / 60)
 

@@ -114,8 +114,8 @@ $(function () {
         var progress = row.find('.progress-bar');
         var progress_text = row.find(".progress-text");
 
-        $(channel).text(c_obj.c_id);
-        $(pwm_val).text(c_obj.cur);
+        $(channel).text("Channel" + c_obj.c_id);
+        $(pwm_val).text(c_obj.cur + "| sleep= " + c_obj.sleepTime + " | goal= " + c_obj.goal);
         $(progress).attr("aria-valuenow", c_obj.percent);
         $(progress).attr("style", "width:" + c_obj.percent + "%");
         $(progress_text).text(c_obj.percent + "%");

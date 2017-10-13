@@ -255,7 +255,10 @@ $(function () {
                                         "readonly": true
                                     },
                                     "percent": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "default": 0,
+                                        "minimum": 0,
+                                        "maximum": 100,
                                     }
                                 }
                             }
@@ -264,7 +267,7 @@ $(function () {
                 }
             }
         });
-
+        editor.options.show_errors = "always";
         var j = editor.getEditor('root');
         //editor.getEditor('root0.schedule').disable();
 
@@ -290,9 +293,12 @@ $(function () {
         // Listen for changes
         editor.on("change", function () {
             // Do something...
-            var data = editor.getValue();
-            draw_lightSchedule_graph(data);
-            conn.send('{"update":{"channels":' + JSON.stringify(data) + "}}");
+            var errors = editor.validate();
+            if (errors.length == 0) {
+                var data = editor.getValue();
+                draw_lightSchedule_graph(data);
+                conn.send('{"update":{"channels":' + JSON.stringify(data) + "}}");
+            }
         });
     }
 
