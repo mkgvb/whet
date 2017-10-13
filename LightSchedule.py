@@ -1,7 +1,7 @@
 import json
 import math
 
-fileloc = 'json/schedule.json'
+fileloc = 'json/schedule2.json'
 
 HOURS = 24
 LED_MAX=4095
@@ -18,13 +18,13 @@ class LightSchedule(object):
         with open(fileloc) as data_file:
             data = json.load(data_file)
 
-        return data
+        return data['channels']
 
     def get_percent(self, channel, hour):
         """gets percentage value from schedule"""
         data = self.get_data()
         r = 0
-        for x in data['channels']:
+        for x in data:
             if (x['id'] == channel):
                 for y in x['schedule']:
                     if (y['hour'] == hour):
@@ -51,6 +51,6 @@ class LightSchedule(object):
         """gets total number of active channels"""
         data = self.get_data()
         c = 0
-        for x in data['channels']:
+        for x in data:
             c += 1
         return c

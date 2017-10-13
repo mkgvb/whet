@@ -48,7 +48,7 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
 
         if "request" in j_obj:
             request = j_obj["request"]
-            if request == "light_schedule":
+            if request == "light_schedule": #rename to channel_properties
                 with open(light_schedule_file, 'r') as data_file:
                     self.broadcast(self.participants, data_file.read())
             if request == "settings":
@@ -57,9 +57,13 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
 
         if "update" in j_obj:
             update = j_obj["update"]
-            if update == "light_schedule":
-                with open(light_schedule_file2, 'w') as data_file:
-                    data_file.write(j_obj)
+            if "channels" in update:
+                with open(light_schedule_file, 'w') as data_file:
+                    data_file.write(json.dumps(update, indent=4))
+            if "settings" in update:
+                with open(settings_file, 'w') as data_file:
+                    data_file.write(json.dumps(update, indent=4))
+
 
 
         self.broadcast(self.participants, message)

@@ -97,7 +97,7 @@ $(function () {
         log('Sending: ' + text);
         conn.send(text);
         var tosend = JSON.stringify(lightSchedule);
-        toSend = '{"update":' + tosend + "}";
+        toSend = '{"light_schedule":' + tosend + "}";
         var skip = 0;
         conn.send(toSend);
         $('#text').val('').focus();
