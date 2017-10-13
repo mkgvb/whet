@@ -41,7 +41,7 @@ $(function () {
 
             if (eparsed.channels != null) {
                 lightSchedule = eparsed.channels;
-                draw_lightSchedule_Table(lightSchedule);
+                //draw_lightSchedule_Table(lightSchedule);
                 draw_lightSchedule_graph(lightSchedule);
             }
 

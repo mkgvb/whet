@@ -54,6 +54,7 @@ class Channel(Thread):
             msg += "|Channel = " + str(self.c_id)
             msg += "|Hour = " + str(self.curHour)
             msg += "|Cur = " + str(self.cur)
+            msg += "|Goal = " + str(self.goal)
             msg += "|Sleep = " + str(self.sleepTime)
             msg += "|Delta = " + str(self.delta)
             msg += "|Seconds Remain = " + str(self.remainSeconds)

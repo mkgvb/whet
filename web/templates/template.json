@@ -1,0 +1,46 @@
+{
+    "title": "Channels",
+    "type": "array",
+    "format": "tabs",
+    "items": {
+        "type": "object",
+        "headerTemplate": "Channel - {{ self.id }}",
+        "format": "grid",
+        "properties": {
+            "id": {
+                "type": "integer",
+                "default": 0,
+                "minimum": 0,
+                "maximum": 16,
+                "options": {
+                    "hidden": true
+                }
+            },
+            "color": {
+                "type": "string",
+                "format": "color",
+                "title": "Color",
+                "default": "#ffffff"
+            },
+            "schedule": {
+                "type": "array",
+                "format": "table",
+                "title": "Schedule",
+                "uniqueItems": true,
+                "items": {
+                    "type": "object",
+                    "title": "Event",
+                    "properties": {
+                        "hour": {
+                            "type": "integer",
+                            "readonly": true
+                        },
+                        "percent": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

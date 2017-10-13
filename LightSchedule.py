@@ -1,7 +1,7 @@
 import json
 import math
 
-fileloc = 'json/schedule2.json'
+fileloc = 'json/schedule.json'
 
 HOURS = 24
 LED_MAX=4095

@@ -209,12 +209,6 @@ $(function () {
         });
     }
 
-
-
-
-
-
-
     function edit(eChannels) {
         // Set default options
         JSONEditor.defaults.options.theme = 'bootstrap3';
@@ -238,13 +232,14 @@ $(function () {
                             "type": "integer",
                             "default": 0,
                             "minimum": 0,
-                            "maximum": 16
+                            "maximum": 16,
+                            "options": { "hidden": true }
                         },
                         "color": {
                             "type": "string",
                             "format": "color",
                             "title": "Color",
-                            "default": "#ffa500"
+                            "default": "#ffffff"
                         },
                         "schedule": {
                             "type": "array",
@@ -257,24 +252,21 @@ $(function () {
                                 "properties": {
                                     "hour": {
                                         "type": "integer",
-                                        "default": 0
+                                        "readonly": true
                                     },
                                     "percent": {
                                         "type": "integer"
                                     }
                                 }
-                            },
-                            "default": [
-                                {
-                                    "hour": 4,
-                                    "percent": 100
-                                }
-                            ]
+                            }
                         }
                     }
                 }
             }
         });
+
+        var j = editor.getEditor('root');
+        //editor.getEditor('root0.schedule').disable();
 
         //startval: JSON.stringify();
         // Set the value
@@ -299,7 +291,7 @@ $(function () {
         editor.on("change", function () {
             // Do something...
             var data = editor.getValue();
-            draw_lightSchedule_graph(data)
+            draw_lightSchedule_graph(data);
             conn.send('{"update":{"channels":' + JSON.stringify(data) + "}}");
         });
     }

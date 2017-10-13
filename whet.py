@@ -3,35 +3,35 @@ import logging
 import Server
 import time
 import os
-#Logs----------------------------------------------------------
+# Logs----------------------------------------------------------
 DEBUG = False
-logDir = 'logs/'
-if not os.path.exists(logDir):
-    os.makedirs(logDir)
+LOGDIR = 'logs/'
+if not os.path.exists(LOGDIR):
+    os.makedirs(LOGDIR)
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s:%(levelname)s: %(message)s')
 
-handler = logging.handlers.TimedRotatingFileHandler(logDir+"whet.log",
-                                when='midnight',
-                                interval=1,
-                                backupCount=7)
+handler = logging.handlers.TimedRotatingFileHandler(LOGDIR + "whet.log",
+                                                    when='midnight',
+                                                    interval=1,
+                                                    backupCount=7)
 handler.setLevel(logging.INFO)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-debug_handler = logging.handlers.TimedRotatingFileHandler(logDir+"whet-DEBUG.log",
-                                    when='midnight',
-                                    interval=1,
-                                    backupCount=2)
+debug_handler = logging.handlers.TimedRotatingFileHandler(LOGDIR + "whet-DEBUG.log",
+                                                          when='midnight',
+                                                          interval=1,
+                                                          backupCount=2)
 debug_handler.setLevel(logging.DEBUG)
 debug_handler.setFormatter(formatter)
 logger.addHandler(debug_handler)
 
 logging.info("Whet started")
 
-#Server----------------------------------------------------------
+# Server----------------------------------------------------------
 Server = Server.Server()
 Server.start()
 time.sleep(1)
@@ -109,10 +109,11 @@ try:
             time.sleep(cloudLength)
 
         # RANDOM STORM
-        if s.weather=="storm" or (s.storms_random_on and datetime.now().hour >= s.storms_random_start_time and random.randint(1, s.storms_random_freq) == 1):
+        if s.weather == "storm" or (s.storms_random_on and datetime.now().hour >= s.storms_random_start_time and random.randint(1, s.storms_random_freq) == 1):
             WEATHER = WeatherType.storm
             stormLength = random.randint(60, 120)
-            logging.info('Starting thunderstorm... Length = ' + str(stormLength))
+            logging.info('Starting thunderstorm... Length = ' +
+                         str(stormLength))
             time.sleep(stormLength)
 
         s.weather = "normal"
@@ -130,9 +131,8 @@ finally:
     for i in range(len(channel_threads)):
         channel_threads[i].cancel()
     pwm.set_all(LED_MIN)
-    #Pid.kill()
+    # Pid.kill()
     Server.stop()
-
 
 
 if __name__ == "main":

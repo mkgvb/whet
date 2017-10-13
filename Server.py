@@ -104,4 +104,5 @@ class Server(Thread):
         tornado.ioloop.IOLoop.instance().start()
 
     def stop(self):
+        '''stops IOLoop'''
         tornado.ioloop.IOLoop.instance().stop()
