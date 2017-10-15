@@ -28,8 +28,8 @@ class Channel(Thread):
         self.ls = LightSchedule.LightSchedule()
         self.pwm = pwm
         self.c_id = c_id
-        self.cur = 0
         self.curTime = datetime.now()
+        self.cur = self.ls.get_pwm(self.c_id, self.curTime.hour)
         #self.weather = Settings.Settings().weather
 
 
