@@ -36,7 +36,10 @@ $(function () {
 
             if (eparsed.channel != null) {
                 draw_pwmChannel(eparsed.channel);
+
+
             }
+
 
 
             if (eparsed.channels != null) {
@@ -108,6 +111,13 @@ $(function () {
     function draw_pwmChannel(c_obj) {
         var content = $("#channel-statuses");
 
+        if (content.find("#" + c_obj.c_id).length === 0)
+        {
+            var j = content.find("#99").clone();
+            j.attr("id",c_obj.c_id);
+            j.appendTo(content);
+        }
+
         var row = content.find("#" + c_obj.c_id);
         var channel = row.find(".channel-id");
         var pwm_val = row.find('.pwm-value');
@@ -119,6 +129,17 @@ $(function () {
         $(progress).attr("aria-valuenow", c_obj.percent);
         $(progress).attr("style", "width:" + c_obj.percent + "%");
         $(progress_text).text(c_obj.percent + "%");
+
+        var listitems = content.children("div");
+        listitems.sort(function(a, b) {
+            var compA = $(a).text().toUpperCase();
+            var compB = $(b).text().toUpperCase();
+             console.log((compA < compB) ? -1 : (compA > compB) ? 1 : 0);
+            return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+         })
+         $(content).append(listitems);
+
+
     }
 
     function draw_settings(settings) {
@@ -205,100 +226,48 @@ $(function () {
 
         }
     }
-    function draw_lightSchedule_graph(channels) {
-        var ds0 = [];
-        var ds1 = [];
-        var ds2 = [];
-        var ds3 = [];
-        var labels = []
-        for (i = 0; i < 24; i++) {
-            ds0.push(channels[0].schedule[i].percent);
-            ds1.push(channels[1].schedule[i].percent);
-            ds2.push(channels[2].schedule[i].percent);
-            ds3.push(channels[3].schedule[i].percent);
-            labels.push(channels[0].schedule[i].hour);
+
+    function hexToRgb(hex, alpha) {
+        if (hex == undefined)
+            hex = '#00000';
+        hex   = hex.replace('#', '');
+        var r = parseInt(hex.length == 3 ? hex.slice(0, 1).repeat(2) : hex.slice(0, 2), 16);
+        var g = parseInt(hex.length == 3 ? hex.slice(1, 2).repeat(2) : hex.slice(2, 4), 16);
+        var b = parseInt(hex.length == 3 ? hex.slice(2, 3).repeat(2) : hex.slice(4, 6), 16);
+        if ( alpha ) {
+           return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
         }
+        else {
+           return 'rgb(' + r + ', ' + g + ', ' + b + ')';
+        }
+     }
+
+    function draw_lightSchedule_graph(channels) {
+        var outtie = [];
+        var labels = [];
+        
+        channels.forEach(function(item, index, array) {
+            var s = {};
+            labels = [];    //erase previous only want one copy
+            s.label = item.id;
+            s.data = [];
+            item.schedule.forEach(function(item_n, index_n, array_n) {
+                s.data.push(item_n.percent);
+                labels.push(item_n.hour)
+              });
+            s.backgroundColor = [hexToRgb(item.color, 0.2)];
+            s.borderColor = [hexToRgb(item.color, 0.2)];
+            s.borderWidth = 1;
+            outtie.push(s);
+
+          });
 
         var ctx = document.getElementById("myChart").getContext('2d');
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [
-                    {
-                        label: 'Channel 0',
-                        data: ds0,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Channel 1',
-                        data: ds1,
-                        backgroundColor: [
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Channel 2',
-                        data: ds2,
-                        backgroundColor: [
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Channel 3',
-                        data: ds3,
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }
-
-                ]
+                datasets: outtie
             },
             options: {
                 scales: {
