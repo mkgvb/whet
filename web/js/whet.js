@@ -115,6 +115,7 @@ $(function () {
         {
             var j = content.find("#99").clone();
             j.attr("id",c_obj.c_id);
+            j.removeClass("invisible");
             j.appendTo(content);
         }
 
@@ -130,11 +131,12 @@ $(function () {
         $(progress).attr("style", "width:" + c_obj.percent + "%");
         $(progress_text).text(c_obj.percent + "%");
 
+        //sort the children
         var listitems = content.children("div");
         listitems.sort(function(a, b) {
             var compA = $(a).text().toUpperCase();
             var compB = $(b).text().toUpperCase();
-             console.log((compA < compB) ? -1 : (compA > compB) ? 1 : 0);
+             //console.log((compA < compB) ? -1 : (compA > compB) ? 1 : 0);
             return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
          })
          $(content).append(listitems);
@@ -280,6 +282,5 @@ $(function () {
             }
         });
     }
-
 
 });
