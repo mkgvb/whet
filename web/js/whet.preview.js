@@ -20,6 +20,10 @@ $(function () {
 
             var eparsed = JSON.parse(e.data);
 
+            if (eparsed.channel != null) {
+                draw_pwmChannel(eparsed.channel);
+            }
+
             if (eparsed.channels != null) {
                 edit(eparsed.channels);
 
@@ -55,9 +59,12 @@ $(function () {
             disable_array_add: true,
             disable_array_delete: true,
             disable_array_reorder: true,
-            disable_collapse: false,
+            disable_collapse: true,
+            disable_edit_json: true,
+            disable_properties: true,
+
             schema: {
-                "title": "Channels",
+                "title": "Preview",
                 "type": "array",
                 "format": "tabs",
                 "items": {
@@ -65,6 +72,23 @@ $(function () {
                     "headerTemplate": "Channel - {{ self.id }}",
                     "format": "grid",
                     "properties": {
+                        "preview": {
+                            "headerTemplate": "{{ self.value }}",
+                            "properties": {
+                                "active": {
+                                    "type": "boolean",
+                                    "format": "checkbox",
+                                    "default": false,
+                                },
+                                "value": {
+                                    "type": "number",
+                                    "format": "range",
+                                    "default": 500,
+                                    "minimum": 0,
+                                    "maximum": 4095
+                                }
+                            }
+                        },
                         "id": {
                             "type": "integer",
                             "default": 0,
@@ -76,13 +100,15 @@ $(function () {
                             "type": "string",
                             "format": "color",
                             "title": "Color",
-                            "default": "#ffffff"
+                            "default": "#ffffff",
+                            "options": { "hidden": true }
                         },
                         "schedule": {
                             "type": "array",
                             "format": "table",
                             "title": "Schedule",
                             "uniqueItems": true,
+                            "options": { "hidden": true },
                             "items": {
                                 "type": "object",
                                 "title": "Event",
@@ -103,6 +129,7 @@ $(function () {
                     }
                 }
             }
+
         });
         editor.options.show_errors = "always";
         var j = editor.getEditor('root');
@@ -114,7 +141,6 @@ $(function () {
             eChannels
 
         );
-
 
         // Get the value
         var data = editor.getValue();
@@ -133,7 +159,7 @@ $(function () {
             var errors = editor.validate();
             if (errors.length == 0) {
                 var data = editor.getValue();
-                draw_lightSchedule_graph(data);
+                //draw_lightSchedule_graph(data);
                 conn.send('{"update":{"channels":' + JSON.stringify(data) + "}}");
             }
         });
