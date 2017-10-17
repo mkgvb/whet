@@ -4,6 +4,7 @@ var lightSchedule = {};
 var settings = {};
 var conn = null;
 
+
 if (conn == null)
     connect();
 
@@ -33,8 +34,6 @@ function connect() {
 
         if (eparsed.channel != null) {
             draw_pwmChannel(eparsed.channel);
-
-
         }
 
 
@@ -104,28 +103,62 @@ $('form').submit(function () {
     return false;
 });
 
+Handlebars.getTemplate = function (name) {
+    if (Handlebars.templates === undefined || Handlebars.templates[name] === undefined) {
+        $.ajax({
+            url: '/web/templates/' + name + '.handlebars',
+            success: function (data) {
+                if (Handlebars.templates === undefined) {
+                    Handlebars.templates = {};
+                }
+                Handlebars.templates[name] = Handlebars.compile(data);
+            },
+            async: false
+        });
+    }
+    return Handlebars.templates[name];
+};
+draw_nav();
+function draw_nav() {
+    var content = $(".body");
+
+    // Compile the template
+    var theTemplate = Handlebars.getTemplate('navbar');
+
+
+    var h = location.pathname.split("/").slice(-1)[0].split(".")[0].toLowerCase();
+    console.log(h);
+    var info = {
+        home: true
+    }
+
+    // Pass our data to the template
+    var theCompiledHtml = theTemplate(
+        info
+    );
+
+    // Add the compiled html to the page
+    $('.navbar').replaceWith(theCompiledHtml);
+
+}
 
 function draw_pwmChannel(c_obj) {
     var content = $("#channel-statuses");
+    // Grab the template script
+    var theTemplateScript = $("#channel-status-template").html();
 
-    if (content.find("#" + c_obj.c_id).length === 0) {
-        var j = content.find("#99").clone();
-        j.attr("id", c_obj.c_id);
-        j.removeClass("invisible");
-        j.appendTo(content);
+    // Compile the template
+    var theTemplate = Handlebars.getTemplate('channel-status');
+
+    // Pass our data to the template
+    var theCompiledHtml = theTemplate(c_obj);
+
+    if (content.find("#channel_" + c_obj.c_id).length === 0) {
+        content.append(theCompiledHtml);
     }
 
-    var row = content.find("#" + c_obj.c_id);
-    var channel = row.find(".channel-id");
-    var pwm_val = row.find('.pwm-value');
-    var progress = row.find('.progress-bar');
-    var progress_text = row.find(".progress-text");
-
-    $(channel).text("Channel" + c_obj.c_id);
-    $(pwm_val).text(c_obj.cur + "| sleep= " + c_obj.sleepTime + " | goal= " + c_obj.goal);
-    $(progress).attr("aria-valuenow", c_obj.percent);
-    $(progress).attr("style", "width:" + c_obj.percent + "%");
-    $(progress_text).text(c_obj.percent + "%");
+    // Add the compiled html to the page
+    $('#channel_' + c_obj.c_id).replaceWith(theCompiledHtml);
 
     //sort the children
     var listitems = content.children("div");
@@ -136,10 +169,7 @@ function draw_pwmChannel(c_obj) {
         return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
     })
     $(content).append(listitems);
-
-
 }
-
 function draw_settings(settings) {
 
     var content = $("#settings-content");
