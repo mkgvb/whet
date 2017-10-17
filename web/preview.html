@@ -38,13 +38,13 @@
                         <li>
                             <a href="/web/">Home</a>
                         </li>
-                        <li class="active">
+                        <li>
                             <a href="edit.html">Light Schedule</a>
                         </li>
                         <li>
                             <a href="#">Settings</a>
                         </li>
-                        <li>
+                        <li class="active">
                             <a href="preview.html">Preview</a>
                         </li>
                     </ul>
@@ -67,16 +67,8 @@
             <!--/.container-fluid -->
         </nav>
 
-        <div id="light-schedule">
-            <canvas id="myChart" width="400" height="200"></canvas>
-            <table class="table table-striped table-responsive">
-                <tbody id="lightSchedule-content"> </tbody>
-            </table>
-        </div>
-
-
+        <div id="channel-statuses"></div>
         <div id="editor_holder"> </div>
-
 
 
     </div>
@@ -95,6 +87,6 @@
 <script src="/web/js/jsonedit.js"></script>
 <script src="/web/js/handlebars-v4.0.10.js"></script>
 <script src="/web/js/whet.js"></script>
-<script src="/web/js/whet.edit.js"></script>
+<script src="/web/js/whet.preview.js"></script>
 
 </html>

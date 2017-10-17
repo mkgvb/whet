@@ -41,7 +41,7 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
         try:
             j_obj = json.loads(message)
         except (ValueError):
-            logging.info("Malformed json received")
+            logging.info("Malformed json received - {}".format(message))
 
         if "channels" in j_obj:
             print("update")
@@ -87,7 +87,7 @@ class Server(Thread):
         # 2. Create Tornado application
         app = tornado.web.Application(
                 [
-                    #(r"/", IndexHandler),
+                    (r"/web", IndexHandler),
                     (r"/web/(.*)",tornado.web.StaticFileHandler,{"path":r"web/", "default_filename": "index.html"})
                 ] 
                 + ChatRouter.urls, debug=True

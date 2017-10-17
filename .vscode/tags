@@ -19,15 +19,15 @@ Adafruit_GPIO	../PCA9685.py	/^        import Adafruit_GPIO.I2C as I2C$/;"	kind:n
 Channel	../Channel.py	/^class Channel(Thread):$/;"	kind:class	line:18
 Channel	../whet.py	/^import Channel$/;"	kind:namespace	line:50
 Channel.py	../Channel.py	1;"	kind:file	line:1
-ChatConnection	../Server.py	/^class ChatConnection(sockjs.tornado.SockJSConnection):$/;"	kind:class	line:23
+ChatConnection	../Server.py	/^class ChatConnection(sockjs.tornado.SockJSConnection):$/;"	kind:class	line:24
 DEBUG	../whet.py	/^DEBUG = False$/;"	kind:variable	line:7
 Enum	../WeatherType.py	/^from enum import Enum$/;"	kind:namespace	line:1
-HOURS	../LightSchedule.py	/^HOURS = 24$/;"	kind:variable	line:6
+HOURS	../LightSchedule.py	/^HOURS = 24$/;"	kind:variable	line:8
 I2C	../PCA9685.py	/^            import Adafruit_GPIO.I2C as I2C$/;"	kind:namespace	line:73
 I2C	../PCA9685.py	/^        import Adafruit_GPIO.I2C as I2C$/;"	kind:namespace	line:60
 INVRT	../PCA9685.py	/^INVRT              = 0x10$/;"	kind:variable	line:48
 INVRT	../PCA9685_dummy.py	/^INVRT              = 0x10$/;"	kind:variable	line:49
-IndexHandler	../Server.py	/^class IndexHandler(tornado.web.RequestHandler):$/;"	kind:class	line:16
+IndexHandler	../Server.py	/^class IndexHandler(tornado.web.RequestHandler):$/;"	kind:class	line:17
 LED0_OFF_H	../PCA9685.py	/^LED0_OFF_H         = 0x09$/;"	kind:variable	line:38
 LED0_OFF_H	../PCA9685_dummy.py	/^LED0_OFF_H         = 0x09$/;"	kind:variable	line:39
 LED0_OFF_L	../PCA9685.py	/^LED0_OFF_L         = 0x08$/;"	kind:variable	line:37
@@ -37,15 +37,16 @@ LED0_ON_H	../PCA9685_dummy.py	/^LED0_ON_H          = 0x07$/;"	kind:variable	line
 LED0_ON_L	../PCA9685.py	/^LED0_ON_L          = 0x06$/;"	kind:variable	line:35
 LED0_ON_L	../PCA9685_dummy.py	/^LED0_ON_L          = 0x06$/;"	kind:variable	line:36
 LED_MAX	../Channel.py	/^LED_MAX=4095$/;"	kind:variable	line:16
-LED_MAX	../LightSchedule.py	/^LED_MAX=4095$/;"	kind:variable	line:7
+LED_MAX	../LightSchedule.py	/^LED_MAX= 4095$/;"	kind:variable	line:9
 LED_MAX	../test.py	/^LED_MAX = 4095  # Max Brightness$/;"	kind:variable	line:33
 LED_MAX	../whet.py	/^LED_MAX = 4095  # Max Brightness$/;"	kind:variable	line:75
 LED_MIN	../Channel.py	/^LED_MIN=0$/;"	kind:variable	line:15
-LED_MIN	../LightSchedule.py	/^LED_MIN=0$/;"	kind:variable	line:8
+LED_MIN	../LightSchedule.py	/^LED_MIN= 0$/;"	kind:variable	line:10
 LED_MIN	../test.py	/^LED_MIN = 0     # Min Brightness (off)$/;"	kind:variable	line:34
 LED_MIN	../whet.py	/^LED_MIN = 0     # Min Brightness (off)$/;"	kind:variable	line:76
+LOGDIR	../whet.py	/^LOGDIR = 'logs\/'$/;"	kind:variable	line:8
 LightSchedule	../Channel.py	/^import LightSchedule$/;"	kind:namespace	line:9
-LightSchedule	../LightSchedule.py	/^class LightSchedule(object):$/;"	kind:class	line:10
+LightSchedule	../LightSchedule.py	/^class LightSchedule(object):$/;"	kind:class	line:12
 LightSchedule	../test.py	/^import LightSchedule$/;"	kind:namespace	line:11
 LightSchedule	../whet.py	/^import LightSchedule$/;"	kind:namespace	line:45
 LightSchedule.py	../LightSchedule.py	1;"	kind:file	line:1
@@ -84,7 +85,7 @@ SUBADR2	../PCA9685.py	/^SUBADR2            = 0x03$/;"	kind:variable	line:32
 SUBADR2	../PCA9685_dummy.py	/^SUBADR2            = 0x03$/;"	kind:variable	line:33
 SUBADR3	../PCA9685.py	/^SUBADR3            = 0x04$/;"	kind:variable	line:33
 SUBADR3	../PCA9685_dummy.py	/^SUBADR3            = 0x04$/;"	kind:variable	line:34
-Server	../Server.py	/^class Server(Thread):$/;"	kind:class	line:62
+Server	../Server.py	/^class Server(Thread):$/;"	kind:class	line:77
 Server	../whet.py	/^Server = Server.Server()$/;"	kind:variable	line:35
 Server	../whet.py	/^import Server$/;"	kind:namespace	line:3
 Server.py	../Server.py	1;"	kind:file	line:1
@@ -109,41 +110,42 @@ __init__	../Channel.py	/^    def __init__(self, c_id, pwm):$/;"	kind:member	line
 __init__	../PCA9685.py	/^    def __init__(self, address=PCA9685_ADDRESS, i2c=None, **kwargs):$/;"	kind:member	line:69
 __init__	../PCA9685_dummy.py	/^    def __init__(self, address=PCA9685_ADDRESS, i2c=None, **kwargs):$/;"	kind:member	line:61
 __init__	../Pid.py	/^    def __init__(self):$/;"	kind:member	line:9
-__init__	../Server.py	/^    def __init__(self):$/;"	kind:member	line:64
+__init__	../Server.py	/^    def __init__(self):$/;"	kind:member	line:79
 __init__	../Settings.py	/^    def __init__(self):$/;"	kind:member	line:12
-backupCount	../whet.py	/^                                    backupCount=2)$/;"	kind:variable	line:27
-backupCount	../whet.py	/^                                backupCount=7)$/;"	kind:variable	line:19
-broadcast	../Channel.py	/^    def broadcast(self):$/;"	kind:member	line:92
-cancel	../Channel.py	/^    def cancel(self):$/;"	kind:member	line:84
-catchup_worker	../Channel.py	/^    def catchup_worker(self):$/;"	kind:member	line:108
+backupCount	../whet.py	/^                                                          backupCount=2)$/;"	kind:variable	line:27
+backupCount	../whet.py	/^                                                    backupCount=7)$/;"	kind:variable	line:19
+broadcast	../Channel.py	/^    def broadcast(self):$/;"	kind:member	line:94
+cancel	../Channel.py	/^    def cancel(self):$/;"	kind:member	line:86
+catchup_worker	../Channel.py	/^    def catchup_worker(self):$/;"	kind:member	line:115
 channelObj	../whet.py	/^        channelObj = Channel.Channel(i, pwm)$/;"	kind:variable	line:89
 channel_threads	../whet.py	/^    channel_threads = []$/;"	kind:variable	line:87
 close	../wsclient.py	/^def close(msg):$/;"	kind:function	line:22
 cloudLength	../whet.py	/^            cloudLength = random.randint(30, 60)$/;"	kind:variable	line:107
-cloud_worker	../Channel.py	/^    def cloud_worker(self):$/;"	kind:member	line:130
+cloud_worker	../Channel.py	/^    def cloud_worker(self):$/;"	kind:member	line:137
 cloudy	../WeatherType.py	/^    cloudy = 2$/;"	kind:variable	line:7
 create_connection	../Channel.py	/^from websocket import create_connection$/;"	kind:namespace	line:11
 create_connection	../wsclient.py	/^from websocket import create_connection$/;"	kind:namespace	line:1
+data	../LightSchedule.py	/^    data = None$/;"	kind:variable	line:18
 datetime	../Channel.py	/^from datetime import datetime, timedelta$/;"	kind:namespace	line:4
 datetime	../test.py	/^from datetime import datetime, timedelta$/;"	kind:namespace	line:9
 datetime	../whet.py	/^from datetime import datetime, timedelta$/;"	kind:namespace	line:43
-debug_handler	../whet.py	/^debug_handler = logging.handlers.TimedRotatingFileHandler(logDir+"whet-DEBUG.log",$/;"	kind:variable	line:24
+debug_handler	../whet.py	/^debug_handler = logging.handlers.TimedRotatingFileHandler(LOGDIR + "whet-DEBUG.log",$/;"	kind:variable	line:24
 division	../PCA9685.py	/^from __future__ import division$/;"	kind:namespace	line:21
 division	../PCA9685_dummy.py	/^from __future__ import division$/;"	kind:namespace	line:22
 dump_file	../Settings.py	/^    def dump_file(self):$/;"	kind:member	line:37
-fileloc	../LightSchedule.py	/^fileloc = 'json\/schedule.json'$/;"	kind:variable	line:4
+fileloc	../LightSchedule.py	/^fileloc = 'json\/schedule.json'$/;"	kind:variable	line:6
 fileloc	../Settings.py	/^fileloc = 'json\/settings.json'$/;"	kind:variable	line:7
 formatter	../whet.py	/^formatter = logging.Formatter('%(asctime)s:%(levelname)s: %(message)s')$/;"	kind:variable	line:14
-get	../Server.py	/^    def get(self):$/;"	kind:member	line:18
-get_data	../LightSchedule.py	/^    def get_data(self):$/;"	kind:member	line:16
-get_number_of_channels	../LightSchedule.py	/^    def get_number_of_channels(self):$/;"	kind:member	line:50
-get_percent	../LightSchedule.py	/^    def get_percent(self, channel, hour):$/;"	kind:member	line:23
-get_percent_cur	../LightSchedule.py	/^    def get_percent_cur(self, pwm_val):$/;"	kind:member	line:42
-get_pwm	../LightSchedule.py	/^    def get_pwm(self, channel, hour):$/;"	kind:member	line:46
-handler	../whet.py	/^handler = logging.handlers.TimedRotatingFileHandler(logDir+"whet.log",$/;"	kind:variable	line:16
+get	../Server.py	/^    def get(self):$/;"	kind:member	line:19
+get_data	../LightSchedule.py	/^    def get_data(self):$/;"	kind:member	line:21
+get_number_of_channels	../LightSchedule.py	/^    def get_number_of_channels(self):$/;"	kind:member	line:60
+get_percent	../LightSchedule.py	/^    def get_percent(self, channel, hour):$/;"	kind:member	line:33
+get_percent_cur	../LightSchedule.py	/^    def get_percent_cur(self, pwm_val):$/;"	kind:member	line:52
+get_pwm	../LightSchedule.py	/^    def get_pwm(self, channel, hour):$/;"	kind:member	line:56
+handler	../whet.py	/^handler = logging.handlers.TimedRotatingFileHandler(LOGDIR + "whet.log",$/;"	kind:variable	line:16
 i	../test.py	/^    i = 0$/;"	kind:variable	line:45
-interval	../whet.py	/^                                    interval=1,$/;"	kind:variable	line:26
-interval	../whet.py	/^                                interval=1,$/;"	kind:variable	line:18
+interval	../whet.py	/^                                                          interval=1,$/;"	kind:variable	line:26
+interval	../whet.py	/^                                                    interval=1,$/;"	kind:variable	line:18
 ioloop	../Server.py	/^import tornado.ioloop$/;"	kind:namespace	line:6
 j	../test.py	/^    j = 0$/;"	kind:variable	line:46
 json	../Channel.py	/^import json$/;"	kind:namespace	line:6
@@ -151,16 +153,18 @@ json	../LightSchedule.py	/^import json$/;"	kind:namespace	line:1
 json	../Server.py	/^import json$/;"	kind:namespace	line:11
 json	../Settings.py	/^import json$/;"	kind:namespace	line:2
 kill	../Pid.py	/^    def kill(self):$/;"	kind:member	line:16
+last_access_time	../LightSchedule.py	/^    last_access_time = 0$/;"	kind:variable	line:17
 light_schedule_file	../Server.py	/^light_schedule_file = 'json\/schedule.json'$/;"	kind:variable	line:13
+light_schedule_file2	../Server.py	/^light_schedule_file2 = 'json\/schedule2.json'$/;"	kind:variable	line:14
 load_file	../Settings.py	/^    def load_file(self):$/;"	kind:member	line:45
-logDir	../whet.py	/^logDir = 'logs\/'$/;"	kind:variable	line:8
 logger	../PCA9685.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:52
 logger	../PCA9685_dummy.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:53
 logger	../whet.py	/^logger = logging.getLogger()$/;"	kind:variable	line:12
 logging	../Channel.py	/^import logging$/;"	kind:namespace	line:2
+logging	../LightSchedule.py	/^import logging$/;"	kind:namespace	line:4
 logging	../PCA9685.py	/^import logging$/;"	kind:namespace	line:22
 logging	../PCA9685_dummy.py	/^import logging$/;"	kind:namespace	line:23
-logging	../Server.py	/^        import logging$/;"	kind:namespace	line:66
+logging	../Server.py	/^        import logging$/;"	kind:namespace	line:81
 logging	../Server.py	/^import logging$/;"	kind:namespace	line:9
 logging	../Settings.py	/^import logging$/;"	kind:namespace	line:1
 logging	../test.py	/^import logging$/;"	kind:namespace	line:3
@@ -178,14 +182,15 @@ min_val	../PCA9685.py	/^min_val = 0$/;"	kind:variable	line:54
 msg	../test.py	/^    msg = "WARNING - unable to load PWM chip... no values will set!"$/;"	kind:variable	line:25
 msg	../whet.py	/^    msg = "UNABLE TO LOAD PCA9685... no pwm values will set!"$/;"	kind:variable	line:68
 normal	../WeatherType.py	/^    normal = 1$/;"	kind:variable	line:6
-on_close	../Server.py	/^    def on_close(self):$/;"	kind:member	line:56
-on_message	../Server.py	/^    def on_message(self, message):$/;"	kind:member	line:36
+on_close	../Server.py	/^    def on_close(self):$/;"	kind:member	line:71
+on_message	../Server.py	/^    def on_message(self, message):$/;"	kind:member	line:37
 on_message	../wsclient.py	/^def on_message(ws, message):$/;"	kind:function	line:25
-on_open	../Server.py	/^    def on_open(self, info):$/;"	kind:member	line:28
+on_open	../Server.py	/^    def on_open(self, info):$/;"	kind:member	line:29
+os	../LightSchedule.py	/^import os$/;"	kind:namespace	line:3
 os	../Pid.py	/^import os$/;"	kind:namespace	line:1
 os	../test.py	/^import os$/;"	kind:namespace	line:5
 os	../whet.py	/^import os$/;"	kind:namespace	line:5
-participants	../Server.py	/^    participants = set()$/;"	kind:variable	line:26
+participants	../Server.py	/^    participants = set()$/;"	kind:variable	line:27
 pidfile	../Pid.py	/^pidfile = "\/tmp\/whet.pid"$/;"	kind:variable	line:5
 play_obj	../whet.py	/^                play_obj = wave_obj.play()$/;"	kind:variable	line:103
 process_id	../Pid.py	/^process_id = str(os.getpid())$/;"	kind:variable	line:4
@@ -196,11 +201,11 @@ pwm	../whet.py	/^    pwm = PCA9685_dummy.PCA9685()$/;"	kind:variable	line:71
 random	../Channel.py	/^import random$/;"	kind:namespace	line:5
 random	../test.py	/^import random$/;"	kind:namespace	line:6
 random	../whet.py	/^import random$/;"	kind:namespace	line:40
-run	../Channel.py	/^    def run(self):$/;"	kind:member	line:35
-run	../Server.py	/^    def run(self):$/;"	kind:member	line:87
+run	../Channel.py	/^    def run(self):$/;"	kind:member	line:36
+run	../Server.py	/^    def run(self):$/;"	kind:member	line:102
 s	../Channel.py	/^s = Settings.Settings()$/;"	kind:variable	line:14
 s	../whet.py	/^s = Settings.Settings()$/;"	kind:variable	line:55
-sa	../Channel.py	/^                import simpleaudio as sa$/;"	kind:namespace	line:157
+sa	../Channel.py	/^                import simpleaudio as sa$/;"	kind:namespace	line:164
 sa	../whet.py	/^                import simpleaudio as sa$/;"	kind:namespace	line:101
 send	../wsclient.py	/^def send(msg):$/;"	kind:function	line:11
 set_all	../PCA9685.py	/^    def set_all(self, off):$/;"	kind:member	line:127
@@ -213,17 +218,17 @@ set_pwm_freq	../PCA9685.py	/^    def set_pwm_freq(self, freq_hz):$/;"	kind:membe
 set_pwm_freq	../PCA9685_dummy.py	/^    def set_pwm_freq(self, freq_hz):$/;"	kind:member	line:67
 set_s	../PCA9685.py	/^    def set_s(self, channel, off):$/;"	kind:member	line:119
 set_s	../PCA9685_dummy.py	/^    def set_s(self, channel, off):$/;"	kind:member	line:79
-settings_file	../Server.py	/^settings_file = 'json\/settings.json'$/;"	kind:variable	line:14
+settings_file	../Server.py	/^settings_file = 'json\/settings.json'$/;"	kind:variable	line:15
 sockjs	../Server.py	/^import sockjs.tornado$/;"	kind:namespace	line:8
 software_reset	../PCA9685.py	/^def software_reset(i2c=None, **kwargs):$/;"	kind:function	line:56
-stop	../Server.py	/^    def stop(self):$/;"	kind:member	line:91
+stop	../Server.py	/^    def stop(self):$/;"	kind:member	line:106
 storm	../WeatherType.py	/^    storm = 3$/;"	kind:variable	line:8
 stormLength	../whet.py	/^            stormLength = random.randint(60, 120)$/;"	kind:variable	line:114
 sys	../Pid.py	/^import sys$/;"	kind:namespace	line:2
 test.py	../test.py	1;"	kind:file	line:1
 threading	../test.py	/^import threading$/;"	kind:namespace	line:7
 threading	../whet.py	/^import threading$/;"	kind:namespace	line:41
-thunderstorm_worker	../Channel.py	/^    def thunderstorm_worker(self):$/;"	kind:member	line:152
+thunderstorm_worker	../Channel.py	/^    def thunderstorm_worker(self):$/;"	kind:member	line:159
 time	../Channel.py	/^import time$/;"	kind:namespace	line:3
 time	../PCA9685.py	/^import time$/;"	kind:namespace	line:23
 time	../PCA9685_dummy.py	/^import time$/;"	kind:namespace	line:24
@@ -235,11 +240,11 @@ timedelta	../whet.py	/^from datetime import datetime, timedelta$/;"	kind:namespa
 tornado	../Server.py	/^import sockjs.tornado$/;"	kind:namespace	line:8
 tornado	../Server.py	/^import tornado.ioloop$/;"	kind:namespace	line:6
 tornado	../Server.py	/^import tornado.web$/;"	kind:namespace	line:7
-update	../Channel.py	/^    def update(self):$/;"	kind:member	line:88
+update	../Channel.py	/^    def update(self):$/;"	kind:member	line:90
 wave_obj	../whet.py	/^                wave_obj = sa.WaveObject.from_wave_file("sound\/c1.wav")$/;"	kind:variable	line:102
 web	../Server.py	/^import tornado.web$/;"	kind:namespace	line:7
-when	../whet.py	/^                                    when='midnight',$/;"	kind:variable	line:25
-when	../whet.py	/^                                when='midnight',$/;"	kind:variable	line:17
+when	../whet.py	/^                                                          when='midnight',$/;"	kind:variable	line:25
+when	../whet.py	/^                                                    when='midnight',$/;"	kind:variable	line:17
 whet.py	../whet.py	1;"	kind:file	line:1
 ws	../Channel.py	/^ws = create_connection("ws:\/\/localhost:8080\/chat\/websocket")$/;"	kind:variable	line:13
 ws	../whet.py	/^ws = wsclient$/;"	kind:variable	line:56

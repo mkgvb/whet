@@ -19,13 +19,13 @@ class Channel(Thread):
     
 
 
-    def __init__(self, c_id, pwm):
+    def __init__(self, c_id, pwm, channel_info):
         super(Channel, self).__init__(name=str(c_id))
         self.daemon = True
         self.cancelled = False
 
         # do other initialization here
-        self.ls = LightSchedule.LightSchedule()
+        self.ls = channel_info
         self.pwm = pwm
         self.c_id = c_id
         self.curTime = datetime.now()
@@ -66,6 +66,10 @@ class Channel(Thread):
                 self.cur -= 1
             if (self.cur < self.goal):
                 self.cur += 1
+
+
+            if (self.ls.get_preview_status(self.c_id)):
+                self.preview_worker()
 
             if (s.weather == "storm"):
                 self.thunderstorm_worker()
@@ -109,7 +113,24 @@ class Channel(Thread):
         )
         
        
-            
+    def preview_worker(self):
+        timeout_length_secs = 300
+        total_time_secs = 0
+        cur_init = self.cur
+        cur_local = 0
+        print("Preview started on channel {:d}...timeout {:d}".format(self.c_id, timeout_length_secs))
+        while(self.ls.get_preview_status(self.c_id) and total_time_secs < timeout_length_secs):
+            self.cur = self.ls.get_preview_pwm(self.c_id)
+            if cur_local != self.cur:
+                self.pwm.set_s(self.c_id, self.cur)
+                cur_local = self.cur
+                print("Preview value changed to {:d} on channel {:d}".format(cur_local, self.c_id ))
+            self.broadcast()
+            time.sleep(self.sleepTime)
+            total_time_secs += self.sleepTime
+        print("Preview ended on channel {:d}...total time {:d}".format(self.c_id, total_time_secs))
+        self.cur = cur_init
+        self.ls.set_preview_status(self.c_id)
         
 
     def catchup_worker(self):
