@@ -29,7 +29,7 @@ class Channel(Thread):
         self.pwm = pwm
         self.c_id = c_id
         self.curTime = datetime.now()
-        self.cur = self.ls.get_pwm(self.c_id, self.curTime.hour) + self.ls.get_pwm(self.c_id, self.curTime.hour+1) / ((self.curTime.minute/60) + 1 )
+        self.cur = round(self.ls.get_pwm(self.c_id, self.curTime.hour) + self.ls.get_pwm(self.c_id, self.curTime.hour+1) / ((self.curTime.minute/60) + 1 ))
         #self.weather = Settings.Settings().weather
 
 
