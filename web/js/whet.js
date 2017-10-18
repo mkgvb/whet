@@ -21,7 +21,7 @@ function connect() {
     conn.onopen = function () {
         log('Connected.');
         conn.send('{"request":"light_schedule"}');
-        conn.send('{"request":"settings"}')
+        conn.send('{"request":"settings"}');
         update_ui();
     };
     conn.onmessage = function (e) {
@@ -125,22 +125,27 @@ function draw_nav() {
     // Compile the template
     var theTemplate = Handlebars.getTemplate('navbar');
 
-
+    //get the name of the current page without .html
     var h = location.pathname.split("/").slice(-1)[0].split(".")[0].toLowerCase();
     console.log(h);
-    var info = {
-        home: true
-    }
+    var info = {}
+    info[h] = true;
 
     // Pass our data to the template
-    var theCompiledHtml = theTemplate(
-        info
-    );
+    var theCompiledHtml = theTemplate(info);
 
     // Add the compiled html to the page
     $('.navbar').replaceWith(theCompiledHtml);
-
 }
+
+draw_ws_messages();
+function draw_ws_messages() {
+    var content = $("#ws-messages");
+    var theTemplate = Handlebars.getTemplate('ws-messages');
+    var theCompiledHtml = theTemplate();
+    content.html(theCompiledHtml);
+}
+
 
 function draw_pwmChannel(c_obj) {
     var content = $("#channel-statuses");
