@@ -159,8 +159,7 @@ $(function () {
             var errors = editor.validate();
             if (errors.length == 0) {
                 var data = editor.getValue();
-                //draw_lightSchedule_graph(data);
-                conn.send('{"update":{"channels":' + JSON.stringify(data) + "}}");
+                conn.send( JSON.stringify({update: { channels: data}}));
             }
         });
     }

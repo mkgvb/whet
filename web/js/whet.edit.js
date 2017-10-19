@@ -13,7 +13,7 @@ $(function () {
         conn = new SockJS('http://' + window.location.host + '/chat', 0);
 
         conn.onopen = function () {
-            conn.send('{"request":"light_schedule"}');
+            conn.send( JSON.stringify({request:"light_schedule"}) );
             update_ui();
         };
         conn.onmessage = function (e) {
@@ -134,7 +134,7 @@ $(function () {
             if (errors.length == 0) {
                 var data = editor.getValue();
                 draw_lightSchedule_graph(data);
-                conn.send('{"update":{"channels":' + JSON.stringify(data) + "}}");
+                conn.send( JSON.stringify({update: { channels: data}}));
             }
         });
     }

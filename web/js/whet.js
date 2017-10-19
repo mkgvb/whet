@@ -20,8 +20,8 @@ function connect() {
     log('Connecting...');
     conn.onopen = function () {
         log('Connected.');
-        conn.send('{"request":"light_schedule"}');
-        conn.send('{"request":"settings"}');
+        conn.send( JSON.stringify({request:"light_schedule"}) );
+        conn.send( JSON.stringify({request:"settings"}) );
         update_ui();
     };
     conn.onmessage = function (e) {
@@ -95,10 +95,6 @@ $('form').submit(function () {
     var text = $('#text').val();
     log('Sending: ' + text);
     conn.send(text);
-    var tosend = JSON.stringify(lightSchedule);
-    toSend = '{"light_schedule":' + tosend + "}";
-    var skip = 0;
-    conn.send(toSend);
     $('#text').val('').focus();
     return false;
 });
@@ -128,7 +124,7 @@ function draw_nav() {
     //get the name of the current page without .html
     var h = location.pathname.split("/").slice(-1)[0].split(".")[0].toLowerCase();
     console.log(h);
-    var info = {}
+    var info = {};
     info[h] = true;
 
     // Pass our data to the template
