@@ -37,8 +37,8 @@ logger.addHandler(consoleHandler)
 logging.info("Whet started")
 
 # Server----------------------------------------------------------
-Server = Server.Server()
-Server.start()
+Tornado_Server = Server.Server()
+Tornado_Server.start()
 time.sleep(1)
 
 import math
@@ -89,14 +89,50 @@ time.sleep(1)
 
 try:
     channel_threads = []
-    for i in range(ls.get_number_of_channels()):
-        channelObj = Channel.Channel(i, pwm, ls)
-        channel_threads.append(channelObj)
-        channelObj.start()
+    # for i in range(ls.get_number_of_channels()):
+    #     channelObj = Channel.Channel(i, pwm, ls)
+    #     channel_threads.append(channelObj)
+    #     channelObj.start()
 
     # keep main thread alive
     while True:
         s.load_file()
+
+        #untested
+        if not Tornado_Server.is_alive():
+            logger.warn("Tornado thread died")
+            Tornado_Server = Server.Server()
+            Tornado_Server.start()
+            time.sleep(1)
+
+        #restart threads if they die, this should never happen
+        for i in range(len(channel_threads)):
+            if not channel_threads[i].is_alive():
+                logger.warn("THREAD %s IS DEAD, what happened?!?", i)
+                c_id = channel_threads[i].c_id
+                channel_threads[i] = Channel.Channel(c_id, pwm, ls)
+                channel_threads[i].start()
+
+
+        if len(channel_threads) != ls.get_number_of_channels():
+            logger.info("Thread to channel mismatch config=%s threads=%s", ls.get_number_of_channels(), len(channel_threads) )
+            for i in range(len(channel_threads)):
+                channel_threads[i].cancel()
+                while channel_threads[i].is_alive():
+                    logger.info("waiting for thread to die")
+                    time.sleep(1)
+            channel_threads = [] # reset list
+            for i in range(ls.get_number_of_channels()):
+                channelObj = Channel.Channel(i, pwm, ls)
+                channel_threads.append(channelObj)
+                channelObj.start()
+
+                
+
+
+
+
+
         time.sleep(15)
         s.dump_file()
 
@@ -111,7 +147,7 @@ finally:
         channel_threads[i].cancel()
     pwm.set_all(LED_MIN)
     # Pid.kill()
-    Server.stop()
+    Tornado_Server.stop()
 
 
 if __name__ == "main":

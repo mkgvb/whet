@@ -41,6 +41,9 @@ class Channel(Thread):
         """Overloaded Thread.run"""
 
         while not self.cancelled:
+
+            self.dead = self.cancelled
+
             self.curTime = datetime.now()
             self.curHour = self.curTime.hour
             self.nextHour = (self.curTime + timedelta(hours=1)).hour
