@@ -1,43 +1,45 @@
 import json
-import math
 import os
 import logging
 
-fileloc = 'json/schedule.json'
+FILELOC = 'json/schedule.json'
 
 HOURS = 24
-LED_MAX= 4095
-LED_MIN= 0
+LED_MAX = 4095
+LED_MIN = 0
 
 class LightSchedule(object):
     """Class to hold lighting schedule"""
+    logger = logging.getLogger('__main__')
+
+    last_access_time = 0
+    data = None
 
     # def __init__(self):
     #     pass:
-    last_access_time = 0
-    data = None
+
 
 
     def get_data(self):
         """gets a current copy of the schedule if it has changed"""
         valid_read = False
-        if self.last_access_time != os.stat(fileloc).st_mtime:
-            self.last_access_time = os.stat(fileloc).st_mtime
+        if self.last_access_time != os.stat(FILELOC).st_mtime:
+            self.last_access_time = os.stat(FILELOC).st_mtime
             while not valid_read:
                 try:
-                    with open(fileloc) as data_file:
+                    with open(FILELOC) as data_file:
                         self.data = json.load(data_file)
-                        logging.info("Channel Schedule Changed " + str(os.stat(fileloc).st_mtime))
+                        self.logger.info("Channel Schedule Changed " + str(os.stat(FILELOC).st_mtime))
                         valid_read = True
                 except:
-                    logging.info("Thread File Read Failed!!! - FIX THIS")
+                    self.logger.exception("Thread File Read Failed!!! - FIX THIS")
                 
 
         return self.data['channels']
 
     def set_data(self):
         "sets a value in the file"
-        with open(fileloc, 'w') as data_file:
+        with open(FILELOC, 'w') as data_file:
             data_file.write(json.dumps(
                 self.data, default=lambda o: o.__dict__, sort_keys=True, indent=4))
 
@@ -45,21 +47,17 @@ class LightSchedule(object):
     def get_percent(self, channel, hour):
         """gets percentage value from schedule"""
         data = self.get_data()
-        r = 0
-        for x in data:
-            if (x['id'] == channel):
-                for y in x['schedule']:
-                    if (y['hour'] == hour):
-                        r = int(y['percent'])
+        for obj in data:
+            if obj['id'] == channel:
+                for obj2 in obj['schedule']:
+                    if obj2['hour'] == hour:
+                        c_id = int(obj2['percent'])
 
-        if r == None:
-            # why you no print?
-            # i guess r := None just leaves it at 0
-            logging.info("Something is wrong Asked for channel={0} hour={1} giving 0")
+        if c_id is None:
+            self.logger.info("Something went wrong getting percent")
             return 0
         else:
-            return min(100, max(r, 0))
-        return
+            return min(100, max(c_id, 0))
 
     def get_percent_cur(self, pwm_val):
         '''gets percent value of pwm_val'''
@@ -72,23 +70,23 @@ class LightSchedule(object):
     def get_preview_pwm(self, channel):
         """gets pwm value of preview"""
         data = self.get_data()
-        for x in data:
-            if (x['id'] == channel):
-                return x['preview']['value']
+        for obj in data:
+            if obj['id'] == channel:
+                return obj['preview']['value']
 
     def get_preview_status(self, channel):
         """gets preview status"""
         data = self.get_data()
-        for x in data:
-            if (x['id'] == channel):
-                return x['preview']['active']
+        for obj in data:
+            if obj['id'] == channel:
+                return obj['preview']['active']
 
-    def set_preview_status(self, channel, input=False):
+    def set_preview_status(self, channel, status=False):
         """sets preview status"""
         data = self.get_data()
-        for x in data:
-            if (x['id'] == channel):
-                x['preview']['active'] = input
+        for obj in data:
+            if obj['id'] == channel:
+                obj['preview']['active'] = status
         self.set_data()
 
 
@@ -96,7 +94,7 @@ class LightSchedule(object):
     def get_number_of_channels(self):
         """gets total number of active channels"""
         data = self.get_data()
-        c = 0
-        for x in data:
-            c += 1
-        return c
+        cnt = 0
+        for obj in data:
+            cnt += 1
+        return cnt

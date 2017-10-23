@@ -1,19 +1,22 @@
+'''Holds Settings'''
 import logging
 import json
-import math
 from WeatherType import WeatherType
 
 
-fileloc = 'json/settings.json'
+FILELOC = 'json/settings.json'
 
 class Settings(object):
     """Class to hold settings"""
+    # pylint: disable=too-many-instance-attributes
+    logger = logging.getLogger('__main__')  
+
 
     def __init__(self):
         try:
             self.load_file()
         except IOError:
-            logging.info("No settings file found...using defaults and creating file ")
+            self.logger.info("No settings file found...using defaults and creating file ")
 
             self.weather = "normal"  # todo make this the enum
             self.catchup_on = True
@@ -35,7 +38,8 @@ class Settings(object):
             self.dump_file()
 
     def dump_file(self):
-        with open(fileloc, 'w') as data_file:
+        '''dumps json representation of obj to disk'''
+        with open(FILELOC, 'w') as data_file:
             string = '{"settings":'
             string += json.dumps(
                 self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
@@ -43,8 +47,6 @@ class Settings(object):
             data_file.write(string)
 
     def load_file(self):
-        with open(fileloc) as data_file:
+        '''reads file from disk'''
+        with open(FILELOC) as data_file:
             self.__dict__ = json.load(data_file)["settings"]
-
-
-        

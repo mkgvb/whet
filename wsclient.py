@@ -1,7 +1,10 @@
+import logging
 from websocket import create_connection
 
 
-ws = create_connection("ws://localhost:8080/chat/websocket")
+
+
+#ws = create_connection("ws://localhost:8080/chat/websocket")
 
 
 #result =  ws.recv()

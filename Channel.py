@@ -4,20 +4,21 @@ import time
 from datetime import datetime, timedelta
 import random
 import json
+import whet
 
 from WeatherType import WeatherType
 import LightSchedule
 import Settings
+import websocket
 from websocket import create_connection
 
-ws = create_connection("ws://localhost:8080/chat/websocket")
 s = Settings.Settings()
-LED_MIN=0
-LED_MAX=4095
+LED_MIN = 0
+LED_MAX = 4095
+logger = logging.getLogger('__main__')
+
 
 class Channel(Thread):
-    
-
 
     def __init__(self, c_id, pwm, channel_info):
         super(Channel, self).__init__(name=str(c_id))
@@ -29,13 +30,14 @@ class Channel(Thread):
         self.pwm = pwm
         self.c_id = c_id
         self.curTime = datetime.now()
-        
-        catchup = round(abs((self.ls.get_pwm(self.c_id, self.curTime.hour) - self.ls.get_pwm(self.c_id, self.curTime.hour)) * (self.curTime.minute/60)))
-        self.cur = min( self.ls.get_pwm(self.c_id, self.curTime.hour), self.ls.get_pwm(self.c_id, self.curTime.hour+1) ) + catchup
-        
-        
-        #self.weather = Settings.Settings().weather
 
+        catchup = round(abs((self.ls.get_pwm(self.c_id, self.curTime.hour) -
+                             self.ls.get_pwm(self.c_id, self.curTime.hour)) * (self.curTime.minute / 60)))
+        self.cur = min(self.ls.get_pwm(self.c_id, self.curTime.hour), self.ls.get_pwm(
+            self.c_id, self.curTime.hour + 1)) + catchup
+        self.ws = create_connection("ws://localhost:8080/chat/websocket")
+
+        #self.weather = Settings.Settings().weather
 
     def run(self):
         """Overloaded Thread.run"""
@@ -48,14 +50,14 @@ class Channel(Thread):
             self.curHour = self.curTime.hour
             self.nextHour = (self.curTime + timedelta(hours=1)).hour
             self.goal = self.ls.get_pwm(self.c_id, self.nextHour)
-            self.remainSeconds = 3600 - (self.curTime.minute * 60 + self.curTime.second)
+            self.remainSeconds = 3600 - \
+                (self.curTime.minute * 60 + self.curTime.second)
             self.delta = abs(self.cur - self.goal)
-            self.sleepTime = int(self.remainSeconds / self.delta) if self.delta != 0 else 1
+            self.sleepTime = int(self.remainSeconds /
+                                 self.delta) if self.delta != 0 else 1
 
-
-            #if self.delta > 2000 and self.cur < self.goal:
+            # if self.delta > 2000 and self.cur < self.goal:
             #    self.catchup_worker()
-
 
             msg = ""
             msg += self.curTime.strftime('%H:%M:%S')
@@ -67,13 +69,12 @@ class Channel(Thread):
             msg += "|Delta = " + str(self.delta)
             msg += "|Seconds Remain = " + str(self.remainSeconds)
 
-            logging.debug(msg)
+            logger.debug(msg)
 
             if (self.cur > self.goal):
                 self.cur -= 1
             if (self.cur < self.goal):
                 self.cur += 1
-
 
             if (self.ls.get_preview_status(self.c_id)):
                 self.preview_worker()
@@ -89,21 +90,20 @@ class Channel(Thread):
             self.pwm.set_s(self.c_id, self.cur)
             time.sleep(self.sleepTime)
 
-            if (self.sleepTime > 0):
-                self.broadcast()
-            
-      
+            # if (self.sleepTime > 0):
+            #     self.broadcast()
 
     def cancel(self):
         """End this timer thread"""
         self.cancelled = True
+        time.sleep(.2)
+        self.ws.close()
 
     def update(self):
         """Update the counters"""
         print("running thread class!")
 
     def broadcast(self):
-
 
         obj = {}
         obj['c_id'] = self.c_id
@@ -112,37 +112,38 @@ class Channel(Thread):
         obj['sleepTime'] = self.sleepTime
         obj['delta'] = self.delta
         obj['percent'] = round((self.cur / LED_MAX * 100))
-
-        ws.send(
+        self.ws.send(
             '{"channel":'
-            + json.dumps(obj, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+            + json.dumps(obj, default=lambda o: o.__dict__,
+                        sort_keys=True, indent=4)
             + '}'
         )
-        
-       
+
     def preview_worker(self):
         timeout_length_secs = 300
         total_time_secs = 0
         cur_init = self.cur
         cur_local = 0
-        print("Preview started on channel {:d}...timeout {:d}".format(self.c_id, timeout_length_secs))
+        print("Preview started on channel {:d}...timeout {:d}".format(
+            self.c_id, timeout_length_secs))
         while(self.ls.get_preview_status(self.c_id) and total_time_secs < timeout_length_secs):
             self.cur = self.ls.get_preview_pwm(self.c_id)
             if cur_local != self.cur:
                 self.pwm.set_s(self.c_id, self.cur)
                 cur_local = self.cur
-                print("Preview value changed to {:d} on channel {:d}".format(cur_local, self.c_id ))
+                print("Preview value changed to {:d} on channel {:d}".format(
+                    cur_local, self.c_id))
             self.broadcast()
             time.sleep(self.sleepTime)
             total_time_secs += self.sleepTime
-        print("Preview ended on channel {:d}...total time {:d}".format(self.c_id, total_time_secs))
+        print("Preview ended on channel {:d}...total time {:d}".format(
+            self.c_id, total_time_secs))
         self.cur = cur_init
         self.ls.set_preview_status(self.c_id)
-        
 
     def catchup_worker(self):
-        
-        catchup_time= s.catchup_time
+
+        catchup_time = s.catchup_time
         catchup_steps = s.catchup_steps
 
         curTime = datetime.now()
@@ -170,17 +171,18 @@ class Channel(Thread):
         dim_speed = s.clouds_dim_speed
         init_cur = self.cur
 
-        print("{} Cloud Coverage begin channel {} : Cur = {}".format(datetime.now(), self.c_id, self.cur))
-        dimTo = round(self.cur * dim_percent)
-        dimInterval = round(self.cur / dim_resolution)
+        print("{} Cloud Coverage begin channel {} : Cur = {}".format(
+            datetime.now(), self.c_id, self.cur))
+        dim_to = round(self.cur * dim_percent)
+        dim_interval = round(self.cur / dim_resolution)
 
         while not self.cancelled:
-            while self.cur > dimTo and s.weather == "cloudy":
-                self.cur -= dimInterval
+            while self.cur > dim_to and s.weather == "cloudy":
+                self.cur -= dim_interval
                 self.pwm.set_s(self.c_id, self.cur)
                 time.sleep(dim_speed)
             while self.cur < init_cur:
-                self.cur += dimInterval
+                self.cur += dim_interval
                 self.pwm.set_s(self.c_id, self.cur)
                 time.sleep(dim_speed)
 
@@ -193,9 +195,9 @@ class Channel(Thread):
                 wave_obj = sa.WaveObject.from_wave_file("sound/t1.wav")
                 # wave_obj = sa.WaveObject.from_wave_file("sound/t" + str(random.randint(1, 5)) + ".wav")
                 play_obj = wave_obj.play()
-            except:
-                logging.info("Cant play thunderstorm audio")
-        while (s.weather == "storm"):
+            except ImportError:
+                logger.info("Cant import SimpleAudio / play thunderstorm audio")
+        while s.weather == "storm":
 
             # dim to percentage of normal weather
             # TODO
@@ -206,8 +208,8 @@ class Channel(Thread):
                 self.pwm.set_s(self.c_id, LED_MAX)
                 time.sleep(random.uniform(0, .02))
                 print(datetime.now().strftime('%H:%M:%S')
-                    + "|Channel = " + str(self.c_id)
-                    + "|Lightning Strike!")
+                      + "|Channel = " + str(self.c_id)
+                      + "|Lightning Strike!")
 
                 if (random.randint(1, 5) == 2):
                     x = 0
@@ -221,13 +223,3 @@ class Channel(Thread):
                         time.sleep(random.uniform(0, .09))
 
                     time.sleep(random.uniform(0, 4))
-
-
-
-# my_class_instance = MyClass()
-
-# # explicit start is better than implicit start in constructor
-# my_class_instance.start()
-
-# # you can kill the thread with
-# my_class_instance.cancel()
