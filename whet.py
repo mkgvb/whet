@@ -14,8 +14,8 @@ import Settings
 import Channel
 from WeatherType import WeatherType
 DEBUG = True
-MAIN_LOOP_TIME = 15
-MAIN_LOOP_HEALTH_FREQ = 8
+MAIN_LOOP_TIME = 1
+MAIN_LOOP_HEALTH_FREQ = 120
 LED_MAX = 4095  # Max Brightness
 LED_MIN = 0     # Min Brightness (off)
 
@@ -29,7 +29,7 @@ def makeLogger():
         os.makedirs(logdir)
 
     logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     formatter = logging.Formatter('%(asctime)s:%(levelname)s: %(message)s')
 
     handler = logging.handlers.TimedRotatingFileHandler(logdir + "whet.log",
@@ -40,18 +40,18 @@ def makeLogger():
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    debug_handler = logging.handlers.TimedRotatingFileHandler(logdir + "whet-DEBUG.log",
-                                                              when='midnight',
-                                                              interval=1,
-                                                              backupCount=2)
-    debug_handler.setLevel(logging.DEBUG)
-    debug_handler.setFormatter(formatter)
-    logger.addHandler(debug_handler)
+    # debug_handler = logging.handlers.TimedRotatingFileHandler(logdir + "whet-DEBUG.log",
+    #                                                           when='midnight',
+    #                                                           interval=1,
+    #                                                           backupCount=2)
+    # debug_handler.setLevel(logging.DEBUG)
+    # debug_handler.setFormatter(formatter)
+    # logger.addHandler(debug_handler)
 
-    consoleHandler = logging.StreamHandler()
-    consoleHandler.setLevel(logging.INFO)
-    consoleHandler.setFormatter(formatter)
-    logger.addHandler(consoleHandler)
+    # consoleHandler = logging.StreamHandler()
+    # consoleHandler.setLevel(logging.INFO)
+    # consoleHandler.setFormatter(formatter)
+    # logger.addHandler(consoleHandler)
     return logger
 
 
