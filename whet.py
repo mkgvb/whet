@@ -40,18 +40,18 @@ def makeLogger():
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    # debug_handler = logging.handlers.TimedRotatingFileHandler(logdir + "whet-DEBUG.log",
-    #                                                           when='midnight',
-    #                                                           interval=1,
-    #                                                           backupCount=2)
-    # debug_handler.setLevel(logging.DEBUG)
-    # debug_handler.setFormatter(formatter)
-    # logger.addHandler(debug_handler)
+    debug_handler = logging.handlers.TimedRotatingFileHandler(logdir + "whet-DEBUG.log",
+                                                              when='midnight',
+                                                              interval=1,
+                                                              backupCount=2)
+    debug_handler.setLevel(logging.DEBUG)
+    debug_handler.setFormatter(formatter)
+    logger.addHandler(debug_handler)
 
-    # consoleHandler = logging.StreamHandler()
-    # consoleHandler.setLevel(logging.INFO)
-    # consoleHandler.setFormatter(formatter)
-    # logger.addHandler(consoleHandler)
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setLevel(logging.INFO)
+    consoleHandler.setFormatter(formatter)
+    logger.addHandler(consoleHandler)
     return logger
 
 

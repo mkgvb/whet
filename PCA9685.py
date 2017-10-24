@@ -23,7 +23,7 @@ import logging
 import time
 import math
 
-
+INVERT = False
 # Registers/etc:
 PCA9685_ADDRESS    = 0x40
 MODE1              = 0x00
@@ -102,7 +102,8 @@ class PCA9685(object):
 
     def set_pwm(self, channel, on, off):
         """Sets a single PWM channel."""
-        off = abs(off - max_val)
+        if INVERT:
+             off = abs(off - max_val)
         self._device.write8(LED0_ON_L+4*channel, on & 0xFF)
         self._device.write8(LED0_ON_H+4*channel, on >> 8)
         self._device.write8(LED0_OFF_L+4*channel, off & 0xFF)
@@ -110,7 +111,8 @@ class PCA9685(object):
 
     def set_all_pwm(self, on, off):
         """Sets all PWM channels."""
-        off = abs(off - max_val)
+        if INVERT:        
+            off = abs(off - max_val)
         self._device.write8(ALL_LED_ON_L, on & 0xFF)
         self._device.write8(ALL_LED_ON_H, on >> 8)
         self._device.write8(ALL_LED_OFF_L, off & 0xFF)
@@ -118,7 +120,8 @@ class PCA9685(object):
 
     def set_s(self, channel, off):
         """Sets a single PWM channel."""
-        off = abs(off - max_val)
+        if INVERT:        
+            off = abs(off - max_val)
         self._device.write8(LED0_ON_L+4*channel, 0 & 0xFF)
         self._device.write8(LED0_ON_H+4*channel, 0 >> 8)
         self._device.write8(LED0_OFF_L+4*channel, off & 0xFF)
@@ -126,7 +129,8 @@ class PCA9685(object):
 
     def set_all(self, off):
         """Sets all PWM channels."""
-        off = abs(off - max_val)
+        if INVERT:
+            off = abs(off - max_val)
         self._device.write8(ALL_LED_ON_L, 0 & 0xFF)
         self._device.write8(ALL_LED_ON_H, 0 >> 8)
         self._device.write8(ALL_LED_OFF_L, off & 0xFF)
