@@ -91,7 +91,7 @@ $('#connect').click(function () {
     update_ui();
     return false;
 });
-$('form').submit(function () {
+$('#chatform').submit(function () {
     var text = $('#text').val();
     log('Sending: ' + text);
     conn.send(text);

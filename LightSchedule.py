@@ -1,17 +1,18 @@
 import json
 import os
 import logging
+import random
 
 FILELOC = 'json/schedule.json'
 
 HOURS = 24
 LED_MAX = 4095
 LED_MIN = 0
+LOGGER = logging.getLogger('__main__')
 
 
 class LightSchedule(dict):
     """Class to hold lighting schedule"""
-    logger = logging.getLogger('__main__')
 
     last_access_time = 0
 
@@ -27,7 +28,7 @@ class LightSchedule(dict):
 
     def default(self):
         channels = []
-        for j in range(4):
+        for j in range(5):
             channel = {}
             schedule = []
 
@@ -37,11 +38,12 @@ class LightSchedule(dict):
             channel['preview'] = preview
             
             channel['id'] = j 
+            channel['color'] = '#' + str(random.randint(0,999999))
 
             for i in range(0,23):
                 dp = {}
                 dp['hour'] = i
-                dp['percent'] = 0
+                dp['percent'] = random.randint(0,100)
                 schedule.append(dp)
             channel['schedule'] = schedule
             
@@ -66,10 +68,10 @@ class LightSchedule(dict):
                 try:
                     with open(FILELOC) as data_file:
                         self.data = json.load(data_file)
-                        self.logger.info("Channel Schedule Changed " + str(os.stat(FILELOC).st_mtime))
+                        LOGGER.info("Channel Schedule Changed " + str(os.stat(FILELOC).st_mtime))
                         valid_read = True
                 except:
-                    self.logger.exception("Thread File Read Failed!!! - FIX THIS")
+                    LOGGER.exception("Thread File Read Failed!!! - FIX THIS")
                 
 
         return self.data['channels']
@@ -91,7 +93,7 @@ class LightSchedule(dict):
                         c_id = int(obj2['percent'])
 
         if c_id is None:
-            self.logger.info("Something went wrong getting percent")
+            LOGGER.info("Something went wrong getting percent")
             return 0
         else:
             return min(100, max(c_id, 0))

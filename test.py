@@ -54,7 +54,7 @@ try:
             j -= 1
         time.sleep(1)
 
-        for c in range(0,4):
+        for c in range(0,5):
             while i < LED_MAX:
                 pwm.set_s(c, min(LED_MAX,i))
                 i += 1
