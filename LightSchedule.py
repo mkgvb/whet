@@ -8,15 +8,52 @@ HOURS = 24
 LED_MAX = 4095
 LED_MIN = 0
 
-class LightSchedule(object):
+
+class LightSchedule(dict):
     """Class to hold lighting schedule"""
     logger = logging.getLogger('__main__')
 
     last_access_time = 0
-    data = None
 
-    # def __init__(self):
-    #     pass:
+    def __init__(self, *args, **kwargs):
+        super(LightSchedule, self).__init__(*args, **kwargs)
+        self.__dict__ = self
+
+        if not os.path.isfile(FILELOC):
+            self.default()
+            self.set_data()
+            
+
+
+    def default(self):
+        channels = []
+        for j in range(4):
+            channel = {}
+            schedule = []
+
+            preview = {}
+            preview["active"] = False
+            preview["value"] = 0
+            channel['preview'] = preview
+            
+            channel['id'] = j 
+
+            for i in range(0,23):
+                dp = {}
+                dp['hour'] = i
+                dp['percent'] = 0
+                schedule.append(dp)
+            channel['schedule'] = schedule
+            
+            channels.append(channel)
+
+        self.data = {} 
+        self.data["channels"] = channels
+
+        # for i in range(5):
+        #     self.data['channels'][i] = { id =i}
+        print(json.dumps(self.data, indent=4))
+
 
 
 
