@@ -11,7 +11,7 @@ import tornado.web
 import sockjs.tornado
 
 LIGHT_SCHEDULE_FILE = 'json/schedule.json'
-SETTINGS_FILE = 'json/settings.json'
+SETTINGS_FILE = 'json/whet_settings.json'
 logger = logging.getLogger('__main__')
 
 class IndexHandler(tornado.web.RequestHandler):

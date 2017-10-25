@@ -4,12 +4,9 @@ import time
 from datetime import datetime, timedelta
 import random
 import json
-import whet
 
 from WeatherType import WeatherType
-import LightSchedule
 import Settings
-import websocket
 from websocket import create_connection
 
 s = Settings.Settings()

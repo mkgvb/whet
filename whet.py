@@ -64,14 +64,16 @@ def main_loop():
     dead_tornado_cnt = 0
     dead_channel_cnt = 0
 
-    # Server----------------------------------------------------------
+    # Settings ----------------------------------------------------------------
+    settings = Settings.Settings()
+
+    # Server ------------------------------------------------------------------
     tornado_server = Server.Server()
     tornado_server.start()
     time.sleep(1)
 
     #Pid = Pid.Pid()
     light_schedule = LightSchedule.LightSchedule()
-    settings = Settings.Settings()
 
     # Initialise the PCA9685, if cant use a dummy (for testing on machine that is not pi)
     try:
@@ -93,7 +95,7 @@ def main_loop():
         channel_threads = []
 
         while True:
-            settings.load_file()
+            settings.read_file()
 
             # untested
             if not tornado_server.is_alive():
@@ -137,7 +139,6 @@ def main_loop():
                             dead_channel_cnt, dead_tornado_cnt)
 
             time.sleep(MAIN_LOOP_TIME)
-            settings.dump_file()
             loops += 1
 
     except KeyboardInterrupt:

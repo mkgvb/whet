@@ -23,10 +23,11 @@ ChatConnection	../Server.py	/^class ChatConnection(sockjs.tornado.SockJSConnecti
 DEBUG	../whet.py	/^DEBUG = True$/;"	kind:variable	line:16
 Enum	../WeatherType.py	/^from enum import Enum$/;"	kind:namespace	line:1
 FILELOC	../LightSchedule.py	/^FILELOC = 'json\/schedule.json'$/;"	kind:variable	line:6
-FILELOC	../Settings.py	/^FILELOC = 'json\/settings.json'$/;"	kind:variable	line:7
+FILELOC	../Settings.py	/^FILELOC = 'json\/whet_settings.json'$/;"	kind:variable	line:7
 HOURS	../LightSchedule.py	/^HOURS = 24$/;"	kind:variable	line:8
 I2C	../PCA9685.py	/^            import Adafruit_GPIO.I2C as I2C$/;"	kind:namespace	line:73
 I2C	../PCA9685.py	/^        import Adafruit_GPIO.I2C as I2C$/;"	kind:namespace	line:60
+INVERT	../PCA9685.py	/^INVERT = False$/;"	kind:variable	line:26
 INVRT	../PCA9685.py	/^INVRT              = 0x10$/;"	kind:variable	line:48
 INVRT	../PCA9685_dummy.py	/^INVRT              = 0x10$/;"	kind:variable	line:49
 IndexHandler	../Server.py	/^class IndexHandler(tornado.web.RequestHandler):$/;"	kind:class	line:17
@@ -81,7 +82,7 @@ RESTART	../PCA9685.py	/^RESTART            = 0x80$/;"	kind:variable	line:45
 RESTART	../PCA9685_dummy.py	/^RESTART            = 0x80$/;"	kind:variable	line:46
 RUN	../test.py	/^    RUN = False$/;"	kind:variable	line:72
 RUN	../test.py	/^RUN = True$/;"	kind:variable	line:35
-SETTINGS_FILE	../Server.py	/^SETTINGS_FILE = 'json\/settings.json'$/;"	kind:variable	line:14
+SETTINGS_FILE	../Server.py	/^SETTINGS_FILE = 'json\/whet_settings.json'$/;"	kind:variable	line:14
 SLEEP	../PCA9685.py	/^SLEEP              = 0x10$/;"	kind:variable	line:46
 SLEEP	../PCA9685_dummy.py	/^SLEEP              = 0x10$/;"	kind:variable	line:47
 SUBADR1	../PCA9685.py	/^SUBADR1            = 0x02$/;"	kind:variable	line:31
@@ -132,12 +133,12 @@ division	../PCA9685_dummy.py	/^from __future__ import division$/;"	kind:namespac
 dump_file	../Settings.py	/^    def dump_file(self):$/;"	kind:member	line:40
 get	../Server.py	/^    def get(self):$/;"	kind:member	line:19
 get_data	../LightSchedule.py	/^    def get_data(self):$/;"	kind:member	line:62
-get_number_of_channels	../LightSchedule.py	/^    def get_number_of_channels(self):$/;"	kind:member	line:133
+get_number_of_channels	../LightSchedule.py	/^    def get_number_of_channels(self):$/;"	kind:member	line:134
 get_percent	../LightSchedule.py	/^    def get_percent(self, channel, hour):$/;"	kind:member	line:86
-get_percent_cur	../LightSchedule.py	/^    def get_percent_cur(self, pwm_val):$/;"	kind:member	line:101
-get_preview_pwm	../LightSchedule.py	/^    def get_preview_pwm(self, channel):$/;"	kind:member	line:109
-get_preview_status	../LightSchedule.py	/^    def get_preview_status(self, channel):$/;"	kind:member	line:116
-get_pwm	../LightSchedule.py	/^    def get_pwm(self, channel, hour):$/;"	kind:member	line:105
+get_percent_cur	../LightSchedule.py	/^    def get_percent_cur(self, pwm_val):$/;"	kind:member	line:102
+get_preview_pwm	../LightSchedule.py	/^    def get_preview_pwm(self, channel):$/;"	kind:member	line:110
+get_preview_status	../LightSchedule.py	/^    def get_preview_status(self, channel):$/;"	kind:member	line:117
+get_pwm	../LightSchedule.py	/^    def get_pwm(self, channel, hour):$/;"	kind:member	line:106
 i	../test.py	/^    i = 0$/;"	kind:variable	line:45
 ioloop	../Server.py	/^import tornado.ioloop$/;"	kind:namespace	line:9
 j	../test.py	/^    j = 0$/;"	kind:variable	line:46
@@ -195,17 +196,17 @@ run	../Server.py	/^    def run(self):$/;"	kind:member	line:99
 s	../Channel.py	/^s = Settings.Settings()$/;"	kind:variable	line:15
 sa	../Channel.py	/^                import simpleaudio as sa$/;"	kind:namespace	line:194
 send	../wsclient.py	/^def send(msg):$/;"	kind:function	line:14
-set_all	../PCA9685.py	/^    def set_all(self, off):$/;"	kind:member	line:127
+set_all	../PCA9685.py	/^    def set_all(self, off):$/;"	kind:member	line:130
 set_all	../PCA9685_dummy.py	/^    def set_all(self, off):$/;"	kind:member	line:83
-set_all_pwm	../PCA9685.py	/^    def set_all_pwm(self, on, off):$/;"	kind:member	line:111
+set_all_pwm	../PCA9685.py	/^    def set_all_pwm(self, on, off):$/;"	kind:member	line:112
 set_all_pwm	../PCA9685_dummy.py	/^    def set_all_pwm(self, on, off):$/;"	kind:member	line:75
 set_data	../LightSchedule.py	/^    def set_data(self):$/;"	kind:member	line:79
-set_preview_status	../LightSchedule.py	/^    def set_preview_status(self, channel, status=False):$/;"	kind:member	line:123
+set_preview_status	../LightSchedule.py	/^    def set_preview_status(self, channel, status=False):$/;"	kind:member	line:124
 set_pwm	../PCA9685.py	/^    def set_pwm(self, channel, on, off):$/;"	kind:member	line:103
 set_pwm	../PCA9685_dummy.py	/^    def set_pwm(self, channel, on, off):$/;"	kind:member	line:71
 set_pwm_freq	../PCA9685.py	/^    def set_pwm_freq(self, freq_hz):$/;"	kind:member	line:85
 set_pwm_freq	../PCA9685_dummy.py	/^    def set_pwm_freq(self, freq_hz):$/;"	kind:member	line:67
-set_s	../PCA9685.py	/^    def set_s(self, channel, off):$/;"	kind:member	line:119
+set_s	../PCA9685.py	/^    def set_s(self, channel, off):$/;"	kind:member	line:121
 set_s	../PCA9685_dummy.py	/^    def set_s(self, channel, off):$/;"	kind:member	line:79
 sockjs	../Server.py	/^import sockjs.tornado$/;"	kind:namespace	line:11
 software_reset	../PCA9685.py	/^def software_reset(i2c=None, **kwargs):$/;"	kind:function	line:56

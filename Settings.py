@@ -2,9 +2,10 @@
 import logging
 import json
 from WeatherType import WeatherType
+import os
 
 
-FILELOC = 'json/settings.json'
+FILELOC = 'json/whet_settings.json'
 
 class Settings(object):
     """Class to hold settings"""
@@ -14,7 +15,7 @@ class Settings(object):
 
     def __init__(self):
         try:
-            self.load_file()
+            self.read_file()
         except IOError:
             self.logger.info("No settings file found...using defaults and creating file ")
 
@@ -46,7 +47,7 @@ class Settings(object):
             string += '}'
             data_file.write(string)
 
-    def load_file(self):
+    def read_file(self):
         '''reads file from disk'''
         with open(FILELOC) as data_file:
             self.__dict__ = json.load(data_file)["settings"]

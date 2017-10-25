@@ -23,8 +23,6 @@ class LightSchedule(dict):
         if not os.path.isfile(FILELOC):
             self.default()
             self.set_data()
-            
-
 
     def default(self):
         channels = []
@@ -36,28 +34,25 @@ class LightSchedule(dict):
             preview["active"] = False
             preview["value"] = 0
             channel['preview'] = preview
-            
-            channel['id'] = j 
-            channel['color'] = '#' + str(random.randint(0,999999))
 
-            for i in range(0,23):
+            channel['id'] = j
+            channel['color'] = '#' + str(random.randint(0, 999999))
+
+            for i in range(0, 23):
                 dp = {}
                 dp['hour'] = i
-                dp['percent'] = random.randint(0,100)
+                dp['percent'] = random.randint(0, 100)
                 schedule.append(dp)
             channel['schedule'] = schedule
-            
+
             channels.append(channel)
 
-        self.data = {} 
+        self.data = {}
         self.data["channels"] = channels
 
         # for i in range(5):
         #     self.data['channels'][i] = { id =i}
         print(json.dumps(self.data, indent=4))
-
-
-
 
     def get_data(self):
         """gets a current copy of the schedule if it has changed"""
@@ -68,11 +63,11 @@ class LightSchedule(dict):
                 try:
                     with open(FILELOC) as data_file:
                         self.data = json.load(data_file)
-                        LOGGER.info("Channel Schedule Changed " + str(os.stat(FILELOC).st_mtime))
+                        LOGGER.info("Channel Schedule Changed " +
+                                    str(os.stat(FILELOC).st_mtime))
                         valid_read = True
                 except:
                     LOGGER.exception("Thread File Read Failed!!! - FIX THIS")
-                
 
         return self.data['channels']
 
@@ -82,7 +77,6 @@ class LightSchedule(dict):
             data_file.write(json.dumps(
                 self.data, default=lambda o: o.__dict__, sort_keys=True, indent=4))
 
-
     def get_percent(self, channel, hour):
         """gets percentage value from schedule"""
         data = self.get_data()
@@ -90,13 +84,10 @@ class LightSchedule(dict):
             if obj['id'] == channel:
                 for obj2 in obj['schedule']:
                     if obj2['hour'] == hour:
-                        c_id = int(obj2['percent'])
+                        return min(100, max(int(obj2['percent']), 0))
 
-        if c_id is None:
-            LOGGER.info("Something went wrong getting percent")
-            return 0
-        else:
-            return min(100, max(c_id, 0))
+        LOGGER.error("Hour=%s Channel=%s Something went wrong getting percent", hour, channel)
+        return 0
 
     def get_percent_cur(self, pwm_val):
         '''gets percent value of pwm_val'''
@@ -127,8 +118,6 @@ class LightSchedule(dict):
             if obj['id'] == channel:
                 obj['preview']['active'] = status
         self.set_data()
-
-
 
     def get_number_of_channels(self):
         """gets total number of active channels"""
