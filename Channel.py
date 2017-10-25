@@ -32,7 +32,7 @@ class Channel(Thread):
         self.curTime = datetime.now()
 
         catchup = round(abs((self.ls.get_pwm(self.c_id, self.curTime.hour) -
-                             self.ls.get_pwm(self.c_id, self.curTime.hour)) * (self.curTime.minute / 60)))
+                             self.ls.get_pwm(self.c_id, self.curTime.hour + 1)) * (self.curTime.minute / 60)))
         self.cur = min(self.ls.get_pwm(self.c_id, self.curTime.hour), self.ls.get_pwm(
             self.c_id, self.curTime.hour + 1)) + catchup
         self.ws = create_connection("ws://localhost:8080/chat/websocket")
