@@ -139,6 +139,7 @@ def main_loop():
                             dead_channel_cnt, dead_tornado_cnt)
 
             time.sleep(MAIN_LOOP_TIME)
+            
             loops += 1
 
     except KeyboardInterrupt:

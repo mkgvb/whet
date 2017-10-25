@@ -10,12 +10,14 @@ FILELOC = 'json/whet_settings.json'
 class Settings(object):
     """Class to hold settings"""
     # pylint: disable=too-many-instance-attributes
-    logger = logging.getLogger('__main__')  
+    logger = logging.getLogger('__main__')
+    last_modified_time = 0  
 
 
     def __init__(self):
         try:
             self.read_file()
+            self.last_modified_time = os.stat(FILELOC).st_mtime
         except IOError:
             self.logger.info("No settings file found...using defaults and creating file ")
 
@@ -37,6 +39,7 @@ class Settings(object):
             self.sound_on = True
 
             self.dump_file()
+            self.last_modified_time = os.stat(FILELOC).st_mtime
 
     def dump_file(self):
         '''dumps json representation of obj to disk'''
@@ -49,5 +52,6 @@ class Settings(object):
 
     def read_file(self):
         '''reads file from disk'''
-        with open(FILELOC) as data_file:
-            self.__dict__ = json.load(data_file)["settings"]
+        if self.last_modified_time != os.stat(FILELOC).st_mtime:
+            with open(FILELOC) as data_file:
+                self.__dict__ = json.load(data_file)["settings"]

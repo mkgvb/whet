@@ -28,11 +28,9 @@ class Channel(Thread):
         self.c_id = c_id
         self.curTime = datetime.now()
 
-        catchup = round(abs((self.ls.get_pwm(self.c_id, self.curTime.hour) -
-                             self.ls.get_pwm(self.c_id, self.curTime.hour + 1)) * (self.curTime.minute / 60)))
-        self.cur = min(self.ls.get_pwm(self.c_id, self.curTime.hour), self.ls.get_pwm(
-            self.c_id, self.curTime.hour + 1)) + catchup
-        self.ws = create_connection("ws://localhost:8080/chat/websocket")
+        self.catchup_worker()
+
+        self.ws = create_connection("ws://localhost:8080/chat/websocket", 2)
 
         #self.weather = Settings.Settings().weather
 
@@ -86,6 +84,7 @@ class Channel(Thread):
             # set
             self.pwm.set_s(self.c_id, self.cur)
             time.sleep(self.sleepTime)
+            s.read_file()
 
             # if (self.sleepTime > 0):
             #     self.broadcast()
@@ -139,25 +138,17 @@ class Channel(Thread):
         self.ls.set_preview_status(self.c_id)
 
     def catchup_worker(self):
+        '''runs at the begining of channel thread creation to catch it up to where brightness should be'''
 
-        catchup_time = s.catchup_time
-        catchup_steps = s.catchup_steps
+        catchup = round(abs((self.ls.get_pwm(self.c_id, self.curTime.hour) -
+                             self.ls.get_pwm(self.c_id, self.curTime.hour + 1)) * (self.curTime.minute / 60)))
+        self.cur = min(self.ls.get_pwm(self.c_id, self.curTime.hour), self.ls.get_pwm(
+            self.c_id, self.curTime.hour + 1)) + catchup
 
-        curTime = datetime.now()
-        curHour = curTime.hour
-        nextHour = (curTime + timedelta(hours=1)).hour
-        curGoal = self.ls.get_pwm(self.c_id, curHour)
-        nextGoal = self.ls.get_pwm(self.c_id, nextHour)
-        catchup_delta = nextGoal - curGoal
-        catchupGoal = curGoal + catchup_delta * (curTime.minute / 60)
-
-        # catchup - idealy runs once unless something is wrong
+        logger.info("Channel %s - Catchup to %s", self.c_id, self.cur)
         i = 0
-        while i <= catchup_steps:
-            self.cur += round(catchupGoal / catchup_steps)
-            self.pwm.set_s(self.c_id, self.cur)
-            time.sleep(catchup_time / catchup_steps)
-            print(i)
+        while i <= self.cur:
+            self.pwm.set_s(self.c_id, i)
             i += 1
 
     def cloud_worker(self):
