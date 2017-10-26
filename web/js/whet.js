@@ -1,5 +1,4 @@
 
-var channels = [];
 var lightSchedule = {};
 var settings = {};
 var conn = null;
@@ -42,11 +41,6 @@ function connect() {
             lightSchedule = eparsed.channels;
             //draw_lightSchedule_Table(lightSchedule);
             draw_lightSchedule_graph(lightSchedule);
-        }
-
-        if (eparsed.settings != null) {
-            settings = eparsed.settings;
-            draw_settings(settings);
         }
 
         var d = new Date();
@@ -170,90 +164,6 @@ function draw_pwmChannel(c_obj) {
         return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
     })
     $(content).append(listitems);
-}
-function draw_settings(settings) {
-
-    var content = $("#settings-content");
-    content.empty();
-
-    for (var property in settings) {
-        if (settings.hasOwnProperty(property)) {
-
-            var row = document.createElement('div');
-            row.className = 'form-group row';
-
-            var label = document.createElement('label');
-            label.className = 'col-3 col-form-label';
-            label.innerText = property.replace(/_/g, " ");
-            label.setAttribute('for', property);
-
-            var input = document.createElement('input');
-            input.className = 'form-control';
-
-            var input_wrap = document.createElement('div');
-            input_wrap.className = 'col-2';
-            input_wrap.appendChild(input);
-
-            if (typeof settings[property] === "number" || typeof settings[property] === "string") {
-                input.type = "textbox";
-                input.name = property;
-                input.value = settings[property];
-            }
-            if (typeof settings[property] === "boolean") {
-                input.type = "checkbox";
-                input.name = property;
-                input.id = property;
-                input.checked = settings[property];
-                $(input).bootstrapSwitch();
-
-            }
-
-
-
-            row.appendChild(label);
-            row.appendChild(input_wrap);
-            content.append(row);
-
-            // content.append("<div class='row'>"
-            // +"<div class='col col-lg-2'>"+ property + "</div>")
-            // content.append(input);
-            // content.append("</div> </div>")
-
-            // var 
-        }
-    }
-}
-
-
-function draw_lightSchedule_Table(channels) {
-
-    var content = $("#lightSchedule-content")
-    content.empty();
-    content.append("<th>" + "#" + "</th>")
-
-    for (h = 0; h < 24; h++) {
-        content.append("<th>" + h + "</th>")
-    }
-    for (var i = 0; i < channels.length; i++) {
-        var row = document.createElement('tr');
-        $(row).append("<th>" + channels[i].id + "</th>");   //channel name
-        content.append(row);
-
-        for (var j = 0; j < channels[i].schedule.length; j++) {
-            var column = document.createElement('td');
-            var input = document.createElement("input");
-            //$(input).attr("class","form-control");
-            $(input).attr("type", "number");
-            // $(input).attr("size","3");
-            $(input).attr("max", "100");
-            $(input).attr("value", channels[i].schedule[j].percent);
-            column.appendChild(input);
-            //column.innerText = channels[i].schedule[j].percent;
-            row.appendChild(column);
-        }
-
-
-    }
 }
 
 function hexToRgb(hex, alpha) {
