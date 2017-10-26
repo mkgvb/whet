@@ -41,7 +41,7 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
         try:
             j_obj = json.loads(message)
         except (ValueError):
-            logger.info("Malformed json received - {}".format(message))
+            logger.info("Malformed json received %s", message)
 
         if "channels" in j_obj:
             print("update")

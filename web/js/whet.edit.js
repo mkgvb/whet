@@ -1,5 +1,8 @@
 
-
+conn.onopen = function () {
+    conn.send(JSON.stringify({ request: "light_schedule" }));
+    update_ui();
+};
 conn.onmessage = function (e) {
 
     var eparsed = JSON.parse(e.data);
