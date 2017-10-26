@@ -4,7 +4,7 @@ import threading
 import time
 import os
 import Server
-import wsclient
+from websocket import create_connection
 
 import LightSchedule
 import PCA9685
@@ -13,6 +13,8 @@ import Pid
 import Settings
 import Channel
 from WeatherType import WeatherType
+import json
+
 DEBUG = True
 MAIN_LOOP_TIME = 1
 MAIN_LOOP_HEALTH_FREQ = 120
@@ -48,10 +50,10 @@ def makeLogger():
     debug_handler.setFormatter(formatter)
     logger.addHandler(debug_handler)
 
-    consoleHandler = logging.StreamHandler()
-    consoleHandler.setLevel(logging.INFO)
-    consoleHandler.setFormatter(formatter)
-    logger.addHandler(consoleHandler)
+    # consoleHandler = logging.StreamHandler()
+    # consoleHandler.setLevel(logging.INFO)
+    # consoleHandler.setFormatter(formatter)
+    # logger.addHandler(consoleHandler)
     return logger
 
 
@@ -129,9 +131,16 @@ def main_loop():
                     channel_threads.append(channel_obj)
                     channel_obj.start()
 
+            conn = create_connection("ws://localhost:8080/chat/websocket")
             for i, val in enumerate(channel_threads):
                 if val.is_alive:
-                    val.broadcast()
+                    conn.send(
+                        '{"channel":'
+                        + json.dumps(val.broadcast(), default=lambda o: o.__dict__,
+                                sort_keys=True, indent=4)
+                        + '}')
+                    time.sleep(.05) #TODO if this solves the memory leak then refactor to group all messages so there is no need to wait for send
+            conn.close()
 
             if loops >= MAIN_LOOP_HEALTH_FREQ:
                 loops = 0

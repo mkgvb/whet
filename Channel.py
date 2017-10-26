@@ -7,7 +7,6 @@ import json
 
 from WeatherType import WeatherType
 import Settings
-from websocket import create_connection
 
 s = Settings.Settings()
 LED_MIN = 0
@@ -30,7 +29,7 @@ class Channel(Thread):
 
         self.catchup_worker()
 
-        self.ws = create_connection("ws://localhost:8080/chat/websocket", 2)
+        self.sendInfo = {}
 
         #self.weather = Settings.Settings().weather
 
@@ -93,7 +92,6 @@ class Channel(Thread):
         """End this timer thread"""
         self.cancelled = True
         time.sleep(.2)
-        self.ws.close()
 
     def update(self):
         """Update the counters"""
@@ -101,19 +99,15 @@ class Channel(Thread):
 
     def broadcast(self):
 
-        obj = {}
-        obj['c_id'] = self.c_id
-        obj['cur'] = self.cur
-        obj['goal'] = self.goal
-        obj['sleepTime'] = self.sleepTime
-        obj['delta'] = self.delta
-        obj['percent'] = round((self.cur / LED_MAX * 100))
-        self.ws.send(
-            '{"channel":'
-            + json.dumps(obj, default=lambda o: o.__dict__,
-                        sort_keys=True, indent=4)
-            + '}'
-        )
+        
+        self.sendInfo['c_id'] = self.c_id
+        self.sendInfo['cur'] = self.cur
+        self.sendInfo['goal'] = self.goal
+        self.sendInfo['sleepTime'] = self.sleepTime
+        self.sendInfo['delta'] = self.delta
+        self.sendInfo['percent'] = round((self.cur / LED_MAX * 100))
+        self.sendInfo['weather'] = s.weather
+        return self.sendInfo
 
     def preview_worker(self):
         timeout_length_secs = 300
@@ -186,6 +180,7 @@ class Channel(Thread):
             except ImportError:
                 logger.info("Cant import SimpleAudio / play thunderstorm audio")
         while s.weather == "storm":
+            s.read_file()
 
             # dim to percentage of normal weather
             # TODO
