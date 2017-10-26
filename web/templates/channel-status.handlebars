@@ -1,8 +1,8 @@
-<div id="channel_{{c_id}}" class="row">
-    <span class="channel-id col-xs-4"><b>Channel {{c_id}}</b> {{cur}}/{{sleepTime}}/{{goal}}</span>
+<div id="channel_{{c_id}}">
     <div class="progress">
         <div class="progress-bar" role="progressbar" aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100" style="width:{{percent}}%">
-            <span class="progress-text">{{percent}}%</span>
         </div>
+        <div style="text-align: left" class="progress-bar-title left-title">{{percent}}%</div>
+        <div class="progress-bar-title">{{cur}}/{{sleepTime}}/{{goal}}</div>
     </div>
 </div>

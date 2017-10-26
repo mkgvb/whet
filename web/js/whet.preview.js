@@ -1,53 +1,17 @@
-$(function () {
-    var channels = [];
-    var lightSchedule = {};
-    var settings = {};
-    var conn = null;
-
-    if (conn == null)
-        connect();
-
-    function connect() {
-        disconnect();
-
-        conn = new SockJS('http://' + window.location.host + '/chat', 0);
-
-        conn.onopen = function () {
-            conn.send('{"request":"light_schedule"}');
-            update_ui();
-        };
-        conn.onmessage = function (e) {
-
-            var eparsed = JSON.parse(e.data);
-
-            if (eparsed.channel != null) {
-                draw_pwmChannel(eparsed.channel);
-            }
-
-            if (eparsed.channels != null) {
-                edit(eparsed.channels);
-
-            }
-
-        };
-        conn.onclose = function () {
-            log('Disconnected.');
-            conn = null;
-            update_ui();
-        };
-    }
-
-    function update_ui() {
-        var msg = '';
-        if (conn == null || conn.readyState != SockJS.OPEN) {
-            $('#status').text('disconnected');
-            $('#connect').text('Connect');
-        } else {
-            $('#status').text('connected (' + conn.protocol + ')');
-            $('#connect').text('Disconnect');
-        }
-    }
-
+conn.onmessage = function (e) {
+    
+                var eparsed = JSON.parse(e.data);
+    
+                if (eparsed.channel != null) {
+                    draw_pwmChannel(eparsed.channel);
+                }
+    
+                if (eparsed.channels != null) {
+                    edit(eparsed.channels);
+    
+                }
+    
+            };
 
 
     function edit(eChannels) {
@@ -163,6 +127,3 @@ $(function () {
             }
         });
     }
-
-
-});
