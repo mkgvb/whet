@@ -1,6 +1,5 @@
 
 var lightSchedule = {};
-var settings = {};
 var conn = null;
 
 
@@ -109,6 +108,19 @@ Handlebars.getTemplate = function (name) {
     }
     return Handlebars.templates[name];
 };
+
+draw_top();
+function draw_top() {
+    // Compile the template
+    var theTemplate = Handlebars.getTemplate('top');
+
+    // Pass our data to the template
+    var theCompiledHtml = theTemplate();
+
+    // Add the compiled html to the page
+    $('#top').replaceWith(theCompiledHtml);
+}
+
 draw_nav();
 function draw_nav() {
     var content = $(".body");
@@ -159,8 +171,8 @@ function draw_pwmChannel(c_obj) {
     //sort the children
     var listitems = content.children("div");
     listitems.sort(function (a, b) {
-        var compA = $(a).text().toUpperCase();
-        var compB = $(b).text().toUpperCase();
+        var compA = $(a).attr('id').toUpperCase();
+        var compB = $(b).attr('id').toUpperCase();
         //console.log((compA < compB) ? -1 : (compA > compB) ? 1 : 0);
         return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
     })
