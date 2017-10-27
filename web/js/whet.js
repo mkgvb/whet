@@ -15,7 +15,8 @@ function log(msg) {
 }
 function connect() {
     disconnect();
-    conn = new SockJS('http://' + window.location.host + '/chat', 0);   //last param is transport, 0 is websocket
+    console.log(window.location);
+    conn = new SockJS(window.location.origin + '/chat', 0);   //last param is transport, 0 is websocket
     log('Connecting...');
     conn.onopen = function () {
         log('Connected.');

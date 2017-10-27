@@ -90,7 +90,7 @@ SUBADR2	../PCA9685.py	/^SUBADR2            = 0x03$/;"	kind:variable	line:32
 SUBADR2	../PCA9685_dummy.py	/^SUBADR2            = 0x03$/;"	kind:variable	line:33
 SUBADR3	../PCA9685.py	/^SUBADR3            = 0x04$/;"	kind:variable	line:33
 SUBADR3	../PCA9685_dummy.py	/^SUBADR3            = 0x04$/;"	kind:variable	line:34
-Server	../Server.py	/^class Server(Thread):$/;"	kind:class	line:77
+Server	../Server.py	/^class Server(Thread):$/;"	kind:class	line:76
 Server	../whet.py	/^import Server$/;"	kind:namespace	line:6
 Server.py	../Server.py	1;"	kind:file	line:1
 Settings	../Channel.py	/^import Settings$/;"	kind:namespace	line:9
@@ -113,7 +113,7 @@ __init__	../LightSchedule.py	/^    def __init__(self, *args, **kwargs):$/;"	kind
 __init__	../PCA9685.py	/^    def __init__(self, address=PCA9685_ADDRESS, i2c=None, **kwargs):$/;"	kind:member	line:69
 __init__	../PCA9685_dummy.py	/^    def __init__(self, address=PCA9685_ADDRESS, i2c=None, **kwargs):$/;"	kind:member	line:61
 __init__	../Pid.py	/^    def __init__(self):$/;"	kind:member	line:9
-__init__	../Server.py	/^    def __init__(self):$/;"	kind:member	line:79
+__init__	../Server.py	/^    def __init__(self):$/;"	kind:member	line:78
 __init__	../Settings.py	/^    def __init__(self):$/;"	kind:member	line:17
 audio	../Channel.py	/^                logger.info("Cant import SimpleAudio \/ play thunderstorm audio")$/;"	kind:namespace	line:181
 broadcast	../Channel.py	/^    def broadcast(self):$/;"	kind:member	line:100
@@ -194,7 +194,7 @@ random	../LightSchedule.py	/^import random$/;"	kind:namespace	line:4
 random	../test.py	/^import random$/;"	kind:namespace	line:6
 read_file	../Settings.py	/^    def read_file(self):$/;"	kind:member	line:53
 run	../Channel.py	/^    def run(self):$/;"	kind:member	line:36
-run	../Server.py	/^    def run(self):$/;"	kind:member	line:100
+run	../Server.py	/^    def run(self):$/;"	kind:member	line:99
 s	../Channel.py	/^s = Settings.Settings()$/;"	kind:variable	line:11
 sa	../Channel.py	/^                import simpleaudio as sa$/;"	kind:namespace	line:176
 send	../wsclient.py	/^def send(msg):$/;"	kind:function	line:14
@@ -212,7 +212,7 @@ set_s	../PCA9685.py	/^    def set_s(self, channel, off):$/;"	kind:member	line:12
 set_s	../PCA9685_dummy.py	/^    def set_s(self, channel, off):$/;"	kind:member	line:79
 sockjs	../Server.py	/^import sockjs.tornado$/;"	kind:namespace	line:11
 software_reset	../PCA9685.py	/^def software_reset(i2c=None, **kwargs):$/;"	kind:function	line:56
-stop	../Server.py	/^    def stop(self):$/;"	kind:member	line:104
+stop	../Server.py	/^    def stop(self):$/;"	kind:member	line:103
 storm	../WeatherType.py	/^    storm = 3$/;"	kind:variable	line:8
 sys	../Pid.py	/^import sys$/;"	kind:namespace	line:2
 test.py	../test.py	1;"	kind:file	line:1
