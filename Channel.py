@@ -27,7 +27,7 @@ class Channel(Thread):
         self.c_id = c_id
         self.curTime = datetime.now()
 
-        self.catchup_worker()
+        self.transition_worker()
 
         self.sendInfo = {}
 
@@ -99,7 +99,6 @@ class Channel(Thread):
 
     def broadcast(self):
 
-        
         self.sendInfo['c_id'] = self.c_id
         self.sendInfo['cur'] = self.cur
         self.sendInfo['goal'] = self.goal
@@ -111,39 +110,49 @@ class Channel(Thread):
 
     def preview_worker(self):
         timeout_length_secs = 300
+        sleep_interval = 1
         total_time_secs = 0
-        cur_init = self.cur
-        cur_local = 0
+        cur_init = self.ls.get_preview_pwm(self.c_id)
+        cur_init_new = cur_init
         print("Preview started on channel {:d}...timeout {:d}".format(
             self.c_id, timeout_length_secs))
+
+        self.transition_worker(_start=self.cur, _end=cur_init_new, _usetime=False)
+        print("Preview value changed to {:d} on channel {:d}".format( cur_init_new, self.c_id))
         while(self.ls.get_preview_status(self.c_id) and total_time_secs < timeout_length_secs):
-            self.cur = self.ls.get_preview_pwm(self.c_id)
-            if cur_local != self.cur:
-                self.pwm.set_s(self.c_id, self.cur)
-                cur_local = self.cur
-                print("Preview value changed to {:d} on channel {:d}".format(
-                    cur_local, self.c_id))
-            self.broadcast()
-            time.sleep(self.sleepTime)
-            total_time_secs += self.sleepTime
+            if cur_init_new != self.ls.get_preview_pwm(self.c_id):
+                cur_init_new =  self.ls.get_preview_pwm(self.c_id)
+                self.transition_worker(_start=cur_init, _end=cur_init_new, _usetime=False)
+                cur_init = cur_init_new
+
+            time.sleep(sleep_interval)
+            total_time_secs += sleep_interval
         print("Preview ended on channel {:d}...total time {:d}".format(
             self.c_id, total_time_secs))
-        self.cur = cur_init
         self.ls.set_preview_status(self.c_id)
+        self.transition_worker(_start=cur_init_new)
 
-    def catchup_worker(self):
+    def transition_worker(self, _start=0, _end=0, _usetime=True):
         '''runs at the begining of channel thread creation to catch it up to where brightness should be'''
 
-        catchup = round(abs((self.ls.get_pwm(self.c_id, self.curTime.hour) -
-                             self.ls.get_pwm(self.c_id, self.curTime.hour + 1)) * (self.curTime.minute / 60)))
-        self.cur = min(self.ls.get_pwm(self.c_id, self.curTime.hour), self.ls.get_pwm(
-            self.c_id, self.curTime.hour + 1)) + catchup
+        if _usetime:
+            catchup = round(abs((self.ls.get_pwm(self.c_id, self.curTime.hour) -
+                                 self.ls.get_pwm(self.c_id, self.curTime.hour + 1)) * (self.curTime.minute / 60)))
+            trans_goal = min(self.ls.get_pwm(self.c_id, self.curTime.hour), self.ls.get_pwm(
+                self.c_id, self.curTime.hour + 1)) + catchup
+        else:
+            trans_goal = _end
 
-        logger.info("Channel %s - Catchup to %s", self.c_id, self.cur)
-        i = 0
-        while i <= self.cur:
-            self.pwm.set_s(self.c_id, i)
+        i = _start
+        logger.info("Channel %s - Transition started - Start=%s End=%s",
+                    self.c_id, _start, trans_goal)
+        while i <= trans_goal:
             i += 1
+            self.pwm.set_s(self.c_id, i)
+        while i > trans_goal:
+            self.pwm.set_s(self.c_id, i)
+            i -= 1
+        self.cur = i
 
     def cloud_worker(self):
         '''makes a cloud'''
@@ -178,7 +187,8 @@ class Channel(Thread):
                 # wave_obj = sa.WaveObject.from_wave_file("sound/t" + str(random.randint(1, 5)) + ".wav")
                 play_obj = wave_obj.play()
             except ImportError:
-                logger.info("Cant import SimpleAudio / play thunderstorm audio")
+                logger.info(
+                    "Cant import SimpleAudio / play thunderstorm audio")
         while s.weather == "storm":
             s.read_file()
 
