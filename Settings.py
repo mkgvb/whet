@@ -1,33 +1,25 @@
+'''Holds Settings'''
+import logging
 import json
-import math
 from WeatherType import WeatherType
+import os
 
 
-
-# class EnumEncoder(json.JSONEncoder):
-#     def default(self, obj):
-#         if type(obj) in WeatherType.values():
-#             return {"__enum__": str(obj)}
-#         return json.JSONEncoder.default(self, obj)
-
-# def as_enum(d):
-#     if "__enum__" in d:
-#         name, member = d["__enum__"].split(".")
-#         return getattr(WeatherType[name], member)
-#     else:
-#         return d
-
-fileloc = 'json/settings.json'
-
+FILELOC = 'json/whet_settings.json'
 
 class Settings(object):
     """Class to hold settings"""
+    # pylint: disable=too-many-instance-attributes
+    logger = logging.getLogger('__main__')
+    last_modified_time = 0  
+
 
     def __init__(self):
         try:
-            self.load_file()
+            self.read_file()
+            self.last_modified_time = os.stat(FILELOC).st_mtime
         except IOError:
-            print("No settings file found... using defaults")
+            self.logger.info("No settings file found...using defaults and creating file ")
 
             self.weather = "normal"  # todo make this the enum
             self.catchup_on = True
@@ -47,13 +39,19 @@ class Settings(object):
             self.sound_on = True
 
             self.dump_file()
+            self.last_modified_time = os.stat(FILELOC).st_mtime
 
     def dump_file(self):
-        with open(fileloc, 'w') as data_file:
-            string = json.dumps(
+        '''dumps json representation of obj to disk'''
+        with open(FILELOC, 'w') as data_file:
+            string = '{"settings":'
+            string += json.dumps(
                 self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+            string += '}'
             data_file.write(string)
 
-    def load_file(self):
-        with open(fileloc) as data_file:
-            self.__dict__ = json.load(data_file)
+    def read_file(self):
+        '''reads file from disk'''
+        if self.last_modified_time != os.stat(FILELOC).st_mtime:
+            with open(FILELOC) as data_file:
+                self.__dict__ = json.load(data_file)["settings"]

@@ -1,51 +1,93 @@
 import json
-import math
+import os
+import logging
+import random
 
-fileloc = 'json/schedule.json'
-
+FILELOC = 'json/schedule.json'
 
 HOURS = 24
-
-#s.refresh_data()
-#s.print_data()
-#s.bogus = 32
-#s.save_data()
+LED_MAX = 4095
+LED_MIN = 0
+LOGGER = logging.getLogger('__main__')
 
 
-LED_MAX=4095
-LED_MIN=0
-
-class LightSchedule(object):
+class LightSchedule(dict):
     """Class to hold lighting schedule"""
 
-    #def __init__(self):
-        
+    last_access_time = 0
+
+    def __init__(self, *args, **kwargs):
+        super(LightSchedule, self).__init__(*args, **kwargs)
+        self.__dict__ = self
+
+        if not os.path.isfile(FILELOC):
+            self.default()
+            self.set_data()
+
+    def default(self):
+        channels = []
+        for j in range(5):
+            channel = {}
+            schedule = []
+
+            preview = {}
+            preview["active"] = False
+            preview["value"] = 0
+            channel['preview'] = preview
+
+            channel['id'] = j
+            channel['color'] = '#' + str(random.randint(0, 999999))
+
+            for i in range(0, 23):
+                dp = {}
+                dp['hour'] = i
+                dp['percent'] = random.randint(0, 100)
+                schedule.append(dp)
+            channel['schedule'] = schedule
+
+            channels.append(channel)
+
+        self.data = {}
+        self.data["channels"] = channels
+
+        # for i in range(5):
+        #     self.data['channels'][i] = { id =i}
+        print(json.dumps(self.data, indent=4))
 
     def get_data(self):
-        """gets a current copy of the schedule"""
-        with open(fileloc) as data_file:
-            data = json.load(data_file)
+        """gets a current copy of the schedule if it has changed"""
+        valid_read = False
+        if self.last_access_time != os.stat(FILELOC).st_mtime:
+            self.last_access_time = os.stat(FILELOC).st_mtime
+            while not valid_read:
+                try:
+                    with open(FILELOC) as data_file:
+                        self.data = json.load(data_file)
+                        LOGGER.info("Channel Schedule Changed " +
+                                    str(os.stat(FILELOC).st_mtime))
+                        valid_read = True
+                except:
+                    LOGGER.exception("Thread File Read Failed!!! - FIX THIS")
 
-        return data
+        return self.data['channels']
+
+    def set_data(self):
+        "sets a value in the file"
+        with open(FILELOC, 'w') as data_file:
+            data_file.write(json.dumps(
+                self.data, default=lambda o: o.__dict__, sort_keys=True, indent=4))
 
     def get_percent(self, channel, hour):
         """gets percentage value from schedule"""
         data = self.get_data()
-        r = 0
-        for x in data['channels']:
-            if (x['id'] == channel):
-                for y in x['schedule']:
-                    if (y['hour'] == hour):
-                        r = int(y['percent'])
+        for obj in data:
+            if obj['id'] == channel:
+                for obj2 in obj['schedule']:
+                    if obj2['hour'] == hour:
+                        return min(100, max(int(obj2['percent']), 0))
 
-        if r == None:
-            # why you no print?
-            # i guess r := None just leaves it at 0
-            print("Something is wrong Asked for channel={0} hour={1} giving 0")
-            return 0
-        else:
-            return min(100, max(r, 0))
-        return
+        LOGGER.error("Hour=%s Channel=%s Something went wrong getting percent", hour, channel)
+        return 0
 
     def get_percent_cur(self, pwm_val):
         '''gets percent value of pwm_val'''
@@ -55,10 +97,32 @@ class LightSchedule(object):
         """gets the pwm value of a channel at a certain hour"""
         return int(round((self.get_percent(channel, hour) / 100) * LED_MAX))
 
+    def get_preview_pwm(self, channel):
+        """gets pwm value of preview"""
+        data = self.get_data()
+        for obj in data:
+            if obj['id'] == channel:
+                return obj['preview']['value']
+
+    def get_preview_status(self, channel):
+        """gets preview status"""
+        data = self.get_data()
+        for obj in data:
+            if obj['id'] == channel:
+                return obj['preview']['active']
+
+    def set_preview_status(self, channel, status=False):
+        """sets preview status"""
+        data = self.get_data()
+        for obj in data:
+            if obj['id'] == channel:
+                obj['preview']['active'] = status
+        self.set_data()
+
     def get_number_of_channels(self):
         """gets total number of active channels"""
         data = self.get_data()
-        c = 0
-        for x in data['channels']:
-            c += 1
-        return c
+        cnt = 0
+        for obj in data:
+            cnt += 1
+        return cnt

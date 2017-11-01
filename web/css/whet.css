@@ -1,0 +1,25 @@
+@import url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+
+.progress {
+  position: relative;
+  background-color: rgb(179, 179, 179);
+}
+
+.progress-bar-title {
+  position: absolute;
+  text-align: right;
+  overflow: hidden;
+  color: rgb(255, 255, 255);
+  right: 0;
+  left: 0;
+  top: 0;
+}
+
+.right-title {
+  text-align: right;
+  right: 5;
+}
+.left-title {
+  text-align: left;
+  left: 5;
+}

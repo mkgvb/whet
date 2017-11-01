@@ -1,0 +1,234 @@
+
+var lightSchedule = {};
+var conn = null;
+
+
+if (conn == null)
+    connect();
+
+
+function log(msg) {
+    var control = $('#log');
+    control.html(control.html() + msg + '<br/>');
+    control.scrollTop(control.scrollTop() + 200);
+}
+function connect() {
+    disconnect();
+    console.log(window.location);
+    conn = new SockJS(window.location.origin + '/chat', 0);   //last param is transport, 0 is websocket
+    log('Connecting...');
+    conn.onopen = function () {
+        log('Connected.');
+        conn.send( JSON.stringify({request:"light_schedule"}) );
+        conn.send( JSON.stringify({request:"settings"}) );
+        update_ui();
+    };
+    conn.onmessage = function (e) {
+
+        var eparsed = JSON.parse(e.data);
+        log('Received: ' + JSON.stringify(eparsed, null, 2));
+
+        if (eparsed.type == "user")
+            log("User did something");
+
+        if (eparsed.channel != null) {
+            draw_pwmChannel(eparsed.channel);
+        }
+
+
+
+        if (eparsed.channels != null) {
+            lightSchedule = eparsed.channels;
+            //draw_lightSchedule_Table(lightSchedule);
+            draw_lightSchedule_graph(lightSchedule);
+        }
+
+        var d = new Date();
+        var n = "(" + d.getHours() + ")" + d.toLocaleTimeString();
+        $("#time").text(d);
+
+
+
+
+
+    };
+    conn.onclose = function () {
+        log('Disconnected.');
+        conn = null;
+        update_ui();
+    };
+}
+function disconnect() {
+    if (conn != null) {
+        log('Disconnecting...');
+        conn.close();
+        conn = null;
+        update_ui();
+    }
+}
+function update_ui() {
+    var msg = '';
+    if (conn == null || conn.readyState != SockJS.OPEN) {
+        $('#status').text('disconnected');
+        $('#connect').text('Connect');
+    } else {
+        $('#status').text('connected (' + conn.protocol + ')');
+        $('#connect').text('Disconnect');
+    }
+}
+$('#connect').click(function () {
+    if (conn == null) {
+        connect();
+    } else {
+        disconnect();
+    }
+    update_ui();
+    return false;
+});
+$('#chatform').submit(function () {
+    var text = $('#text').val();
+    log('Sending: ' + text);
+    conn.send(text);
+    $('#text').val('').focus();
+    return false;
+});
+
+Handlebars.getTemplate = function (name) {
+    if (Handlebars.templates === undefined || Handlebars.templates[name] === undefined) {
+        $.ajax({
+            url: '/web/templates/' + name + '.handlebars',
+            success: function (data) {
+                if (Handlebars.templates === undefined) {
+                    Handlebars.templates = {};
+                }
+                Handlebars.templates[name] = Handlebars.compile(data);
+            },
+            async: false
+        });
+    }
+    return Handlebars.templates[name];
+};
+
+draw_top();
+function draw_top() {
+    // Compile the template
+    var theTemplate = Handlebars.getTemplate('top');
+
+    // Pass our data to the template
+    var theCompiledHtml = theTemplate();
+
+    // Add the compiled html to the page
+    $('#top').replaceWith(theCompiledHtml);
+}
+
+draw_nav();
+function draw_nav() {
+    var content = $(".body");
+
+    // Compile the template
+    var theTemplate = Handlebars.getTemplate('navbar');
+
+    //get the name of the current page without .html
+    var h = location.pathname.split("/").slice(-1)[0].split(".")[0].toLowerCase();
+    console.log(h);
+    var info = {};
+    info[h] = true;
+
+    // Pass our data to the template
+    var theCompiledHtml = theTemplate(info);
+
+    // Add the compiled html to the page
+    $('.navbar').replaceWith(theCompiledHtml);
+}
+
+draw_ws_messages();
+function draw_ws_messages() {
+    var content = $("#ws-messages");
+    var theTemplate = Handlebars.getTemplate('ws-messages');
+    var theCompiledHtml = theTemplate();
+    content.html(theCompiledHtml);
+}
+
+
+function draw_pwmChannel(c_obj) {
+    var content = $("#channel-statuses");
+    // Grab the template script
+    var theTemplateScript = $("#channel-status-template").html();
+
+    // Compile the template
+    var theTemplate = Handlebars.getTemplate('channel-status');
+
+    // Pass our data to the template
+    var theCompiledHtml = theTemplate(c_obj);
+
+    if (content.find("#channel_" + c_obj.c_id).length === 0) {
+        content.append(theCompiledHtml);
+    }
+
+    // Add the compiled html to the page
+    $('#channel_' + c_obj.c_id).replaceWith(theCompiledHtml);
+
+    //sort the children
+    var listitems = content.children("div");
+    listitems.sort(function (a, b) {
+        var compA = $(a).attr('id').toUpperCase();
+        var compB = $(b).attr('id').toUpperCase();
+        //console.log((compA < compB) ? -1 : (compA > compB) ? 1 : 0);
+        return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+    })
+    $(content).append(listitems);
+}
+
+function hexToRgb(hex, alpha) {
+    if (hex == undefined)
+        hex = '#00000';
+    hex = hex.replace('#', '');
+    var r = parseInt(hex.length == 3 ? hex.slice(0, 1).repeat(2) : hex.slice(0, 2), 16);
+    var g = parseInt(hex.length == 3 ? hex.slice(1, 2).repeat(2) : hex.slice(2, 4), 16);
+    var b = parseInt(hex.length == 3 ? hex.slice(2, 3).repeat(2) : hex.slice(4, 6), 16);
+    if (alpha) {
+        return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+    }
+    else {
+        return 'rgb(' + r + ', ' + g + ', ' + b + ')';
+    }
+}
+
+function draw_lightSchedule_graph(channels) {
+    var outtie = [];
+    var labels = [];
+
+    channels.forEach(function (item, index, array) {
+        var s = {};
+        labels = [];    //erase previous only want one copy
+        s.label = item.id;
+        s.data = [];
+        item.schedule.forEach(function (item_n, index_n, array_n) {
+            s.data.push(item_n.percent);
+            labels.push(item_n.hour)
+        });
+        s.backgroundColor = [hexToRgb(item.color, 0.2)];
+        s.borderColor = [hexToRgb(item.color, 0.2)];
+        s.borderWidth = 1;
+        outtie.push(s);
+
+    });
+
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: outtie
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
