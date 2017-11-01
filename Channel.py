@@ -146,7 +146,7 @@ class Channel(Thread):
         i = _start
         logger.info("Channel %s - Transition started - Start=%s End=%s",
                     self.c_id, _start, trans_goal)
-        while i <= trans_goal:
+        while i < trans_goal:
             i += 1
             self.pwm.set_s(self.c_id, i)
         while i > trans_goal:
