@@ -17,7 +17,8 @@ logger = logging.getLogger('__main__')
 class IndexHandler(tornado.web.RequestHandler):
     """Regular HTTP handler to serve the chatroom page"""
     def get(self):
-        self.render('web/index.html')
+        self.redirect('web/')
+
 
 
 

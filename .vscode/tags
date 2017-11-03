@@ -98,7 +98,6 @@ Settings	../Settings.py	/^class Settings(object):$/;"	kind:class	line:10
 Settings	../test.py	/^import Settings$/;"	kind:namespace	line:15
 Settings	../whet.py	/^import Settings$/;"	kind:namespace	line:13
 Settings.py	../Settings.py	1;"	kind:file	line:1
-SimpleAudio	../Channel.py	/^                logger.info("Cant import SimpleAudio \/ play thunderstorm audio")$/;"	kind:namespace	line:181
 Thread	../Channel.py	/^from threading import Thread$/;"	kind:namespace	line:1
 Thread	../Server.py	/^from threading import Thread$/;"	kind:namespace	line:8
 WEATHER	../test.py	/^WEATHER = WeatherType.normal$/;"	kind:variable	line:36
@@ -115,12 +114,10 @@ __init__	../PCA9685_dummy.py	/^    def __init__(self, address=PCA9685_ADDRESS, i
 __init__	../Pid.py	/^    def __init__(self):$/;"	kind:member	line:9
 __init__	../Server.py	/^    def __init__(self):$/;"	kind:member	line:78
 __init__	../Settings.py	/^    def __init__(self):$/;"	kind:member	line:17
-audio	../Channel.py	/^                logger.info("Cant import SimpleAudio \/ play thunderstorm audio")$/;"	kind:namespace	line:181
 broadcast	../Channel.py	/^    def broadcast(self):$/;"	kind:member	line:100
 cancel	../Channel.py	/^    def cancel(self):$/;"	kind:member	line:91
-catchup_worker	../Channel.py	/^    def catchup_worker(self):$/;"	kind:member	line:134
 close	../wsclient.py	/^def close(msg):$/;"	kind:function	line:25
-cloud_worker	../Channel.py	/^    def cloud_worker(self):$/;"	kind:member	line:148
+cloud_worker	../Channel.py	/^    def cloud_worker(self):$/;"	kind:member	line:157
 cloudy	../WeatherType.py	/^    cloudy = 2$/;"	kind:variable	line:7
 create_connection	../whet.py	/^from websocket import create_connection$/;"	kind:namespace	line:7
 create_connection	../wsclient.py	/^from websocket import create_connection$/;"	kind:namespace	line:2
@@ -184,8 +181,7 @@ os	../test.py	/^import os$/;"	kind:namespace	line:5
 os	../whet.py	/^import os$/;"	kind:namespace	line:5
 participants	../Server.py	/^    participants = set()$/;"	kind:variable	line:27
 pidfile	../Pid.py	/^pidfile = "\/tmp\/whet.pid"$/;"	kind:variable	line:5
-play	../Channel.py	/^                logger.info("Cant import SimpleAudio \/ play thunderstorm audio")$/;"	kind:namespace	line:181
-preview_worker	../Channel.py	/^    def preview_worker(self):$/;"	kind:member	line:112
+preview_worker	../Channel.py	/^    def preview_worker(self):$/;"	kind:member	line:111
 process_id	../Pid.py	/^process_id = str(os.getpid())$/;"	kind:variable	line:4
 pwm	../test.py	/^    pwm = PCA9685.PCA9685()$/;"	kind:variable	line:21
 pwm	../test.py	/^    pwm = PCA9685_dummy.PCA9685()$/;"	kind:variable	line:28
@@ -196,7 +192,7 @@ read_file	../Settings.py	/^    def read_file(self):$/;"	kind:member	line:53
 run	../Channel.py	/^    def run(self):$/;"	kind:member	line:36
 run	../Server.py	/^    def run(self):$/;"	kind:member	line:99
 s	../Channel.py	/^s = Settings.Settings()$/;"	kind:variable	line:11
-sa	../Channel.py	/^                import simpleaudio as sa$/;"	kind:namespace	line:176
+sa	../Channel.py	/^                import simpleaudio as sa$/;"	kind:namespace	line:185
 send	../wsclient.py	/^def send(msg):$/;"	kind:function	line:14
 set_all	../PCA9685.py	/^    def set_all(self, off):$/;"	kind:member	line:130
 set_all	../PCA9685_dummy.py	/^    def set_all(self, off):$/;"	kind:member	line:83
@@ -218,8 +214,7 @@ sys	../Pid.py	/^import sys$/;"	kind:namespace	line:2
 test.py	../test.py	1;"	kind:file	line:1
 threading	../test.py	/^import threading$/;"	kind:namespace	line:7
 threading	../whet.py	/^import threading$/;"	kind:namespace	line:3
-thunderstorm	../Channel.py	/^                logger.info("Cant import SimpleAudio \/ play thunderstorm audio")$/;"	kind:namespace	line:181
-thunderstorm_worker	../Channel.py	/^    def thunderstorm_worker(self):$/;"	kind:member	line:171
+thunderstorm_worker	../Channel.py	/^    def thunderstorm_worker(self):$/;"	kind:member	line:180
 time	../Channel.py	/^import time$/;"	kind:namespace	line:3
 time	../PCA9685.py	/^import time$/;"	kind:namespace	line:23
 time	../PCA9685_dummy.py	/^import time$/;"	kind:namespace	line:24
@@ -230,6 +225,7 @@ timedelta	../test.py	/^from datetime import datetime, timedelta$/;"	kind:namespa
 tornado	../Server.py	/^import sockjs.tornado$/;"	kind:namespace	line:11
 tornado	../Server.py	/^import tornado.ioloop$/;"	kind:namespace	line:9
 tornado	../Server.py	/^import tornado.web$/;"	kind:namespace	line:10
+transition_worker	../Channel.py	/^    def transition_worker(self, _start=0, _end=0, _usetime=True):$/;"	kind:member	line:135
 update	../Channel.py	/^    def update(self):$/;"	kind:member	line:96
 web	../Server.py	/^import tornado.web$/;"	kind:namespace	line:10
 whet.py	../whet.py	1;"	kind:file	line:1
