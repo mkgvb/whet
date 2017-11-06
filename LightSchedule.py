@@ -38,7 +38,7 @@ class LightSchedule(dict):
             channel['id'] = j
             channel['color'] = '#' + str(random.randint(0, 999999))
 
-            for i in range(0, 23):
+            for i in range(0, 24):
                 dp = {}
                 dp['hour'] = i
                 dp['percent'] = random.randint(0, 100)
