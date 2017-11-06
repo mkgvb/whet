@@ -14,8 +14,8 @@ LIGHT_SCHEDULE_FILE = 'json/schedule.json'
 SETTINGS_FILE = 'json/whet_settings.json'
 logger = logging.getLogger('__main__')
 
-class IndexHandler(tornado.web.RequestHandler):
-    """Regular HTTP handler to serve the chatroom page"""
+class RedirectHandler(tornado.web.RequestHandler):
+    """Regular HTTP handler"""
     def get(self):
         self.redirect('web/')
 
@@ -85,9 +85,9 @@ class Server(Thread):
         # 2. Create Tornado application
         app = tornado.web.Application(
                 [
-                    (r"/web", IndexHandler),
+                    (r"/", RedirectHandler),
                     (r"/web/(.*)",tornado.web.StaticFileHandler,{"path":r"web/", "default_filename": "index.html"})
-                ] 
+                ]
                 + ChatRouter.urls, debug=True
 
 
@@ -95,6 +95,7 @@ class Server(Thread):
         )
 
         # 3. Make Tornado app listen on port 8080
+        # kill -9 $(lsof -ti tcp:8080)
         app.listen(8080)
 
     def run(self):
@@ -102,5 +103,5 @@ class Server(Thread):
         tornado.ioloop.IOLoop.instance().start()
 
     def stop(self):
-        '''stops IOLoop'''
+        #'''stops IOLoop'''
         tornado.ioloop.IOLoop.instance().stop()

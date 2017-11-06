@@ -3,7 +3,6 @@ import logging
 import time
 from datetime import datetime, timedelta
 import random
-import json
 
 from WeatherType import WeatherType
 import Settings
@@ -50,20 +49,16 @@ class Channel(Thread):
             self.sleepTime = int(self.remainSeconds /
                                  self.delta) if self.delta != 0 else 1
 
-            # if self.delta > 2000 and self.cur < self.goal:
-            #    self.catchup_worker()
-
-            msg = ""
-            msg += self.curTime.strftime('%H:%M:%S')
-            msg += "|Channel = " + str(self.c_id)
-            msg += "|Hour = " + str(self.curHour)
-            msg += "|Cur = " + str(self.cur)
-            msg += "|Goal = " + str(self.goal)
-            msg += "|Sleep = " + str(self.sleepTime)
-            msg += "|Delta = " + str(self.delta)
-            msg += "|Seconds Remain = " + str(self.remainSeconds)
-
-            logger.debug(msg)
+            # msg = ""
+            # msg += self.curTime.strftime('%H:%M:%S')
+            # msg += "|Channel = " + str(self.c_id)
+            # msg += "|Hour = " + str(self.curHour)
+            # msg += "|Cur = " + str(self.cur)
+            # msg += "|Goal = " + str(self.goal)
+            # msg += "|Sleep = " + str(self.sleepTime)
+            # msg += "|Delta = " + str(self.delta)
+            # msg += "|Seconds Remain = " + str(self.remainSeconds)
+            # logger.debug(msg)
 
             if (self.cur > self.goal):
                 self.cur -= 1
@@ -204,7 +199,7 @@ class Channel(Thread):
                       + "|Channel = " + str(self.c_id)
                       + "|Lightning Strike!")
 
-                if (random.randint(1, 5) == 2):
+                if random.randint(1, 5) == 2:
                     x = 0
                     r = random.randint(-200, 200)
                     y = random.randint(100, 2000)

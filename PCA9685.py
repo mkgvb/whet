@@ -103,7 +103,7 @@ class PCA9685(object):
     def set_pwm(self, channel, on, off):
         """Sets a single PWM channel."""
         if INVERT:
-             off = abs(off - max_val)
+            off = abs(off - max_val)
         self._device.write8(LED0_ON_L+4*channel, on & 0xFF)
         self._device.write8(LED0_ON_H+4*channel, on >> 8)
         self._device.write8(LED0_OFF_L+4*channel, off & 0xFF)
