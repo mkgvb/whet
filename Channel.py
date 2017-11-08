@@ -4,7 +4,6 @@ import time
 from datetime import datetime, timedelta
 import random
 
-from WeatherType import WeatherType
 import Settings
 
 s = Settings.Settings()

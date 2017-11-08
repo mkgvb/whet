@@ -14,6 +14,7 @@ import Settings
 import Channel
 from WeatherType import WeatherType
 import json
+from objdict import ObjDict
 
 DEBUG = True
 MAIN_LOOP_TIME = 1
@@ -131,16 +132,18 @@ def main_loop():
                     channel_threads.append(channel_obj)
                     channel_obj.start()
 
-            conn = create_connection("ws://localhost:8080/chat/websocket")
+
+            conn = create_connection("ws://localhost:8080/chat/websocket?id=py")
+            a_data = []
             for i, val in enumerate(channel_threads):
                 if val.is_alive:
-                    conn.send(
-                        '{"channel":'
-                        + json.dumps(val.broadcast(), default=lambda o: o.__dict__,
-                                sort_keys=True, indent=4)
-                        + '}')
-                    time.sleep(.05) #TODO if this solves the memory leak then refactor to group all messages so there is no need to wait for send
+                    a_data.append(val.broadcast())
+            c_data = ObjDict()
+            c_data.status = a_data
+            conn.send(json.dumps(c_data, sort_keys=True, indent=4))
             conn.close()
+
+
 
             if loops >= MAIN_LOOP_HEALTH_FREQ:
                 loops = 0

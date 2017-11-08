@@ -32,6 +32,7 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
         json_msg = {'type': 'user', 'server_message': 'Someone joined'}
         self.broadcast(self.participants, json.dumps(json_msg))
 
+
         # Add client to the clients list
         self.participants.add(self)
 

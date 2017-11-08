@@ -2,8 +2,8 @@ conn.onmessage = function (e) {
     
                 var eparsed = JSON.parse(e.data);
     
-                if (eparsed.channel != null) {
-                    draw_pwmChannel(eparsed.channel);
+                if (eparsed.status != null) {
+                    draw_pwmChannel(eparsed.status);
                 }
     
                 if (eparsed.channels != null) {

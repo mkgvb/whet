@@ -31,8 +31,8 @@ function connect() {
         if (eparsed.type == "user")
             log("User did something");
 
-        if (eparsed.channel != null) {
-            draw_pwmChannel(eparsed.channel);
+        if (eparsed.status != null) {
+            draw_pwmChannel(eparsed.status);
         }
 
 
@@ -158,15 +158,20 @@ function draw_pwmChannel(c_obj) {
     // Compile the template
     var theTemplate = Handlebars.getTemplate('channel-status');
 
-    // Pass our data to the template
-    var theCompiledHtml = theTemplate(c_obj);
+    c_obj.forEach(function(val) {
 
-    if (content.find("#channel_" + c_obj.c_id).length === 0) {
-        content.append(theCompiledHtml);
-    }
+            // Pass our data to the template
+    var theCompiledHtml = theTemplate(val);
+    
+        if (content.find("#channel_" + val.c_id).length === 0) {
+            content.append(theCompiledHtml);
+        }
+    
+        // Add the compiled html to the page
+        $('#channel_' + val.c_id).replaceWith(theCompiledHtml);
+        
+    }, this);
 
-    // Add the compiled html to the page
-    $('#channel_' + c_obj.c_id).replaceWith(theCompiledHtml);
 
     //sort the children
     var listitems = content.children("div");
