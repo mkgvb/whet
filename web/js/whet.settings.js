@@ -94,8 +94,16 @@ function settings_editor(eSettings) {
         schema: {
             "title": "Settings",
             "type": "object",
-
+            "properties": {
+                "weather": {
+                    "type":"string",
+                    "enum": ["normal","storm","cloudy"]
+                }
+            }
         }
+
+
+        
 
 
     });

@@ -66,6 +66,7 @@ class LightSchedule(dict):
                         LOGGER.info("Channel Schedule Changed " +
                                     str(os.stat(FILELOC).st_mtime))
                         valid_read = True
+
                 except:
                     LOGGER.exception("Thread File Read Failed!!! - FIX THIS")
 

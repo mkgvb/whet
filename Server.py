@@ -20,8 +20,6 @@ class RedirectHandler(tornado.web.RequestHandler):
         self.redirect('web/')
 
 
-
-
 class ChatConnection(sockjs.tornado.SockJSConnection):
     """Chat connection implementation"""
     # Class level variable
