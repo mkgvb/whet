@@ -85,6 +85,7 @@ class Server(Thread):
         app = tornado.web.Application(
                 [
                     (r"/", RedirectHandler),
+                    (r"/web", RedirectHandler),
                     (r"/web/(.*)",tornado.web.StaticFileHandler,{"path":r"web/", "default_filename": "index.html"})
                 ]
                 + ChatRouter.urls, debug=True
