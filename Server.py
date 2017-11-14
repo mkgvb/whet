@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# kill -9 $(lsof -ti tcp:8080)
+# kill -9 $(lsof -ti tcp:7999)
 """
-    Simple sockjs-tornado chat application. By default will listen on port 8080.
+    Simple sockjs-tornado chat application. By default will listen on port 7999.
 """
 import logging
 import json
@@ -94,9 +94,9 @@ class Server(Thread):
                 #tornado.web.StaticFileHandler, {"path":r"../web/"}),]) 
         )
 
-        # 3. Make Tornado app listen on port 8080
-        # kill -9 $(lsof -ti tcp:8080)
-        app.listen(8080)
+        # 3. Make Tornado app listen on port 7999
+        # kill -9 $(lsof -ti tcp:7999)
+        app.listen(7999)
 
     def run(self):
         # 4. Start IOLoop

@@ -19,13 +19,13 @@ Nginx config for reverse proxy and https:
                auth_basic "Restricted";
                auth_basic_user_file /config/nginx/.htpasswd;
                include /config/nginx/proxy.conf;
-               proxy_pass http://pi:8080;
+               proxy_pass http://pi:7999;
        }
         location ^~ /chat {
                auth_basic "Restricted";
                auth_basic_user_file /config/nginx/.htpasswd;
                include /config/nginx/proxy.conf;
-               proxy_pass http://pi:8080;
+               proxy_pass http://pi:7999;
                 proxy_set_header Upgrade $http_upgrade;
                 proxy_set_header Connection "upgrade";
                 proxy_set_header Host $host;

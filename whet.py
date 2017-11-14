@@ -133,7 +133,7 @@ def main_loop():
                     channel_obj.start()
 
 
-            conn = create_connection("ws://localhost:8080/chat/websocket?id=py")
+            conn = create_connection("ws://localhost:7999/chat/websocket?id=py")
             a_data = []
             for i, val in enumerate(channel_threads):
                 if val.is_alive:
