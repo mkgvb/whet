@@ -11,6 +11,8 @@ Features:
 * Relays or smart outlets with alexa/google home for pumps/powerheads co2 and heating.
 * Support sounds for thunderstorms and other yet to be determined weather patterns.
 
+![Hardware Prototype](whet-hardware-proto-1.jpg?raw=true "Hardware Prototype")
+
 
 
 
