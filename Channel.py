@@ -183,30 +183,36 @@ class Channel(Thread):
             except ImportError:
                 logger.info(
                     "Cant import SimpleAudio / play thunderstorm audio")
-        while s.weather == "storm":
+
+        while s.weather == "storm" and not self.cancelled:
             s.read_file()
 
-            # dim to percentage of normal weather
-            # TODO
+            if not self.ls.get_lightning(self.c_id):    #dont do lightning stikes
+                    r_pwm = random.randint(1,500)   #TODO magicnumber
+                    self.transition_worker(self.cur, r_pwm, False)
+                    time.sleep(random.randint(2,10))
+                    self.transition_worker(r_pwm, 0, False)
+                    self.cur = 0
 
-            if (random.randint(1, 5) == 3):
-                self.pwm.set_s(self.c_id, LED_MIN)
-                time.sleep(random.uniform(0, 1))
-                self.pwm.set_s(self.c_id, LED_MAX)
-                time.sleep(random.uniform(0, .02))
-                print(datetime.now().strftime('%H:%M:%S')
-                      + "|Channel = " + str(self.c_id)
-                      + "|Lightning Strike!")
+            else:   # do lightning strikes
+                if (random.randint(1, 5) == 3):
+                    self.pwm.set_s(self.c_id, LED_MIN)
+                    time.sleep(random.uniform(0, 1))
+                    self.pwm.set_s(self.c_id, LED_MAX)
+                    time.sleep(random.uniform(0, .02))
+                    print(datetime.now().strftime('%H:%M:%S')
+                        + "|Channel = " + str(self.c_id)
+                        + "|Lightning Strike!")
 
-                if random.randint(1, 5) == 2:
-                    x = 0
-                    r = random.randint(-200, 200)
-                    y = random.randint(100, 2000)
-                    while (x < y):
-                        r = random.randint(-100, 200)
-                        self.pwm.set_s(self.c_id, x)
-                        x = x + r
-                        self.pwm.set_s(self.c_id, LED_MIN)
-                        time.sleep(random.uniform(0, .09))
+                    if random.randint(1, 5) == 2:
+                        x = 0
+                        r = random.randint(-200, 200)
+                        y = random.randint(100, 2000)
+                        while (x < y):
+                            r = random.randint(-100, 200)
+                            self.pwm.set_s(self.c_id, x)
+                            x = x + r
+                            self.pwm.set_s(self.c_id, LED_MIN)
+                            time.sleep(random.uniform(0, .09))
 
-                    time.sleep(random.uniform(0, 4))
+                        time.sleep(random.uniform(0, 4))

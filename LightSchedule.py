@@ -112,6 +112,17 @@ class LightSchedule(dict):
             if obj['id'] == channel:
                 return obj['preview']['active']
 
+    def get_lightning(self, channel):
+        data = self.get_data()
+        if 'lightning' in data[channel]:
+            return data[channel]['lightning']
+        else:
+            data[channel]['lightning'] = False
+            self.set_data()
+            
+        return False
+
+
     def set_preview_status(self, channel, status=False):
         """sets preview status"""
         data = self.get_data()

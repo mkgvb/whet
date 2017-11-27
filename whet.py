@@ -99,6 +99,7 @@ def main_loop():
 
         while True:
             settings.read_file()
+            
 
             # untested
             if not tornado_server.is_alive():
