@@ -48,16 +48,6 @@ class Channel(Thread):
             self.sleepTime = int(self.remainSeconds /
                                  self.delta) if self.delta != 0 else 1
 
-            # msg = ""
-            # msg += self.curTime.strftime('%H:%M:%S')
-            # msg += "|Channel = " + str(self.c_id)
-            # msg += "|Hour = " + str(self.curHour)
-            # msg += "|Cur = " + str(self.cur)
-            # msg += "|Goal = " + str(self.goal)
-            # msg += "|Sleep = " + str(self.sleepTime)
-            # msg += "|Delta = " + str(self.delta)
-            # msg += "|Seconds Remain = " + str(self.remainSeconds)
-            # logger.debug(msg)
 
             if (self.cur > self.goal):
                 self.cur -= 1
@@ -79,8 +69,6 @@ class Channel(Thread):
             time.sleep(self.sleepTime)
             s.read_file()
 
-            # if (self.sleepTime > 0):
-            #     self.broadcast()
 
     def cancel(self):
         """End this timer thread"""
@@ -188,11 +176,10 @@ class Channel(Thread):
             s.read_file()
 
             if not self.ls.get_lightning(self.c_id):    #dont do lightning stikes
-                    r_pwm = random.randint(1,500)   #TODO magicnumber
+                    r_pwm = random.randint(1,200)   #TODO magicnumber
                     self.transition_worker(self.cur, r_pwm, False)
-                    time.sleep(random.randint(2,10))
-                    self.transition_worker(r_pwm, 0, False)
-                    self.cur = 0
+                    self.cur = r_pwm
+                    time.sleep(random.uniform(0, 2))
 
             else:   # do lightning strikes
                 if (random.randint(1, 5) == 3):
@@ -216,3 +203,6 @@ class Channel(Thread):
                             time.sleep(random.uniform(0, .09))
 
                         time.sleep(random.uniform(0, 4))
+
+
+        self.transition_worker(_start=self.cur, _usetime=True)
