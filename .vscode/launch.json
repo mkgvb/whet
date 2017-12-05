@@ -10,8 +10,8 @@
             "request": "launch",
             "stopOnEntry": false,
             "pythonPath": "${config:python.pythonPath}",
-            "program": "${workspaceRoot}/whet.py",
-            "cwd": "${workspaceRoot}",
+            "program": "${workspaceRoot}/outlet/outlet.py",
+            "cwd": "${workspaceRoot}/outlet",
             "env": {},
             "envFile": "${workspaceRoot}/.env",
             "debugOptions": [
