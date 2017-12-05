@@ -1,0 +1,13 @@
+{
+    "switches": [
+        {
+            "id": 1,
+            "default_on": false,
+            "schedule": [
+                0,
+                100,
+                86400
+            ]
+        }
+    ]
+}
