@@ -18,7 +18,6 @@ class Settings(object):
         try:
             self.read_file()
             self.weather = 'normal' #always start with normal weather
-            self.dump_file()
             self.last_modified_time = os.stat(FILELOC).st_mtime
         except IOError:
             self.logger.info("No settings file found...using defaults and creating file ")
@@ -39,6 +38,7 @@ class Settings(object):
             self.storms_random_end_time = 0
             self.storms_random_freq = 1000
             self.sound_on = True
+            self.preview_timeout = 600
 
             self.dump_file()
             self.last_modified_time = os.stat(FILELOC).st_mtime
