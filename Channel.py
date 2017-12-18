@@ -91,7 +91,7 @@ class Channel(Thread):
         return self.sendInfo
 
     def preview_worker(self):
-        timeout_length_secs = 300
+        timeout_length_secs = s.preview_timeout
         sleep_interval = 1
         total_time_secs = 0
         cur_init = self.ls.get_preview_pwm(self.c_id)
