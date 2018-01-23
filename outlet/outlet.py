@@ -21,14 +21,12 @@ log.setLevel(LOGGING_LEVEL)
 connErrorCount = 0
 d = pytuya.OutletDevice('012003822c3ae84144d5', '192.168.2.124', 'cb6de23c996a53c1')
 switch_status = [ False, False, False, False, False]
-switch_status = d.status()['dps']
-print(switch_status)
 data = d.status()
 
 
 while True:
     t_info = json.load(open('switch_schedule.json', mode='r'))
-    switch_status = d.status()['dps']
+    
 
     now = datetime.datetime.now()
     midnight = datetime.datetime.combine(now.date(), datetime.time())
@@ -40,6 +38,8 @@ while True:
     #print('state (bool, true is ON) %r' % data['dps']['1'])  # Show status of first controlled switch on device
 
     try:
+        switch_status = d.status()['dps']
+
         for switch in t_info['switches']:
             for event in switch['schedule']:
                 if (seconds > event['start'] and seconds < event['end']):
