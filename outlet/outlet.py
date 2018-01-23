@@ -21,7 +21,6 @@ log.setLevel(LOGGING_LEVEL)
 connErrorCount = 0
 d = pytuya.OutletDevice('012003822c3ae84144d5', '192.168.2.124', 'cb6de23c996a53c1')
 switch_status = [ False, False, False, False, False]
-data = d.status()
 
 
 while True:
