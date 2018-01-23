@@ -1,31 +1,43 @@
 #!/usr/bin/env python3
 
-#from pytuya import pytuya
+import pytuya
 import time
 import json
 import datetime
 import numpy
 
 
+d = pytuya.OutletDevice('012003822c3ae84144d5', '192.168.2.124', 'cb6de23c996a53c1')
 switch_status = [ False, False, False, False, False]
+switch_status = d.status()['dps']
+print(switch_status)
+data = d.status()
+
 
 while True:
     t_info = json.load(open('switch_schedule.json', mode='r'))
+    switch_status = d.status()['dps']
 
     now = datetime.datetime.now()
     midnight = datetime.datetime.combine(now.date(), datetime.time())
     seconds = (now - midnight).seconds
+            
+
+    print("Current time: " + str(seconds))
+    print('Switch Statuses: %r' % switch_status)
+    #print('state (bool, true is ON) %r' % data['dps']['1'])  # Show status of first controlled switch on device
 
 
     for switch in t_info['switches']:
 
         for event in switch['schedule']:
             if (seconds > event['start'] and seconds < event['end']):
-                if (not switch_status[switch['id']]):
-                    print("Start switch")
+                d.set_status(True, switch['id'])
+                print("Event active on switch" + str(switch['id']))
             else:
-                if (switch_status[switch['id']]):
-                    print('Stop Switch')
+                d.set_status(False, switch['id'])
+                print("Event NOT active on switch" + str(switch['id']))
+                
 
     time.sleep(5)
 
