@@ -1,22 +1,39 @@
 {
+    "looptime": 1,
     "switches": [
 
         {
-            "id": 2,
-            "name":"power head 1 - Plug 2",
+            "id": 1,
+            "name":"power head - Plug 1",
             "schedule_active": false,
             "schedule": [
-                { "start":20000, "end":30000, "pulse_on":3600, "pulse_off":60  }
+                { "start":0, "end":86400, "pulse_on_ticks":10, "pulse_off_ticks":1  }
+                
+            ]
+        },
+        {
+            "id": 2,
+            "name":"pumps - Plug 2",
+            "schedule_active": false,
+            "schedule": [
+                { "start":0, "end":86400 }
+                
+            ]
+        },
+        {
+            "id": 3,
+            "name":"test port - Plug 3",
+            "schedule_active": false,
+            "schedule": [
+                { "start":0, "end":86400, "pulse_on":3600, "pulse_off":60  }
                 
             ]
         },
         {
             "id": 4,
-            "name":"Plug 4",
+            "name":"co2 - Plug 4",
             "schedule": [
-                { "start":0, "end":30000 },
-                { "start":35000, "end":40000 },
-                { "start":45000, "end":86400 }
+                { "start":36000, "end":70200 }
             ]
         }
     ]

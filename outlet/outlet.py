@@ -1,12 +1,24 @@
 #!/usr/bin/env python3
 
-import pytuya
+from python_tuya import pytuya
 import time
 import json
 import datetime
-import numpy
+import logging.handlers
+
+LOG_FILE_NAME = 'log/outlet.log'
+LOGGING_LEVEL = logging.INFO
+
+formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
+handler = logging.handlers.RotatingFileHandler(LOG_FILE_NAME, mode='a', maxBytes=5000000, backupCount=5)
+handler.setFormatter(formatter)
+log = logging.getLogger("outlet")
+log.addHandler(handler)
+log.setLevel(LOGGING_LEVEL)
 
 
+
+connErrorCount = 0
 d = pytuya.OutletDevice('012003822c3ae84144d5', '192.168.2.124', 'cb6de23c996a53c1')
 switch_status = [ False, False, False, False, False]
 switch_status = d.status()['dps']
@@ -22,24 +34,36 @@ while True:
     midnight = datetime.datetime.combine(now.date(), datetime.time())
     seconds = (now - midnight).seconds
             
-
-    print("Current time: " + str(seconds))
-    print('Switch Statuses: %r' % switch_status)
+    log.info('ConnErrors: '+ str(connErrorCount) + '|' + "time: " + str(seconds) + '|' + 'Switch Statuses: %r' % switch_status )
+    #log.info('Switch Statuses: %r' % switch_status)
+    #log.info('Connection Errors: '+ str(connErrorCount))
     #print('state (bool, true is ON) %r' % data['dps']['1'])  # Show status of first controlled switch on device
 
+    try:
+        for switch in t_info['switches']:
+            for event in switch['schedule']:
+                if (seconds > event['start'] and seconds < event['end']):
+                    d.set_status(True, switch['id'])
+                    print(switch['name'] + " - ON")
+                else:
+                    d.set_status(False, switch['id'])
+                    print(switch['name'] + " - OFF")
+    except ConnectionResetError:
+        print("Connection Error")
+        connErrorCount += 1
+    
 
-    for switch in t_info['switches']:
 
-        for event in switch['schedule']:
-            if (seconds > event['start'] and seconds < event['end']):
-                d.set_status(True, switch['id'])
-                print("Event active on switch" + str(switch['id']))
-            else:
-                d.set_status(False, switch['id'])
-                print("Event NOT active on switch" + str(switch['id']))
+
+                # pulse_on_ticks = event.get('pulse_on_ticks', None)
+                # pulse_off_ticks = event.get('pulse_off_ticks', None)
+                # if pulse_on_ticks is not None and pulse_on_ticks is not None:
+                #     tick += 1
+
+
                 
 
-    time.sleep(5)
+    time.sleep(t_info['looptime'])
 
 
 # d_info = json.load(open('device.json',mode='r'))
