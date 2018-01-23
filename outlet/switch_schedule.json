@@ -16,7 +16,8 @@
             "name":"pumps - Plug 2",
             "schedule_active": false,
             "schedule": [
-                { "start":0, "end":86400 }
+                { "start":0, "end":64440 },
+                { "start":64460, "end":86400 }
                 
             ]
         },
