@@ -25,7 +25,8 @@ switch_status = [ False, False, False, False, False]
 
 while True:
     t_info = json.load(open('outlet_schedule.json', mode='r'))
-    looptime = t_info['looptime']
+    looptime = 5  
+    #looptime = t_info['looptime'] TODO Maybe bring this back as editable
     
 
     now = datetime.datetime.now()
