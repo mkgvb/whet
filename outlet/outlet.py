@@ -25,34 +25,43 @@ switch_status = [ False, False, False, False, False]
 
 while True:
     t_info = json.load(open('switch_schedule.json', mode='r'))
+    looptime = t_info['looptime']
     
 
     now = datetime.datetime.now()
     midnight = datetime.datetime.combine(now.date(), datetime.time())
     seconds = (now - midnight).seconds
             
-    log.info('ConnErrors: '+ str(connErrorCount) + '|' + "time: " + str(seconds) + '|' + 'Switch Statuses: %r' % switch_status )
     #log.info('Switch Statuses: %r' % switch_status)
     #log.info('Connection Errors: '+ str(connErrorCount))
     #print('state (bool, true is ON) %r' % data['dps']['1'])  # Show status of first controlled switch on device
 
     try:
         switch_status = d.status()['dps']
+        log.info('ConnErrors: '+ str(connErrorCount) + '|' + "time: " + str(seconds) + '|' + 'Switch Statuses: %r' % switch_status )
 
         for switch in t_info['switches']:
             for event in switch['schedule']:
+                active_event = False
                 if (seconds > event['start'] and seconds < event['end']):
-                    d.set_status(True, switch['id'])
-                    print(switch['name'] + " - ON")
-                else:
+                    active_event = True
+                    if (not switch_status[str(switch['id'])]):
+                        log.info('Turning on... ' + switch['name'])
+                        d.set_status(True, switch['id'])
+                        time.sleep(looptime/2)
+
+            if not active_event:
+                if (switch_status[str(switch['id'])]):
+                    log.info('Turning off..' +switch['name'])
                     d.set_status(False, switch['id'])
-                    print(switch['name'] + " - OFF")
+                    time.sleep(looptime/2)
     except ConnectionResetError:
         print("Connection Error")
         connErrorCount += 1
     
 
 
+    time.sleep(t_info['looptime'])
 
                 # pulse_on_ticks = event.get('pulse_on_ticks', None)
                 # pulse_off_ticks = event.get('pulse_off_ticks', None)
@@ -62,7 +71,6 @@ while True:
 
                 
 
-    time.sleep(t_info['looptime'])
 
 
 # d_info = json.load(open('device.json',mode='r'))
