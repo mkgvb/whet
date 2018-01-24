@@ -41,7 +41,7 @@ while True:
         switch_status = d.status()['dps']
         log.info('ConnErrors: '+ str(connErrorCount) + '|' + "time: " + str(seconds) + '|' + 'Switch Statuses: %r' % switch_status )
 
-        for outlet in t_info['outlets']:
+        for outlet in t_info['outlet_schedule']:
             active_event = False
             for event in outlet['schedule']:
                 if (seconds > event['start'] and seconds < event['end']):
