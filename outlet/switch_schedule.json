@@ -25,7 +25,8 @@
             "name":"test port - Plug 3",
             "schedule_active": false,
             "schedule": [
-                { "start":0, "end":86400, "pulse_on":3600, "pulse_off":60  }
+                { "start":0, "end":34300, "pulse_on":3600, "pulse_off":60  },
+                { "start":34500, "end":40000 }
                 
             ]
         },
