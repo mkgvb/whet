@@ -12,6 +12,7 @@ import sockjs.tornado
 
 LIGHT_SCHEDULE_FILE = 'json/schedule.json'
 SETTINGS_FILE = 'json/whet_settings.json'
+OUTLET_FILE = 'outlet/outlet_schedule.json'
 logger = logging.getLogger('__main__')
 
 class RedirectHandler(tornado.web.RequestHandler):
@@ -43,9 +44,6 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
         except ValueError:
             logger.info("Malformed json received %s", message)
 
-        if "channels" in j_obj:
-            print("update")
-
         if "request" in j_obj:
             request = j_obj["request"]
             if request == "light_schedule": #rename to channel_properties
@@ -53,6 +51,9 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
                     self.broadcast(self.participants, data_file.read())
             if request == "settings":
                 with open(SETTINGS_FILE, 'r') as data_file:
+                    self.broadcast(self.participants, data_file.read())
+            if request == "outlet_schedule":
+                with open(OUTLET_FILE, 'r') as data_file:
                     self.broadcast(self.participants, data_file.read())
 
         if "update" in j_obj:
@@ -62,6 +63,9 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
                     data_file.write(json.dumps(update, indent=4))
             if "settings" in update:
                 with open(SETTINGS_FILE, 'w') as data_file:
+                    data_file.write(json.dumps(update, indent=4))
+            if "outlet_schedule" in update:
+                with open(OUTLET_FILE, 'w') as data_file:
                     data_file.write(json.dumps(update, indent=4))
 
 

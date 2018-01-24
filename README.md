@@ -13,6 +13,13 @@ Features:
 
 ![Hardware Prototype](whet-hardware-proto-1.jpg?raw=true "Hardware Prototype")
 
+Acknowlegements:
+* Adafruit - PCA9685 library
+* Clach04 - python-tuya
+* Jdorn - json-editor
+
+
+
 
 
 

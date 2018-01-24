@@ -24,7 +24,7 @@ switch_status = [ False, False, False, False, False]
 
 
 while True:
-    t_info = json.load(open('switch_schedule.json', mode='r'))
+    t_info = json.load(open('outlet_schedule.json', mode='r'))
     looptime = t_info['looptime']
     
 
@@ -40,20 +40,20 @@ while True:
         switch_status = d.status()['dps']
         log.info('ConnErrors: '+ str(connErrorCount) + '|' + "time: " + str(seconds) + '|' + 'Switch Statuses: %r' % switch_status )
 
-        for switch in t_info['switches']:
+        for outlet in t_info['outlets']:
             active_event = False
-            for event in switch['schedule']:
+            for event in outlet['schedule']:
                 if (seconds > event['start'] and seconds < event['end']):
                     active_event = True
-                    if (not switch_status[str(switch['id'])]):
-                        log.info('Turning on... ' + switch['name'])
-                        d.set_status(True, switch['id'])
+                    if (not switch_status[str(outlet['id'])]):
+                        log.info('Turning on... ' + outlet['name'])
+                        d.set_status(True, outlet['id'])
                         time.sleep(looptime/2)
 
             if not active_event:
-                if (switch_status[str(switch['id'])]):
-                    log.info('Turning off..' +switch['name'])
-                    d.set_status(False, switch['id'])
+                if (switch_status[str(outlet['id'])]):
+                    log.info('Turning off..' +outlet['name'])
+                    d.set_status(False, outlet['id'])
                     time.sleep(looptime/2)
     except ConnectionResetError:
         print("Connection Error")
