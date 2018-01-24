@@ -41,8 +41,8 @@ while True:
         log.info('ConnErrors: '+ str(connErrorCount) + '|' + "time: " + str(seconds) + '|' + 'Switch Statuses: %r' % switch_status )
 
         for switch in t_info['switches']:
+            active_event = False
             for event in switch['schedule']:
-                active_event = False
                 if (seconds > event['start'] and seconds < event['end']):
                     active_event = True
                     if (not switch_status[str(switch['id'])]):
