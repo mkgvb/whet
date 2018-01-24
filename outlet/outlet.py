@@ -25,7 +25,8 @@ switch_status = [ False, False, False, False, False]
 
 while True:
     t_info = json.load(open('outlet_schedule.json', mode='r'))
-    looptime = t_info['looptime']
+    looptime = 5  
+    #looptime = t_info['looptime'] TODO Maybe bring this back as editable
     
 
     now = datetime.datetime.now()
@@ -40,7 +41,7 @@ while True:
         switch_status = d.status()['dps']
         log.info('ConnErrors: '+ str(connErrorCount) + '|' + "time: " + str(seconds) + '|' + 'Switch Statuses: %r' % switch_status )
 
-        for outlet in t_info['outlets']:
+        for outlet in t_info['outlet_schedule']:
             active_event = False
             for event in outlet['schedule']:
                 if (seconds > event['start'] and seconds < event['end']):
@@ -61,7 +62,7 @@ while True:
     
 
 
-    time.sleep(t_info['looptime'])
+    time.sleep(looptime)
 
                 # pulse_on_ticks = event.get('pulse_on_ticks', None)
                 # pulse_off_ticks = event.get('pulse_off_ticks', None)
