@@ -2,7 +2,7 @@ var editor_data;
 var is_valid_submission = false;
 
 
-$("#settings-submit").click(function (event) {
+$("#submit-button").click(function (event) {
     console.log("BUTTON CLICK");
     $(this).removeClass("btn-primary")
     if (is_valid_submission)
@@ -132,8 +132,8 @@ function settings_editor(eSettings) {
     editor.on("change", function () {
         // Do something...
         var errors = editor.validate();
-        $("#settings-submit").removeClass()
-        $("#settings-submit").addClass("btn btn-primary")
+        $("#submit-button").removeClass()
+        $("#submit-button").addClass("btn btn-primary")
         console.log(JSON.stringify({ update: { settings: data } }));
         if (errors.length == 0) {
             is_valid_submission = true;

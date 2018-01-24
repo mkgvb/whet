@@ -1,0 +1,76 @@
+{
+    "outlet_schedule": [
+        {
+            "id": 1,
+            "name": "power head",
+            "active": true,
+            "schedule": [
+                {
+                    "start": 0,
+                    "end": 86400
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "pumps/heat",
+            "active": true,
+            "schedule": [
+                {
+                    "start": 0,
+                    "end": 64440
+                },
+                {
+                    "start": 64460,
+                    "end": 86400
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "test port",
+            "active": true,
+            "schedule": [
+                {
+                    "start": 0,
+                    "end": 34300
+                },
+                {
+                    "start": 34500,
+                    "end": 40000
+                },
+                {
+                    "start": 45000,
+                    "end": 50000
+                },
+                {
+                    "start": 51000,
+                    "end": 53000
+                },
+                {
+                    "start": 57000,
+                    "end": 60000
+                },
+                {
+                    "start": 68000,
+                    "end": 86400
+                }
+            ]
+            
+        },
+        {
+            "id": 4,
+            "name": "co2",
+            "schedule": [
+                {
+                    "start": 36000,
+                    "end": 45555
+                },
+                {
+                    "start": 45700,
+                    "end": 70200
+                }
+            ]
+        }
+    ]
+}

@@ -21,6 +21,7 @@ function connect() {
         log('Connected.');
         conn.send( JSON.stringify({request:"light_schedule"}) );
         conn.send( JSON.stringify({request:"settings"}) );
+        conn.send( JSON.stringify({request:"outlet_schedule"}) );
         update_ui();
     };
     conn.onmessage = function (e) {

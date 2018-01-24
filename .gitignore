@@ -3,3 +3,4 @@ logs/
 json/*.json
 node_modules
 venv/
+outlet/log/outlet.log
