@@ -1,6 +1,8 @@
+vscode/
 logs/
 *.pyc
 json/*.json
 node_modules
 venv/
 outlet/log/outlet.log
+outlet/env.json
