@@ -20,10 +20,11 @@ def toTime(strTime):
     thetime = time.strptime(strTime, "%H:%M:%S")
     return thetime
 
-
+with open('env.json') as env_file:
+    env = json.load(env_file)
 
 connErrorCount = 0
-d = pytuya.OutletDevice('012003822c3ae84144d5', '192.168.2.124', 'cb6de23c996a53c1')
+d = pytuya.OutletDevice(env['dev_id'], env['address'], env['local_key'])
 switch_status = {}
 
 
