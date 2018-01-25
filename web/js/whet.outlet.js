@@ -36,7 +36,7 @@ function edit(eChannels) {
         disable_array_delete: false,
         disable_array_reorder: true,
         disable_collapse: true,
-        disable_edit_json: true,
+        disable_edit_json: false,
         disable_properties: true,
 
         schema: {
