@@ -77,11 +77,14 @@ function edit(eChannels) {
                             "title": "Event",
                             "properties": {
                                 "start": {
-                                    "type": "integer",
+                                    "type": "string",
+                                    "format":"time",
                                     "readonly": false
                                 },
                                 "end": {
-                                    "type": "integer",
+                                    "type": "string",
+                                    "format":"time",
+                                    "step":1,
                                     "readonly": false
                                 }
                             }
