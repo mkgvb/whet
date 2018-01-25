@@ -14,6 +14,21 @@ conn.onmessage = function (e) {
 
 };
 
+$("#submit-button").click(function (event) {
+    console.log("BUTTON CLICK");
+    $(this).removeClass("btn-primary")
+    if (is_valid_submission)
+    {
+        conn.send(JSON.stringify({ update: { channels: editor_data } }));
+        $(this).addClass("btn-success");
+    }
+    else
+        $(this).addClass("btn-danger");
+    
+
+});
+
+
 function edit(eChannels) {
     // Set default options
     JSONEditor.defaults.options.theme = 'bootstrap3';
@@ -24,6 +39,7 @@ function edit(eChannels) {
         disable_array_delete: true,
         disable_array_reorder: true,
         disable_collapse: false,
+        disable_properties: true,
         schema: {
             "title": "Channels",
             "type": "array",
@@ -46,6 +62,10 @@ function edit(eChannels) {
                         "title": "Color",
                         "default": "#ffffff"
                     },
+                    "lightning": {
+                        "type": "boolean",
+                        "title": "enable lightning",
+                    },
                     "schedule": {
                         "type": "array",
                         "format": "table",
@@ -67,6 +87,9 @@ function edit(eChannels) {
                                 }
                             }
                         }
+                    },
+                    "preview": {
+                        "options": { "hidden": true }
                     }
                 }
             }
@@ -95,14 +118,19 @@ function edit(eChannels) {
         // Not valid
     }
 
-    // Listen for changes
-    editor.on("change", function () {
+        // Listen for changes
+        editor.on("change", function () {
         // Do something...
         var errors = editor.validate();
+        $("#submit-button").removeClass()
+        $("#submit-button").addClass("btn btn-primary")
+        console.log(JSON.stringify({ update: { outlet_schedule: data } }));
         if (errors.length == 0) {
-            var data = editor.getValue();
+            is_valid_submission = true;
+            editor_data = editor.getValue();
             draw_lightSchedule_graph(data);
-            conn.send(JSON.stringify({ update: { channels: data } }));
+            
+            
         }
     });
 }
