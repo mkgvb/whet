@@ -34,7 +34,7 @@ function edit(eChannels) {
     var editor = new JSONEditor(document.getElementById("editor_holder"), {
         disable_array_add: false,
         disable_array_delete: false,
-        disable_array_reorder: true,
+        disable_array_reorder: false,
         disable_collapse: true,
         disable_edit_json: false,
         disable_properties: true,
