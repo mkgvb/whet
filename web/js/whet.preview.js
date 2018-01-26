@@ -67,27 +67,7 @@ function edit(eChannels) {
                         "options": { "hidden": true }
                     },
                     "schedule": {
-                        "type": "array",
-                        "format": "table",
-                        "title": "Schedule",
-                        "uniqueItems": true,
-                        "options": { "hidden": true },
-                        "items": {
-                            "type": "object",
-                            "title": "Event",
-                            "properties": {
-                                "hour": {
-                                    "type": "integer",
-                                    "readonly": true
-                                },
-                                "percent": {
-                                    "type": "integer",
-                                    "default": 0,
-                                    "minimum": 0,
-                                    "maximum": 100,
-                                }
-                            }
-                        }
+                        "options": { "hidden": true }
                     }
                 }
             }
