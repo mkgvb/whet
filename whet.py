@@ -134,15 +134,15 @@ def main_loop():
                     channel_obj.start()
 
 
-            conn = create_connection("ws://localhost:7999/chat/websocket?id=py")
-            a_data = []
-            for i, val in enumerate(channel_threads):
-                if val.is_alive:
-                    a_data.append(val.broadcast())
-            c_data = ObjDict()
-            c_data.status = a_data
-            conn.send(json.dumps(c_data, sort_keys=True, indent=4))
-            conn.close()
+            # conn = create_connection("ws://localhost:7999/chat/websocket?id=py")
+            # a_data = []
+            # for i, val in enumerate(channel_threads):
+            #     if val.is_alive:
+            #         a_data.append(val.broadcast())
+            # c_data = ObjDict()
+            # c_data.status = a_data
+            # conn.send(json.dumps(c_data, sort_keys=True, indent=4))
+            # conn.close()
 
 
 

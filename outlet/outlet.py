@@ -6,7 +6,7 @@ import json
 import datetime
 import logging.handlers
 from pushbullet import PushBullet
-from pprint import pprint
+from websocket import create_connection
 
 
 with open('env.json') as env_file:
@@ -59,19 +59,26 @@ while True:
                     active_event = True
                     if (not switch_status[str(outlet['id'])]):
                         log.info('Turning on... ' + outlet['name'])
-                        d.set_status(True, outlet['id'])
+                        if not env['DEBUG']: d.set_status(True, outlet['id'])
                         time.sleep(looptime/2)
 
             if not active_event:
                 if (switch_status[str(outlet['id'])]):
                     log.info('Turning off..' +outlet['name'])
-                    d.set_status(False, outlet['id'])
+                    if not env['DEBUG']: d.set_status(False, outlet['id'])
                     time.sleep(looptime/2)
     except ConnectionResetError:
-        print("Connection Error")
+        logging.exception("Connection Error")
         connErrorCount += 1
         pb.push_note('outlet.py error', 'count = '+ connErrorCount + ' | ' + str(sorted(switch_status))  )
     
+    try:
+        conn = create_connection("ws://localhost:7999/chat/websocket?id=outlet")
+        conn.send('{ "outlet_status": ' + json.dumps(switch_status) + '}' )
+        conn.close()
+    except ConnectionRefusedError as e:
+        logging.exception("Cant connect to websocket server")
+
 
     time.sleep(looptime)
 

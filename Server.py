@@ -27,12 +27,6 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
     participants = set()
 
     def on_open(self, info):
-        # Send that someone joined
-        json_msg = {'type': 'user', 'server_message': 'Someone joined'}
-        self.broadcast(self.participants, json.dumps(json_msg))
-
-
-        # Add client to the clients list
         self.participants.add(self)
 
     def on_message(self, message):
@@ -74,8 +68,6 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
     def on_close(self):
         # Remove client from the clients list and broadcast leave message
         self.participants.remove(self)
-        json_msg = {'type': 'user', 'server_message': 'Someone left'}
-        self.broadcast(self.participants, json.dumps(json_msg))
 
 class Server(Thread):
 

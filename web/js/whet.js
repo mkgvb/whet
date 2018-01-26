@@ -185,6 +185,24 @@ function draw_pwmChannel(c_obj) {
     $(content).append(listitems);
 }
 
+function draw_outletStatus(c_obj) {
+    var content = $("#outlet-statuses");
+    // Grab the template script
+    var theTemplateScript = $("#outlet-status-template").html();
+
+    // Compile the template
+    var theTemplate = Handlebars.getTemplate('outlet-status');
+
+            // Pass our data to the template
+            var outlet_status = c_obj
+    var theCompiledHtml = theTemplate(outlet_status);
+
+    
+    // Add the compiled html to the page
+    content.replaceWith(theCompiledHtml);
+
+}
+
 function hexToRgb(hex, alpha) {
     if (hex == undefined)
         hex = '#00000';
