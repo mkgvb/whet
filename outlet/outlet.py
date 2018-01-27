@@ -70,7 +70,7 @@ while True:
     except ConnectionResetError:
         print("Connection Error")
         connErrorCount += 1
-        pb.push_note('outlet.py error', 'count = '+ connErrorCount + ' | ' + str(sorted(switch_status))  )
+        pb.push_note('outlet.py error', 'count = '+ str(connErrorCount) + ' | ' + str(sorted(switch_status))  )
     
 
     time.sleep(looptime)
