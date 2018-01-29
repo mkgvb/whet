@@ -1,3 +1,10 @@
-<div id="outlet-statuses">
-    <div>{{outlet_status}}</div>
+<div id="outlet_status_{{id}}" class="col-md-3 border">
+        <div class="col-xs-5">{{id}}:{{name}}</div>
+        <div class="col-xs-7">
+            <label class="switch">
+                <input type="checkbox"{{#if active_event}} checked='checked'{{/if}} disabled=true>
+                <span class="slider"></span>
+            </label>
+        </div>
+
 </div>

@@ -44,6 +44,10 @@ function connect() {
             draw_lightSchedule_graph(lightSchedule);
         }
 
+        if (eparsed.outlet_status != null) {
+            draw_outletStatus(eparsed.outlet_status)
+        }
+
         var d = new Date();
         var n = "(" + d.getHours() + ")" + d.toLocaleTimeString();
         $("#time").text(d);
@@ -193,13 +197,20 @@ function draw_outletStatus(c_obj) {
     // Compile the template
     var theTemplate = Handlebars.getTemplate('outlet-status');
 
-            // Pass our data to the template
-            var outlet_status = c_obj
-    var theCompiledHtml = theTemplate(outlet_status);
 
-    
-    // Add the compiled html to the page
-    content.replaceWith(theCompiledHtml);
+    c_obj.outlet_schedule.forEach(function(val) {
+
+        // Pass our data to the template
+        var theCompiledHtml = theTemplate(val);
+
+            if (content.find("#outlet_status_" + val.id).length === 0) {
+                content.append(theCompiledHtml);
+            }
+
+            // Add the compiled html to the page
+            $('#outlet_status_' + val.id).replaceWith(theCompiledHtml);
+        
+    }, this);
 
 }
 
