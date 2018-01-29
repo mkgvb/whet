@@ -39,6 +39,7 @@ class Settings(object):
             self.storms_random_freq = 1000
             self.sound_on = True
             self.preview_timeout = 600
+            self.pushbullet = ''
 
             self.dump_file()
             self.last_modified_time = os.stat(FILELOC).st_mtime
