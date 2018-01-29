@@ -44,6 +44,10 @@ function connect() {
             draw_lightSchedule_graph(lightSchedule);
         }
 
+        if (eparsed.outlet_status != null) {
+            draw_outletStatus(eparsed.outlet_status)
+        }
+
         var d = new Date();
         var n = "(" + d.getHours() + ")" + d.toLocaleTimeString();
         $("#time").text(d);
@@ -183,6 +187,31 @@ function draw_pwmChannel(c_obj) {
         return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
     })
     $(content).append(listitems);
+}
+
+function draw_outletStatus(c_obj) {
+    var content = $("#outlet-statuses");
+    // Grab the template script
+    var theTemplateScript = $("#outlet-status-template").html();
+
+    // Compile the template
+    var theTemplate = Handlebars.getTemplate('outlet-status');
+
+
+    c_obj.outlet_schedule.forEach(function(val) {
+
+        // Pass our data to the template
+        var theCompiledHtml = theTemplate(val);
+
+            if (content.find("#outlet_status_" + val.id).length === 0) {
+                content.append(theCompiledHtml);
+            }
+
+            // Add the compiled html to the page
+            $('#outlet_status_' + val.id).replaceWith(theCompiledHtml);
+        
+    }, this);
+
 }
 
 function hexToRgb(hex, alpha) {
