@@ -7,9 +7,7 @@ conn.onmessage = function (e) {
         edit(eparsed.outlet_schedule);
 
     }
-    if (eparsed.outlet_status != null) {
-        draw_outletStatus(eparsed.outlet_status)
-    }
+
 
 };
 
