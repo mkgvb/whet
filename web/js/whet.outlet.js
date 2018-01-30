@@ -8,6 +8,10 @@ conn.onmessage = function (e) {
 
     }
 
+    if (eparsed.outlet_status != null) {
+        draw_outletStatus(eparsed.outlet_status)
+    }
+
 
 };
 
