@@ -31,7 +31,7 @@
  .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
+  width: 225px;
   height: 34px;
 }
 
@@ -46,16 +46,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: rgb(179, 179, 179);
   -webkit-transition: .4s;
   transition: .4s;
+  color:white;
+  text-align:center;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height: 2px;
+  width: 30px;
   left: 4px;
   bottom: 4px;
   background-color: white;
