@@ -260,7 +260,19 @@ function draw_lightSchedule_graph(channels) {
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        callback: function(dataLabel, index) {
+                            // Hide the label of every 2nd dataset. return null to hide the grid line too
+                            return index % 2 === 0 ? dataLabel + '%' : null;
+                        }
+                    }
+                }],
+                xAxes: [{
+                    display: true,
+                    ticks: {
+                        callback: function(dataLabel, index) {
+                            // Hide the label of every 2nd dataset. return null to hide the grid line too
+                            return index % 2 === 0 ? dataLabel + ':00' : '';
+                        }
                     }
                 }]
             }
