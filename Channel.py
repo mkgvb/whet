@@ -55,9 +55,9 @@ class Channel(Thread):
             # nextPwm = round(self.goal * ( (self.curTime.minute * 60 + self.curTime.second) / 3600))
             
             
-            lastGoal = self.ls.get_pwm(self.c_id, self.nextHour)
+            lastGoal = self.ls.get_pwm(self.c_id, self.curHour)
             newGoal = self.goal
-            newGoalWeight = ((self.curTime.minute * 60 + self.curTime.second) / 3600))
+            newGoalWeight = (self.curTime.minute * 60 + self.curTime.second) / 3600
             lastGoalWeight = 1 - newGoalWeight
             self.cur = round((lastGoal * lastGoalWeight) + (newGoal * newGoalWeight))
             self.pwm.set_s(self.c_id, self.cur)
