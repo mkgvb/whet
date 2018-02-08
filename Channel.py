@@ -25,7 +25,7 @@ class Channel(Thread):
         self.c_id = c_id
         self.curTime = datetime.now()
 
-        self.transition_worker()
+        
 
         self.sendInfo = {}
 
@@ -33,6 +33,8 @@ class Channel(Thread):
 
     def run(self):
         """Overloaded Thread.run"""
+
+        self.transition_worker()
 
         while not self.cancelled:
 
