@@ -37,7 +37,7 @@ class Channel(Thread):
     def run(self):
         """Overloaded Thread.run"""
         time.sleep(self.c_id)
-        self.transition_worker()
+        # self.transition_worker()
 
         while not self.cancelled:
 
@@ -52,8 +52,14 @@ class Channel(Thread):
             self.delta = abs(self.cur - self.goal)
             self.sleepTime = 1
 
-            nextPwm = round(self.goal * ( (self.curTime.minute * 60 + self.curTime.second) / 3600))
-            self.cur = round((self.cur * .8) + (nextPwm * .2))
+            # nextPwm = round(self.goal * ( (self.curTime.minute * 60 + self.curTime.second) / 3600))
+            
+            
+            lastGoal = self.ls.get_pwm(self.c_id, self.nextHour)
+            newGoal = self.goal
+            newGoalWeight = ((self.curTime.minute * 60 + self.curTime.second) / 3600))
+            lastGoalWeight = 1 - newGoalWeight
+            self.cur = round((lastGoal * lastGoalWeight) + (newGoal * newGoalWeight))
             self.pwm.set_s(self.c_id, self.cur)
 
 
