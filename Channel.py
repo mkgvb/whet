@@ -24,6 +24,7 @@ class Channel(Thread):
         self.pwm = pwm
         self.c_id = c_id
         self.curTime = datetime.now()
+        self.cur = 0
 
         
 
