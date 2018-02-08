@@ -25,7 +25,8 @@ class Channel(Thread):
         self.c_id = c_id
         self.curTime = datetime.now()
 
-        self.transition_worker()
+        #self.transition_worker()
+        self.cur = 0
 
         self.sendInfo = {}
 
@@ -45,14 +46,12 @@ class Channel(Thread):
             self.remainSeconds = 3600 - \
                 (self.curTime.minute * 60 + self.curTime.second)
             self.delta = abs(self.cur - self.goal)
-            self.sleepTime = int(self.remainSeconds /
-                                 self.delta) if self.delta != 0 else 1
+            self.sleepTime = 1
 
+            nextPwm = round(self.goal * ( (self.curTime.minute * 60 + self.curTime.second) / 3600))
+            self.cur = round((self.cur * .8) + (nextPwm * .2))
+            self.pwm.set_s(self.c_id, self.cur)
 
-            if (self.cur > self.goal):
-                self.cur -= 1
-            if (self.cur < self.goal):
-                self.cur += 1
 
             if (self.ls.get_preview_status(self.c_id)):
                 self.preview_worker()
@@ -63,9 +62,11 @@ class Channel(Thread):
             if (s.weather == "cloudy"):
                 self.cloud_worker()
 
-            # happy path
-            # set
-            self.pwm.set_s(self.c_id, self.cur)
+
+            
+                
+
+
             time.sleep(self.sleepTime)
             s.read_file()
 
