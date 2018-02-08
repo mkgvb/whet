@@ -25,8 +25,7 @@ class Channel(Thread):
         self.c_id = c_id
         self.curTime = datetime.now()
 
-        #self.transition_worker()
-        self.cur = 0
+        self.transition_worker()
 
         self.sendInfo = {}
 
