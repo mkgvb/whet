@@ -25,16 +25,18 @@ class Channel(Thread):
         self.c_id = c_id
         self.curTime = datetime.now()
         self.cur = 0
-
+        self.goal = 0
+        self.sleepTime = 1
+        self.delta = 0
+        self.weather = 'null'
         
-
         self.sendInfo = {}
 
         #self.weather = Settings.Settings().weather
 
     def run(self):
         """Overloaded Thread.run"""
-
+        time.sleep(self.c_id)
         self.transition_worker()
 
         while not self.cancelled:
