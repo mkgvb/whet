@@ -37,7 +37,7 @@ class Channel(Thread):
     def run(self):
         """Overloaded Thread.run"""
         time.sleep(self.c_id)
-        # self.transition_worker()
+        self.transition_worker()
 
         while not self.cancelled:
 
