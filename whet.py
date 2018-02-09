@@ -9,7 +9,6 @@ from websocket import create_connection
 import LightSchedule
 import PCA9685
 import PCA9685_dummy
-import Pid
 import Settings
 import Channel
 from WeatherType import WeatherType

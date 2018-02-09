@@ -13,7 +13,6 @@ logger = logging.getLogger('__main__')
 
 
 class Channel(Thread):
-
     def __init__(self, c_id, pwm, channel_info):
         super(Channel, self).__init__(name=str(c_id))
         self.daemon = True
@@ -29,7 +28,7 @@ class Channel(Thread):
         self.sleepTime = 1
         self.delta = 0
         self.weather = 'null'
-        
+
         self.sendInfo = {}
 
         #self.weather = Settings.Settings().weather
@@ -37,31 +36,22 @@ class Channel(Thread):
     def run(self):
         """Overloaded Thread.run"""
         time.sleep(self.c_id)
-        self.transition_worker()
 
         while not self.cancelled:
-
-            self.dead = self.cancelled
 
             self.curTime = datetime.now()
             self.curHour = self.curTime.hour
             self.nextHour = (self.curTime + timedelta(hours=1)).hour
-            self.goal = self.ls.get_pwm(self.c_id, self.nextHour)
-            self.remainSeconds = 3600 - \
-                (self.curTime.minute * 60 + self.curTime.second)
-            self.delta = abs(self.cur - self.goal)
-            self.sleepTime = 1
 
             # nextPwm = round(self.goal * ( (self.curTime.minute * 60 + self.curTime.second) / 3600))
-            
-            
+
             lastGoal = self.ls.get_pwm(self.c_id, self.curHour)
             newGoal = self.goal
             newGoalWeight = (self.curTime.minute * 60 + self.curTime.second) / 3600
             lastGoalWeight = 1 - newGoalWeight
-            self.cur = round((lastGoal * lastGoalWeight) + (newGoal * newGoalWeight))
-            self.pwm.set_s(self.c_id, self.cur)
-
+            currentTimeGoal = round((lastGoal * lastGoalWeight) +
+                                    (newGoal * newGoalWeight))
+            self.smoothTransition(self.cur, currentTimeGoal)
 
             if (self.ls.get_preview_status(self.c_id)):
                 self.preview_worker()
@@ -72,23 +62,13 @@ class Channel(Thread):
             if (s.weather == "cloudy"):
                 self.cloud_worker()
 
-
-            
-                
-
-
             time.sleep(self.sleepTime)
             s.read_file()
-
 
     def cancel(self):
         """End this timer thread"""
         self.cancelled = True
         time.sleep(.2)
-
-    def update(self):
-        """Update the counters"""
-        print("running thread class!")
 
     def broadcast(self):
 
@@ -103,49 +83,35 @@ class Channel(Thread):
 
     def preview_worker(self):
         timeout_length_secs = s.preview_timeout
-        sleep_interval = 1
         total_time_secs = 0
-        cur_init = self.ls.get_preview_pwm(self.c_id)
-        cur_init_new = cur_init
+
         print("Preview started on channel {:d}...timeout {:d}".format(
             self.c_id, timeout_length_secs))
 
-        self.transition_worker(_start=self.cur, _end=cur_init_new, _usetime=False)
-        print("Preview value changed to {:d} on channel {:d}".format( cur_init_new, self.c_id))
-        while(self.ls.get_preview_status(self.c_id) and total_time_secs < timeout_length_secs):
-            if cur_init_new != self.ls.get_preview_pwm(self.c_id):
-                cur_init_new =  self.ls.get_preview_pwm(self.c_id)
-                self.transition_worker(_start=cur_init, _end=cur_init_new, _usetime=False)
-                cur_init = cur_init_new
+        while (self.ls.get_preview_status(self.c_id)
+               and total_time_secs < timeout_length_secs):
+            self.smoothTransition(
+                _start=self.cur, _end=self.ls.get_preview_pwm(self.c_id))
+            time.sleep(self.sleepTime)
+            total_time_secs += self.sleepTime
 
-            time.sleep(sleep_interval)
-            total_time_secs += sleep_interval
         print("Preview ended on channel {:d}...total time {:d}".format(
             self.c_id, total_time_secs))
         self.ls.set_preview_status(self.c_id)
-        self.transition_worker(_start=cur_init_new)
 
-    def transition_worker(self, _start=0, _end=0, _usetime=True):
-        '''runs at the begining of channel thread creation to catch it up to where brightness should be'''
+    def smoothTransition(self, _start=0, _end=0):
+        '''runs to smooth transitions'''
+        _start = self.cur
 
-        if _usetime:
-            catchup = round(abs((self.ls.get_pwm(self.c_id, self.curTime.hour) -
-                                 self.ls.get_pwm(self.c_id, self.curTime.hour + 1)) * (self.curTime.minute / 60)))
-            trans_goal = min(self.ls.get_pwm(self.c_id, self.curTime.hour), self.ls.get_pwm(
-                self.c_id, self.curTime.hour + 1)) + catchup
-        else:
-            trans_goal = _end
-
-        i = _start
         logger.info("Channel %s - Transition started - Start=%s End=%s",
-                    self.c_id, _start, trans_goal)
-        while i < trans_goal:
+                    self.c_id, _start, _end)
+        i = _start
+        while i < _end:
             i += 1
-            self.pwm.set_s(self.c_id, i)
-        while i > trans_goal:
-            self.pwm.set_s(self.c_id, i)
+            self.setPwm(i)
+        while i > _end:
             i -= 1
-        self.cur = i
+            self.setPwm(i)
 
     def cloud_worker(self):
         '''makes a cloud'''
@@ -162,12 +128,10 @@ class Channel(Thread):
 
         while not self.cancelled:
             while self.cur > dim_to and s.weather == "cloudy":
-                self.cur -= dim_interval
-                self.pwm.set_s(self.c_id, self.cur)
+                self.setPwm(self.cur - dim_interval)
                 time.sleep(dim_speed)
             while self.cur < init_cur:
-                self.cur += dim_interval
-                self.pwm.set_s(self.c_id, self.cur)
+                self.setPwm(self.cur + dim_interval)
                 time.sleep(dim_speed)
 
     def thunderstorm_worker(self):
@@ -186,21 +150,20 @@ class Channel(Thread):
         while s.weather == "storm" and not self.cancelled:
             s.read_file()
 
-            if not self.ls.get_lightning(self.c_id):    #dont do lightning stikes
-                    r_pwm = random.randint(1,200)   #TODO magicnumber
-                    self.transition_worker(self.cur, r_pwm, False)
-                    self.cur = r_pwm
-                    time.sleep(random.uniform(0, 2))
+            if not self.ls.get_lightning(self.c_id):  #dont do lightning stikes
+                r_pwm = random.randint(1, 200)  #TODO magicnumber
+                self.smoothTransition(self.cur, r_pwm)
+                self.cur = r_pwm
+                time.sleep(random.uniform(0, 2))
 
-            else:   # do lightning strikes
+            else:  # do lightning strikes
                 if (random.randint(1, 5) == 3):
-                    self.pwm.set_s(self.c_id, LED_MIN)
+                    self.setPwm(LED_MIN)
                     time.sleep(random.uniform(0, 1))
-                    self.pwm.set_s(self.c_id, LED_MAX)
+                    self.setPwm(LED_MAX)
                     time.sleep(random.uniform(0, .02))
-                    print(datetime.now().strftime('%H:%M:%S')
-                        + "|Channel = " + str(self.c_id)
-                        + "|Lightning Strike!")
+                    print(datetime.now().strftime('%H:%M:%S') + "|Channel = " +
+                          str(self.c_id) + "|Lightning Strike!")
 
                     if random.randint(1, 5) == 2:
                         x = 0
@@ -208,12 +171,18 @@ class Channel(Thread):
                         y = random.randint(100, 2000)
                         while (x < y):
                             r = random.randint(-100, 200)
-                            self.pwm.set_s(self.c_id, x)
+                            self.setPwm(x)
                             x = x + r
-                            self.pwm.set_s(self.c_id, LED_MIN)
+                            self.setPwm(LED_MIN)
                             time.sleep(random.uniform(0, .09))
 
                         time.sleep(random.uniform(0, 4))
 
+    def setPwm(self, pwmval):
+        '''sets pwm and value to hold it'''
+        self.cur = pwmval
+        self.pwm.set_s(self.c_id, pwmval)
+        logger.debug("set pwm to" + str(pwmval))
+        return self.cur
 
-        self.transition_worker(_start=self.cur, _usetime=True)
+        #self.transition_worker(_start=self.cur, _usetime=True)
