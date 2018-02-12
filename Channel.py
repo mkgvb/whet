@@ -138,6 +138,9 @@ class Channel(Thread):
     def thunderstorm_worker(self):
         '''makes a thunderstorm'''
 
+        self.smoothTransition(self.cur, LED_MIN) #always fade to nothing at end
+        time.sleep(5)
+
         if s.sound_on and self.c_id == 0:
             try:
                 import simpleaudio as sa
@@ -178,6 +181,9 @@ class Channel(Thread):
                             time.sleep(random.uniform(0, .09))
 
                         time.sleep(random.uniform(0, 4))
+        
+        self.smoothTransition(self.cur, LED_MIN) #always fade to nothing at end
+        time.sleep(5)
 
     def setPwm(self, pwmval):
         '''sets pwm and value to hold it'''
