@@ -42,6 +42,7 @@ class Channel(Thread):
             self.curTime = datetime.now()
             self.curHour = self.curTime.hour
             self.nextHour = (self.curTime + timedelta(hours=1)).hour
+            self.goal = self.ls.get_pwm(self.c_id, self.nextHour)
 
             # nextPwm = round(self.goal * ( (self.curTime.minute * 60 + self.curTime.second) / 3600))
 
