@@ -40,6 +40,7 @@ class Settings(object):
             self.sound_on = True
             self.preview_timeout = 600
             self.pushbullet = ''
+            self.outlet_run = False
 
             self.dump_file()
             self.last_modified_time = os.stat(FILELOC).st_mtime

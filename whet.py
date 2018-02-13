@@ -14,9 +14,10 @@ import Channel
 from WeatherType import WeatherType
 import json
 from objdict import ObjDict
+from outlet import outlet
 
 DEBUG = True
-MAIN_LOOP_TIME = 1
+MAIN_LOOP_TIME = 5
 MAIN_LOOP_HEALTH_FREQ = 120
 LED_MAX = 4095  # Max Brightness
 LED_MIN = 0     # Min Brightness (off)
@@ -151,6 +152,7 @@ def main_loop():
                             dead_channel_cnt, dead_tornado_cnt)
 
             time.sleep(MAIN_LOOP_TIME)
+            if settings.__dict__.get('outlet_run', False): outlet.run()
             loops += 1
 
     except KeyboardInterrupt:

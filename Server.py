@@ -12,7 +12,7 @@ import sockjs.tornado
 
 LIGHT_SCHEDULE_FILE = 'json/schedule.json'
 SETTINGS_FILE = 'json/whet_settings.json'
-OUTLET_FILE = 'outlet/outlet_schedule.json'
+OUTLET_FILE = 'json/outlet_schedule.json'
 logger = logging.getLogger('__main__')
 
 class RedirectHandler(tornado.web.RequestHandler):

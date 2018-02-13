@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from python_tuya import pytuya
+import pytuya
 import time
 import json
 import datetime
@@ -9,10 +9,10 @@ from pushbullet import PushBullet
 from websocket import create_connection
 
 
-with open('env.json') as env_file:
+with open('json/env.json') as env_file:
     env = json.load(env_file)
 
-LOG_FILE_NAME = 'log/outlet.log'
+LOG_FILE_NAME = 'logs/outlet.log'
 LOGGING_LEVEL = logging.INFO
 
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
@@ -33,14 +33,14 @@ def toTime(strTime):
 
 
 
-connErrorCount = 0
 d = pytuya.OutletDevice(env['dev_id'], env['address'], env['local_key'])
-switch_status = {}
 
 
-while True:
-    t_info = json.load(open('outlet_schedule.json', mode='r'))
+def run():
+    connErrorCount = 0
+    t_info = json.load(open('json/outlet_schedule.json', mode='r'))
     looptime = env['looptime']
+    switch_status = {}
     
 
     sysTime = time.strptime(datetime.datetime.now().strftime('%H:%M'), "%H:%M")
@@ -80,6 +80,12 @@ while True:
         logging.exception("Cant connect to websocket server")
 
 
-    time.sleep(looptime)
+
+if __name__ == "__main__":
+    while True:
+        run()
+        time.sleep(5)
+
+
 
 
