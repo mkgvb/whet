@@ -117,7 +117,7 @@ class Channel(Thread):
 
     def new_cloud_worker(self):
         while s.weather == "cloudy" and not self.cancelled:
-            if self.ls.get_lightning(self.c_id):
+            if self.ls.get_iswhite(self.c_id):
                 speed = random.randint(2,10)
                 light_peak = random.randint(LED_MIN + 25, LED_MAX )
                 self.smoothTransition(light_peak, speed)
@@ -164,7 +164,7 @@ class Channel(Thread):
         while s.weather == "storm" and not self.cancelled:
             s.read_file()
 
-            if not self.ls.get_lightning(self.c_id):  #dont do lightning stikes
+            if not self.ls.get_iswhite(self.c_id):  #dont do lightning stikes
                 r_pwm = random.randint(1, 200)  #TODO magicnumber
                 self.smoothTransition(r_pwm)
                 time.sleep(random.uniform(0, 2))
