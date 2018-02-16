@@ -61,7 +61,7 @@ class Channel(Thread):
                 self.thunderstorm_worker()
 
             if (s.weather == "cloudy"):
-                self.cloud_worker()
+                self.new_cloud_worker()
 
             time.sleep(self.sleepTime)
             s.read_file()
@@ -113,6 +113,12 @@ class Channel(Thread):
         while i > _end:
             i -= 1
             self.setPwm(i)
+
+    def new_cloud_worker(self):
+        while s.weather == "cloudy" and not self.cancelled:
+            if self.ls.get_lightning(self.c_id):
+                self.smoothTransition(self.cur, random.randint(round(LED_MAX/4), LED_MAX))
+
 
     def cloud_worker(self):
         '''makes a cloud'''
