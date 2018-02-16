@@ -52,7 +52,7 @@ class Channel(Thread):
             lastGoalWeight = 1 - newGoalWeight
             currentTimeGoal = round((lastGoal * lastGoalWeight) +
                                     (newGoal * newGoalWeight))
-            self.smoothTransition(self.cur, currentTimeGoal)
+            self.smoothTransition(currentTimeGoal)
 
             if (self.ls.get_preview_status(self.c_id)):
                 self.preview_worker()
@@ -91,8 +91,7 @@ class Channel(Thread):
 
         while (self.ls.get_preview_status(self.c_id)
                and total_time_secs < timeout_length_secs):
-            self.smoothTransition(
-                _start=self.cur, _end=self.ls.get_preview_pwm(self.c_id))
+            self.smoothTransition(self.ls.get_preview_pwm(self.c_id))
             time.sleep(self.sleepTime)
             total_time_secs += self.sleepTime
 
@@ -100,24 +99,29 @@ class Channel(Thread):
             self.c_id, total_time_secs))
         self.ls.set_preview_status(self.c_id)
 
-    def smoothTransition(self, _start=0, _end=0):
+    def smoothTransition(self, _end=0, _speed=1):
         '''runs to smooth transitions'''
         _start = self.cur
 
-        logger.info("Channel %s - Transition started - Start=%s End=%s",
-                    self.c_id, _start, _end)
-        i = _start
-        while i < _end:
-            i += 1
-            self.setPwm(i)
-        while i > _end:
-            i -= 1
-            self.setPwm(i)
+        if not _start == _end:
+            logger.info("Channel %s - Transition started - Start=%s End=%s Speed=%s",
+                        self.c_id, _start, _end, _speed)
+
+            if _start > _end:
+                _speed = _speed * -1
+
+            for pwm in range(_start, _end, _speed):
+                self.setPwm(pwm)
+
+            self.setPwm(_end) #ensure always get to end
 
     def new_cloud_worker(self):
         while s.weather == "cloudy" and not self.cancelled:
             if self.ls.get_lightning(self.c_id):
-                self.smoothTransition(self.cur, random.randint(round(LED_MAX/4), LED_MAX))
+                speed = random.randint(2,10)
+                light_peak = random.randint(LED_MIN + 25, LED_MAX )
+                self.smoothTransition(light_peak, speed)
+                time.sleep(5)
 
 
     def cloud_worker(self):
@@ -144,7 +148,7 @@ class Channel(Thread):
     def thunderstorm_worker(self):
         '''makes a thunderstorm'''
 
-        self.smoothTransition(self.cur, LED_MIN) #always fade to nothing at end
+        self.smoothTransition(LED_MIN) #always fade to nothing at end
         time.sleep(5)
 
         if s.sound_on and self.c_id == 0:
@@ -162,8 +166,7 @@ class Channel(Thread):
 
             if not self.ls.get_lightning(self.c_id):  #dont do lightning stikes
                 r_pwm = random.randint(1, 200)  #TODO magicnumber
-                self.smoothTransition(self.cur, r_pwm)
-                self.cur = r_pwm
+                self.smoothTransition(r_pwm)
                 time.sleep(random.uniform(0, 2))
 
             else:  # do lightning strikes
@@ -188,14 +191,16 @@ class Channel(Thread):
 
                         time.sleep(random.uniform(0, 4))
         
-        self.smoothTransition(self.cur, LED_MIN) #always fade to nothing at end
+        self.smoothTransition(LED_MIN) #always fade to nothing at end
         time.sleep(5)
 
     def setPwm(self, pwmval):
         '''sets pwm and value to hold it'''
+        if pwmval > LED_MAX or pwmval < LED_MIN:
+            logger.info("PWM value is out of range =" + str(pwmval))
+        pwmval = max(pwmval, LED_MIN)
+        pwmval = min(pwmval, LED_MAX)
         self.cur = pwmval
         self.pwm.set_s(self.c_id, pwmval)
         logger.debug("set pwm to" + str(pwmval))
         return self.cur
-
-        #self.transition_worker(_start=self.cur, _usetime=True)
