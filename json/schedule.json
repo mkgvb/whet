@@ -1,13 +1,13 @@
 {
     "channels": [
         {
-            "color": "#969696",
-            "id": 0,
             "lightning": true,
             "preview": {
-                "active": false,
-                "value": 4095
+                "value": 4095,
+                "active": false
             },
+            "color": "#969696",
+            "id": 0,
             "schedule": [
                 {
                     "hour": 0,
@@ -108,13 +108,13 @@
             ]
         },
         {
-            "color": "#ff0000",
-            "id": 1,
             "lightning": false,
             "preview": {
-                "active": false,
-                "value": 30
+                "value": 30,
+                "active": false
             },
+            "color": "#ff0000",
+            "id": 1,
             "schedule": [
                 {
                     "hour": 0,
@@ -215,13 +215,13 @@
             ]
         },
         {
-            "color": "#0a00ff",
-            "id": 2,
             "lightning": false,
             "preview": {
-                "active": false,
-                "value": 4095
+                "value": 4095,
+                "active": false
             },
+            "color": "#0a00ff",
+            "id": 2,
             "schedule": [
                 {
                     "hour": 0,
@@ -322,13 +322,13 @@
             ]
         },
         {
+            "lightning": true,
+            "preview": {
+                "value": 111,
+                "active": false
+            },
             "color": "#000000",
             "id": 3,
-            "lightning": true,
-            "preview": {
-                "active": false,
-                "value": 111
-            },
             "schedule": [
                 {
                     "hour": 0,
@@ -429,13 +429,13 @@
             ]
         },
         {
-            "color": "#bfbf00",
-            "id": 4,
             "lightning": true,
             "preview": {
-                "active": false,
-                "value": 4095
+                "value": 4095,
+                "active": false
             },
+            "color": "#bfbf00",
+            "id": 4,
             "schedule": [
                 {
                     "hour": 0,
