@@ -126,6 +126,13 @@ class LightSchedule(dict):
             
         return False
 
+    def get_alias(self, channel):
+        data = self.get_data()
+        if 'alias' in data[channel]:
+            return data[channel]['alias']
+        else:
+            return ""
+
 
     def set_preview_status(self, channel, status=False):
         """sets preview status"""

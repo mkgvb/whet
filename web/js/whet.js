@@ -249,7 +249,7 @@ function draw_lightSchedule_graph(channels) {
     //determine value for channels based on unique graph labels, assume 0 if not in array
     channels.forEach(function (item, index, array) {
         var s = {};
-        s.label = item.id;
+        s.label = item.alias;
         s.data = [];
 
         sorted_labels.forEach(function (item_n, index_n,array_n) {

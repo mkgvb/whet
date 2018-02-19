@@ -80,6 +80,7 @@ class Channel(Thread):
         self.sendInfo['delta'] = self.delta
         self.sendInfo['percent'] = round((self.cur / LED_MAX * 100))
         self.sendInfo['weather'] = s.weather
+        self.sendInfo['alias'] = self.ls.get_alias(self.c_id)
         return self.sendInfo
 
     def preview_worker(self):
