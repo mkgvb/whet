@@ -6,3 +6,4 @@ node_modules
 venv/
 outlet/log/outlet.log
 outlet/env.json
+json/schedule.json

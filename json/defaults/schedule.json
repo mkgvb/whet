@@ -1,160 +1,17 @@
 {
     "channels": [
         {
-            "lightning": true,
-            "preview": {
-                "value": 4095,
-                "active": false
-            },
-            "color": "#969696",
-            "id": 0,
-            "schedule": [
-                {
-                    "hour": 0,
-                    "percent": 0
-                },
-                {
-                    "hour": 1,
-                    "percent": 0
-                },
-                {
-                    "hour": 2,
-                    "percent": 0
-                },
-                {
-                    "hour": 3,
-                    "percent": 0
-                },
-                {
-                    "hour": 4,
-                    "percent": 0
-                },
-                {
-                    "hour": 5,
-                    "percent": 0
-                },
-                {
-                    "hour": 6,
-                    "percent": 0
-                },
-                {
-                    "hour": 7,
-                    "percent": 0
-                },
-                {
-                    "hour": 8,
-                    "percent": 0
-                },
-                {
-                    "hour": 9,
-                    "percent": 0
-                },
-                {
-                    "hour": 10,
-                    "percent": 0
-                },
-                {
-                    "hour": 11,
-                    "percent": 0
-                },
-                {
-                    "hour": 12,
-                    "percent": 0
-                },
-                {
-                    "hour": 13,
-                    "percent": 0
-                },
-                {
-                    "hour": 14,
-                    "percent": 0
-                },
-                {
-                    "hour": 15,
-                    "percent": 5
-                },
-                {
-                    "hour": 16,
-                    "percent": 25
-                },
-                {
-                    "hour": 17,
-                    "percent": 100
-                },
-                {
-                    "hour": 18,
-                    "percent": 100
-                },
-                {
-                    "hour": 19,
-                    "percent": 100
-                },
-                {
-                    "hour": 20,
-                    "percent": 25
-                },
-                {
-                    "hour": 21,
-                    "percent": 1
-                },
-                {
-                    "hour": 22,
-                    "percent": 1
-                },
-                {
-                    "hour": 23,
-                    "percent": 0
-                }
-            ]
-        },
-        {
-            "lightning": false,
+            "iswhite": false,
             "preview": {
                 "value": 30,
                 "active": false
             },
             "color": "#ff0000",
-            "id": 1,
+            "id": 0,
             "schedule": [
-                {
-                    "hour": 0,
-                    "percent": 0
-                },
-                {
-                    "hour": 1,
-                    "percent": 0
-                },
-                {
-                    "hour": 2,
-                    "percent": 0
-                },
-                {
-                    "hour": 3,
-                    "percent": 0
-                },
-                {
-                    "hour": 4,
-                    "percent": 0
-                },
-                {
-                    "hour": 5,
-                    "percent": 0
-                },
-                {
-                    "hour": 6,
-                    "percent": 0
-                },
-                {
-                    "hour": 7,
-                    "percent": 0
-                },
                 {
                     "hour": 8,
                     "percent": 3
-                },
-                {
-                    "hour": 9,
-                    "percent": 0
                 },
                 {
                     "hour": 10,
@@ -215,53 +72,17 @@
             ]
         },
         {
-            "lightning": false,
+            "iswhite": false,
             "preview": {
                 "value": 4095,
                 "active": false
             },
             "color": "#0a00ff",
-            "id": 2,
+            "id": 1,
             "schedule": [
-                {
-                    "hour": 0,
-                    "percent": 0
-                },
-                {
-                    "hour": 1,
-                    "percent": 0
-                },
-                {
-                    "hour": 2,
-                    "percent": 0
-                },
-                {
-                    "hour": 3,
-                    "percent": 0
-                },
-                {
-                    "hour": 4,
-                    "percent": 0
-                },
-                {
-                    "hour": 5,
-                    "percent": 0
-                },
-                {
-                    "hour": 6,
-                    "percent": 0
-                },
-                {
-                    "hour": 7,
-                    "percent": 0
-                },
                 {
                     "hour": 8,
                     "percent": 5
-                },
-                {
-                    "hour": 9,
-                    "percent": 0
                 },
                 {
                     "hour": 10,
@@ -322,7 +143,50 @@
             ]
         },
         {
-            "lightning": true,
+            "iswhite": true,
+            "preview": {
+                "value": 4095,
+                "active": false
+            },
+            "color": "#969696",
+            "id": 2,
+            "schedule": [
+                {
+                    "hour": 15,
+                    "percent": 5
+                },
+                {
+                    "hour": 16,
+                    "percent": 25
+                },
+                {
+                    "hour": 17,
+                    "percent": 100
+                },
+                {
+                    "hour": 18,
+                    "percent": 100
+                },
+                {
+                    "hour": 19,
+                    "percent": 100
+                },
+                {
+                    "hour": 20,
+                    "percent": 25
+                },
+                {
+                    "hour": 21,
+                    "percent": 1
+                },
+                {
+                    "hour": 22,
+                    "percent": 1
+                }
+            ]
+        },
+        {
+            "iswhite": true,
             "preview": {
                 "value": 111,
                 "active": false
@@ -331,46 +195,6 @@
             "id": 3,
             "schedule": [
                 {
-                    "hour": 0,
-                    "percent": 0
-                },
-                {
-                    "hour": 1,
-                    "percent": 0
-                },
-                {
-                    "hour": 2,
-                    "percent": 0
-                },
-                {
-                    "hour": 3,
-                    "percent": 0
-                },
-                {
-                    "hour": 4,
-                    "percent": 0
-                },
-                {
-                    "hour": 5,
-                    "percent": 0
-                },
-                {
-                    "hour": 6,
-                    "percent": 0
-                },
-                {
-                    "hour": 7,
-                    "percent": 0
-                },
-                {
-                    "hour": 8,
-                    "percent": 0
-                },
-                {
-                    "hour": 9,
-                    "percent": 0
-                },
-                {
                     "hour": 10,
                     "percent": 0
                 },
@@ -429,7 +253,7 @@
             ]
         },
         {
-            "lightning": true,
+            "iswhite": true,
             "preview": {
                 "value": 4095,
                 "active": false
@@ -437,46 +261,6 @@
             "color": "#bfbf00",
             "id": 4,
             "schedule": [
-                {
-                    "hour": 0,
-                    "percent": 0
-                },
-                {
-                    "hour": 1,
-                    "percent": 0
-                },
-                {
-                    "hour": 2,
-                    "percent": 0
-                },
-                {
-                    "hour": 3,
-                    "percent": 0
-                },
-                {
-                    "hour": 4,
-                    "percent": 0
-                },
-                {
-                    "hour": 5,
-                    "percent": 0
-                },
-                {
-                    "hour": 6,
-                    "percent": 0
-                },
-                {
-                    "hour": 7,
-                    "percent": 0
-                },
-                {
-                    "hour": 8,
-                    "percent": 0
-                },
-                {
-                    "hour": 9,
-                    "percent": 0
-                },
                 {
                     "hour": 10,
                     "percent": 0

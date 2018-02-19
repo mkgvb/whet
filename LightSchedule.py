@@ -89,7 +89,7 @@ class LightSchedule(dict):
                     if obj2['hour'] == hour:
                         return min(100, max(int(obj2['percent']), 0))
 
-        LOGGER.error("Hour=%s Channel=%s Something went wrong getting percent", hour, channel)
+        #imply no data is a 0
         return 0
 
     def get_percent_cur(self, pwm_val):
