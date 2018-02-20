@@ -104,8 +104,8 @@ class Channel(Thread):
         '''runs to smooth transitions'''
         _start = self.cur
 
-        if not _start == _end:
-            logger.info("Channel %s - Transition started - Start=%s End=%s Speed=%s",
+        if not abs(_start - _end) > 1:
+            logger.debug("Channel %s - Transition started - Start=%s End=%s Speed=%s",
                         self.c_id, _start, _end, _speed)
 
             if _start > _end:
