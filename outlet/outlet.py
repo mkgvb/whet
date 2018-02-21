@@ -23,7 +23,8 @@ log.addHandler(handler)
 log.setLevel(LOGGING_LEVEL)
 
 if 'pb_api_key' in env:
-    pb = PushBullet(env['pb_api_key'])
+    #pb = PushBullet(env['pb_api_key'])
+    log.info("Pushbullet is disabled")
 else:
     log.info("No pushbullet api key found, pb_api_key")
 
@@ -70,7 +71,7 @@ def run():
     except ConnectionResetError:
         logging.exception("Connection Error")
         connErrorCount += 1
-        pb.push_note('outlet.py error', 'count = '+ str(connErrorCount) + ' | ' + str(sorted(switch_status))  )
+        #pb.push_note('outlet.py error', 'count = '+ str(connErrorCount) + ' | ' + str(sorted(switch_status))  )
     
     try:
         conn = create_connection("ws://localhost:7999/chat/websocket?id=outlet")
