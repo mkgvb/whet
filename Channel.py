@@ -108,13 +108,13 @@ class Channel(Thread):
             logger.debug("Channel %s - Transition started - Start=%s End=%s Speed=%s",
                         self.c_id, _start, _end, _speed)
 
-            if _start > _end:
-                _speed = _speed * -1
+        if _start > _end:
+            _speed = _speed * -1
 
-            for pwm in range(_start, _end, _speed):
-                self.setPwm(pwm)
+        for pwm in range(_start, _end, _speed):
+            self.setPwm(pwm)
 
-            self.setPwm(_end) #ensure always get to end
+        self.setPwm(_end) #ensure always get to end
 
     def new_cloud_worker(self):
         while s.weather == "cloudy" and not self.cancelled:
