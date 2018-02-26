@@ -4,7 +4,7 @@ import threading
 import time
 import os
 import Server
-from websocket import create_connection
+import websocket
 
 import LightSchedule
 import PCA9685
@@ -75,7 +75,7 @@ def main_loop():
     tornado_server.start()
     time.sleep(1)
     # connect to the server
-    conn = create_connection("ws://localhost:7999/chat/websocket?id=py")
+    
 
     #Pid = Pid.Pid()
     light_schedule = LightSchedule.LightSchedule()
@@ -138,13 +138,14 @@ def main_loop():
 
             
             a_data = []
+            conn = websocket.create_connection("ws://localhost:7999/chat/websocket?id=py", timeout=2)
             for i, val in enumerate(channel_threads):
                 if val.is_alive:
                     a_data.append(val.broadcast())
             c_data = ObjDict()
             c_data.status = a_data
             conn.send(json.dumps(c_data, sort_keys=True, indent=4))
-            
+            conn.close(reason="whet.py loop finished", timeout=2)
 
 
 
