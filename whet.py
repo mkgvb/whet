@@ -77,7 +77,6 @@ def main_loop():
     # connect to the server
     
 
-    #Pid = Pid.Pid()
     light_schedule = LightSchedule.LightSchedule()
 
     # Initialise the PCA9685, if cant use a dummy (for testing on machine that is not pi)
@@ -166,7 +165,6 @@ def main_loop():
             logger.info('Cancel channel %s', i)
             channel_threads[i].cancel()
         pwm.set_all(LED_MIN)
-        # Pid.kill()
 
         logger.info('Killing server thread')
         conn.close()
