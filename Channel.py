@@ -100,52 +100,21 @@ class Channel(Thread):
             self.c_id, total_time_secs))
         self.ls.set_preview_status(self.c_id)
 
-    def smoothTransition(self, _end=0, _speed=1):
-        '''runs to smooth transitions'''
-        _start = self.cur
 
-        if not abs(_start - _end) > 1:
-            logger.debug("Channel %s - Transition started - Start=%s End=%s Speed=%s",
-                        self.c_id, _start, _end, _speed)
-
-        if _start > _end:
-            _speed = _speed * -1
-
-        for pwm in range(_start, _end, _speed):
-            self.setPwm(pwm)
-
-        self.setPwm(_end) #ensure always get to end
 
     def new_cloud_worker(self):
+        speed = s.clouds_dim_speed
         while s.weather == "cloudy" and not self.cancelled:
             if self.ls.get_iswhite(self.c_id):
                 speed = random.randint(2,10)
                 light_peak = random.randint(LED_MIN + 25, LED_MAX )
                 self.smoothTransition(light_peak, speed)
-                time.sleep(5)
-
-
-    def cloud_worker(self):
-        '''makes a cloud'''
-
-        dim_percent = s.clouds_dim_percent
-        dim_resolution = s.clouds_dim_resolution
-        dim_speed = s.clouds_dim_speed
-        init_cur = self.cur
-
-        print("{} Cloud Coverage begin channel {} : Cur = {}".format(
-            datetime.now(), self.c_id, self.cur))
-        dim_to = round(self.cur * dim_percent)
-        dim_interval = round(self.cur / dim_resolution)
-
-        while not self.cancelled:
-            while self.cur > dim_to and s.weather == "cloudy":
-                self.setPwm(self.cur - dim_interval)
-                time.sleep(dim_speed)
-            while self.cur < init_cur:
-                self.setPwm(self.cur + dim_interval)
-                time.sleep(dim_speed)
-
+            else:   #dim colored lights to something
+                self.smoothTransition(100, _speed=2)
+                
+            time.sleep(1)
+            s.weather='normal'
+            s.dump_file()
     def thunderstorm_worker(self):
         '''makes a thunderstorm'''
 
@@ -205,3 +174,19 @@ class Channel(Thread):
         self.pwm.set_s(self.c_id, pwmval)
         logger.debug("set pwm to" + str(pwmval))
         return self.cur
+    
+    def smoothTransition(self, _end=0, _speed=1):
+        '''runs to smooth transitions'''
+        _start = self.cur
+
+        if not abs(_start - _end) > 1:
+            logger.debug("Channel %s - Transition started - Start=%s End=%s Speed=%s",
+                        self.c_id, _start, _end, _speed)
+
+        if _start > _end:
+            _speed = _speed * -1
+
+        for pwm in range(_start, _end, _speed):
+            self.setPwm(pwm)
+
+        self.setPwm(_end) #ensure always get to end
