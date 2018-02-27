@@ -104,17 +104,26 @@ class Channel(Thread):
 
     def new_cloud_worker(self):
         speed = s.clouds_dim_speed
+        count = 0
+        time.sleep(self.c_id * 1.5)
         while s.weather == "cloudy" and not self.cancelled:
             if self.ls.get_iswhite(self.c_id):
-                speed = random.randint(2,10)
+                #speed = random.randint(2,10)
+                speed = s.clouds_dim_speed
                 light_peak = random.randint(LED_MIN + 25, LED_MAX )
+                if count % 2 == 0: 
+                    light_peak = LED_MAX - 1000
+                else:
+                    light_peak = LED_MIN + 25
                 self.smoothTransition(light_peak, speed)
             else:   #dim colored lights to something
                 self.smoothTransition(100, _speed=2)
-                
-            time.sleep(1)
-            s.weather='normal'
-            s.dump_file()
+                time.sleep(1)
+            s.read_file()
+            count = count + 1
+            
+        s.weather='normal'
+        s.dump_file()
     def thunderstorm_worker(self):
         '''makes a thunderstorm'''
 
