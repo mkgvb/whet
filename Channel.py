@@ -111,10 +111,10 @@ class Channel(Thread):
                 self.smoothTransition(light_peak, speed)
             else:   #dim colored lights to something
                 self.smoothTransition(100, _speed=2)
-                
             time.sleep(1)
-            s.weather='normal'
-            s.dump_file()
+            
+        s.weather='normal'
+        s.dump_file()
     def thunderstorm_worker(self):
         '''makes a thunderstorm'''
 
