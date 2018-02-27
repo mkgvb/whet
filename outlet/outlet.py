@@ -9,7 +9,7 @@ from pushbullet import PushBullet
 from websocket import create_connection
 
 
-with open('json/env.json') as env_file:
+with open('json/env.json', mode='r') as env_file:
     env = json.load(env_file)
 
 LOG_FILE_NAME = 'logs/outlet.log'
@@ -76,7 +76,7 @@ def run():
     try:
         conn = create_connection("ws://localhost:7999/chat/websocket?id=outlet")
         conn.send('{ "outlet_status": ' + json.dumps(t_info) + '}' )
-        conn.close()
+        conn.close(reason="outlet.py finished", timeout=2)
     except ConnectionRefusedError as e:
         logging.exception("Cant connect to websocket server")
 
