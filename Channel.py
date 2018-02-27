@@ -109,10 +109,10 @@ class Channel(Thread):
         while s.weather == "cloudy" and not self.cancelled:
             if self.ls.get_iswhite(self.c_id):
                 #speed = random.randint(2,10)
-                speed = 4
+                speed = s.clouds_dim_speed
                 light_peak = random.randint(LED_MIN + 25, LED_MAX )
                 if count % 2 == 0: 
-                    light_peak = LED_MAX
+                    light_peak = LED_MAX - 1000
                 else:
                     light_peak = LED_MIN + 25
                 self.smoothTransition(light_peak, speed)
