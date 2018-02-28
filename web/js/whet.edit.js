@@ -35,9 +35,9 @@ function edit(eChannels) {
 
     // Initialize the editor
     var editor = new JSONEditor(document.getElementById("editor_holder"), {
-        disable_array_add: true,
-        disable_array_delete: true,
-        disable_array_reorder: true,
+        disable_array_add: false,
+        disable_array_delete: false,
+        disable_array_reorder: false,
         disable_collapse: false,
         disable_properties: true,
         schema: {
@@ -62,9 +62,9 @@ function edit(eChannels) {
                         "title": "Color",
                         "default": "#ffffff"
                     },
-                    "lightning": {
+                    "iswhite": {
                         "type": "boolean",
-                        "title": "enable lightning",
+                        "title": "lightning/clouds",
                     },
                     "schedule": {
                         "type": "array",
@@ -77,7 +77,9 @@ function edit(eChannels) {
                             "properties": {
                                 "hour": {
                                     "type": "integer",
-                                    "readonly": true
+                                    "minimum": 0,
+                                    "maximum": 23,
+                                    "readonly": false
                                 },
                                 "percent": {
                                     "type": "integer",

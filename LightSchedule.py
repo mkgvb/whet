@@ -26,7 +26,7 @@ class LightSchedule(dict):
 
     def default(self):
         channels = []
-        for j in range(5):
+        for j in range(random.randint(1,14)):
             channel = {}
             schedule = []
 
@@ -34,6 +34,8 @@ class LightSchedule(dict):
             preview["active"] = False
             preview["value"] = 0
             channel['preview'] = preview
+            channel['iswhite'] = bool(random.getrandbits(1))
+            
 
             channel['id'] = j
             channel['color'] = '#' + str(random.randint(0, 999999))
@@ -87,7 +89,7 @@ class LightSchedule(dict):
                     if obj2['hour'] == hour:
                         return min(100, max(int(obj2['percent']), 0))
 
-        LOGGER.error("Hour=%s Channel=%s Something went wrong getting percent", hour, channel)
+        #imply no data is a 0
         return 0
 
     def get_percent_cur(self, pwm_val):
@@ -112,15 +114,24 @@ class LightSchedule(dict):
             if obj['id'] == channel:
                 return obj['preview']['active']
 
-    def get_lightning(self, channel):
+    def get_iswhite(self, channel):
         data = self.get_data()
         if 'lightning' in data[channel]:
             return data[channel]['lightning']
+        elif 'iswhite' in data[channel]:
+            return data[channel]['iswhite']
         else:
-            data[channel]['lightning'] = False
+            data[channel]['iswhite'] = False
             self.set_data()
             
         return False
+
+    def get_alias(self, channel):
+        data = self.get_data()
+        if 'alias' in data[channel]:
+            return data[channel]['alias']
+        else:
+            return ""
 
 
     def set_preview_status(self, channel, status=False):

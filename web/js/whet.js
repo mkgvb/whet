@@ -19,9 +19,9 @@ function connect() {
     log('Connecting...');
     conn.onopen = function () {
         log('Connected.');
-        conn.send( JSON.stringify({request:"light_schedule"}) );
-        conn.send( JSON.stringify({request:"settings"}) );
-        conn.send( JSON.stringify({request:"outlet_schedule"}) );
+        conn.send(JSON.stringify({ request: "light_schedule" }));
+        conn.send(JSON.stringify({ request: "settings" }));
+        conn.send(JSON.stringify({ request: "outlet_schedule" }));
         update_ui();
     };
     conn.onmessage = function (e) {
@@ -163,18 +163,18 @@ function draw_pwmChannel(c_obj) {
     // Compile the template
     var theTemplate = Handlebars.getTemplate('channel-status');
 
-    c_obj.forEach(function(val) {
+    c_obj.forEach(function (val) {
 
-            // Pass our data to the template
-    var theCompiledHtml = theTemplate(val);
-    
+        // Pass our data to the template
+        var theCompiledHtml = theTemplate(val);
+
         if (content.find("#channel_" + val.c_id).length === 0) {
             content.append(theCompiledHtml);
         }
-    
+
         // Add the compiled html to the page
         $('#channel_' + val.c_id).replaceWith(theCompiledHtml);
-        
+
     }, this);
 
 
@@ -198,18 +198,18 @@ function draw_outletStatus(c_obj) {
     var theTemplate = Handlebars.getTemplate('outlet-status');
 
 
-    c_obj.outlet_schedule.forEach(function(val) {
+    c_obj.outlet_schedule.forEach(function (val) {
 
         // Pass our data to the template
         var theCompiledHtml = theTemplate(val);
 
-            if (content.find("#outlet_status_" + val.id).length === 0) {
-                content.append(theCompiledHtml);
-            }
+        if (content.find("#outlet_status_" + val.id).length === 0) {
+            content.append(theCompiledHtml);
+        }
 
-            // Add the compiled html to the page
-            $('#outlet_status_' + val.id).replaceWith(theCompiledHtml);
-        
+        // Add the compiled html to the page
+        $('#outlet_status_' + val.id).replaceWith(theCompiledHtml);
+
     }, this);
 
 }
@@ -230,48 +230,70 @@ function hexToRgb(hex, alpha) {
 }
 
 function draw_lightSchedule_graph(channels) {
-    var outtie = [];
-    var labels = [];
+    var graphData = [];
+    var graphLabels = [];
 
+    //determine unique labels (hours)
+    //have to loop through every schedule event on all channels to know this
+    channels.forEach(function (item, index, array) {
+        item.schedule.forEach(function (item_n, index_n, array_n) {
+            if (!graphLabels.includes(item_n.hour)) {
+                graphLabels[item_n.hour] = item_n.hour;
+            }
+        });
+    });
+
+    sorted_labels = [];
+    graphLabels.forEach(function(item_n, index_n, array_n) { return sorted_labels.push(item_n) });
+
+    //determine value for channels based on unique graph labels, assume 0 if not in array
     channels.forEach(function (item, index, array) {
         var s = {};
-        labels = [];    //erase previous only want one copy
-        s.label = item.id;
+        s.label = item.alias;
         s.data = [];
-        item.schedule.forEach(function (item_n, index_n, array_n) {
-            s.data.push(item_n.percent);
-            labels.push(item_n.hour)
-        });
+
+        sorted_labels.forEach(function (item_n, index_n,array_n) {
+            if (item.schedule.find(x => x.hour === item_n) != undefined)
+                s.data.push(item.schedule.find( x => x.hour === item_n).percent);
+            else
+                s.data.push(0);
+        })
+
         s.backgroundColor = [hexToRgb(item.color, 0.2)];
         s.borderColor = [hexToRgb(item.color, 0.2)];
         s.borderWidth = 1;
-        outtie.push(s);
+        s.lineTension = .4;
+        graphData.push(s);
 
     });
+
+
 
     var ctx = document.getElementById("myChart").getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels,
-            datasets: outtie
+            labels: sorted_labels,
+            datasets: graphData
         },
         options: {
             scales: {
                 yAxes: [{
                     ticks: {
-                        callback: function(dataLabel, index) {
+                        callback: function (dataLabel, index) {
                             // Hide the label of every 2nd dataset. return null to hide the grid line too
-                            return index % 2 === 0 ? dataLabel + '%' : null;
+                            // return index % 2 === 0 ? dataLabel + '%' : null;
+                            return dataLabel + '%';
                         }
                     }
                 }],
                 xAxes: [{
                     display: true,
                     ticks: {
-                        callback: function(dataLabel, index) {
+                        callback: function (dataLabel, index) {
                             // Hide the label of every 2nd dataset. return null to hide the grid line too
-                            return index % 2 === 0 ? dataLabel + ':00' : '';
+                            //return index % 2 === 0 ? dataLabel + ':00' : '';
+                            return dataLabel + ':00';
                         }
                     }
                 }]

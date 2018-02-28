@@ -9,7 +9,7 @@ from pushbullet import PushBullet
 from websocket import create_connection
 
 
-with open('json/env.json') as env_file:
+with open('json/env.json', mode='r') as env_file:
     env = json.load(env_file)
 
 LOG_FILE_NAME = 'logs/outlet.log'
@@ -23,7 +23,8 @@ log.addHandler(handler)
 log.setLevel(LOGGING_LEVEL)
 
 if 'pb_api_key' in env:
-    pb = PushBullet(env['pb_api_key'])
+    #pb = PushBullet(env['pb_api_key'])
+    log.info("Pushbullet is disabled")
 else:
     log.info("No pushbullet api key found, pb_api_key")
 
@@ -70,12 +71,12 @@ def run():
     except ConnectionResetError:
         logging.exception("Connection Error")
         connErrorCount += 1
-        pb.push_note('outlet.py error', 'count = '+ str(connErrorCount) + ' | ' + str(sorted(switch_status))  )
+        #pb.push_note('outlet.py error', 'count = '+ str(connErrorCount) + ' | ' + str(sorted(switch_status))  )
     
     try:
         conn = create_connection("ws://localhost:7999/chat/websocket?id=outlet")
         conn.send('{ "outlet_status": ' + json.dumps(t_info) + '}' )
-        conn.close()
+        conn.close(reason="outlet.py finished", timeout=2)
     except ConnectionRefusedError as e:
         logging.exception("Cant connect to websocket server")
 
