@@ -112,10 +112,12 @@ class Channel(Thread):
                 speed = s.clouds_dim_speed
                 light_peak = random.randint(LED_MIN + 25, LED_MAX )
                 if count % 2 == 0: 
-                    light_peak = LED_MAX - 1000
+                    light_peak = LED_MAX - 2500
+                    self.smoothTransition(light_peak, speed)
                 else:
-                    light_peak = LED_MIN + 25
-                self.smoothTransition(light_peak, speed)
+                    light_peak = LED_MIN + 150
+                    self.smoothTransition(light_peak, speed)
+                    time.sleep(8/ speed)
             else:   #dim colored lights to something
                 self.smoothTransition(100, _speed=2)
                 time.sleep(1)

@@ -16,7 +16,7 @@ LOG_FILE_NAME = 'logs/outlet.log'
 LOGGING_LEVEL = logging.INFO
 
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
-handler = logging.handlers.RotatingFileHandler(LOG_FILE_NAME, mode='a', maxBytes=5000000, backupCount=5)
+handler = logging.handlers.RotatingFileHandler(LOG_FILE_NAME, mode='a', maxBytes=500, backupCount=5)
 handler.setFormatter(formatter)
 log = logging.getLogger("outlet")
 log.addHandler(handler)
@@ -49,10 +49,6 @@ def run():
     try:
         switch_status = d.status()['dps']
 
-        log.info('ConnErrors: '+ str(connErrorCount) 
-            + '|' + "time: " + time.strftime("%H:%M:%S",sysTime)
-            + '|' + 'Switch Statuses: %r' % switch_status)
-
         for outlet in t_info['outlet_schedule']:
             outlet['active_event'] = False
             for event in outlet['schedule']:
@@ -62,12 +58,14 @@ def run():
                         log.info('Turning on... ' + outlet['name'])
                         if not env['DEBUG']: d.set_status(True, outlet['id'])
                         time.sleep(looptime/2)
+                        log.info('Switch Statuses: %r' % d.status()['dps'])
 
             if not outlet['active_event']:
                 if (switch_status[str(outlet['id'])]):
                     log.info('Turning off..' +outlet['name'])
                     if not env['DEBUG']: d.set_status(False, outlet['id'])
                     time.sleep(looptime/2)
+                    log.info('Switch Statuses: %r' % d.status()['dps'])
     except ConnectionResetError:
         logging.exception("Connection Error")
         connErrorCount += 1

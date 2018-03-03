@@ -51,10 +51,10 @@ def makeLogger():
     debug_handler.setFormatter(formatter)
     logger.addHandler(debug_handler)
 
-    # consoleHandler = logging.StreamHandler()
-    # consoleHandler.setLevel(logging.INFO)
-    # consoleHandler.setFormatter(formatter)
-    # logger.addHandler(consoleHandler)
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setLevel(logging.INFO)
+    consoleHandler.setFormatter(formatter)
+    logger.addHandler(consoleHandler)
     return logger
 
 
@@ -169,6 +169,7 @@ def main_loop():
         logger.info('Killing server thread')
         conn.close()
         tornado_server.stop()
+        pwm.set_all(LED_MIN)
 
 
 if __name__ == "__main__":
