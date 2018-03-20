@@ -14,11 +14,11 @@ import Channel
 from WeatherType import WeatherType
 import json
 from objdict import ObjDict
-from outlet import outlet
 
 DEBUG = True
 MAIN_LOOP_TIME = 5
 MAIN_LOOP_HEALTH_FREQ = 120
+EVENT_TIMEOUT = 1800    #30 minutes = 1800
 LED_MAX = 4095  # Max Brightness
 LED_MIN = 0     # Min Brightness (off)
 
@@ -64,6 +64,7 @@ def main_loop():
 
     # counts for debug/ health report
     loops = 0
+    event_time = 0
     dead_tornado_cnt = 0
     dead_channel_cnt = 0
 
@@ -154,8 +155,28 @@ def main_loop():
                             dead_channel_cnt, dead_tornado_cnt)
 
             time.sleep(MAIN_LOOP_TIME)
-            if settings.__dict__.get('outlet_run', False): outlet.run()
+            if settings.__dict__.get('outlet_run', False) and not settings.weather == 'waterchange': 
+                from outlet import outlet
+                outlet.run()
+
             loops += 1
+
+            #revert to normal after set time
+            if not settings.weather == 'normal':
+                if event_time == 0:
+                    logger.info("{} started".format(settings.weather))
+                    event_time = time.time()
+                if time.time() - event_time > EVENT_TIMEOUT:
+                    logger.info("{} Event has timed out".format(settings.weather))
+                    settings.weather ='normal'
+                    settings.dump_file()
+                    event_time = 0
+            else:
+                event_time = 0
+
+
+
+                
 
     except KeyboardInterrupt:
         logger.info('KeyboardInterrupt Quit')
