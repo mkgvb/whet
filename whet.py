@@ -18,7 +18,7 @@ from objdict import ObjDict
 DEBUG = True
 MAIN_LOOP_TIME = 5
 MAIN_LOOP_HEALTH_FREQ = 120
-EVENT_TIMEOUT = 1800    #30 minutes = 1800
+
 LED_MAX = 4095  # Max Brightness
 LED_MIN = 0     # Min Brightness (off)
 
@@ -155,20 +155,21 @@ def main_loop():
                             dead_channel_cnt, dead_tornado_cnt)
 
             time.sleep(MAIN_LOOP_TIME)
-            if settings.__dict__.get('outlet_run', False) and not settings.weather == 'waterchange': 
+            if settings.__dict__.get('outlet_run', False) and not settings.runmode == 'waterchange': 
                 from outlet import outlet
                 outlet.run()
 
             loops += 1
 
             #revert to normal after set time
-            if not settings.weather == 'normal':
+            EVENT_TIMEOUT = 1800    #30 minutes = 1800
+            if not settings.runmode == 'normal':
                 if event_time == 0:
-                    logger.info("{} started".format(settings.weather))
+                    logger.info("{} started".format(settings.runmode))
                     event_time = time.time()
                 if time.time() - event_time > EVENT_TIMEOUT:
-                    logger.info("{} Event has timed out".format(settings.weather))
-                    settings.weather ='normal'
+                    logger.info("{} Event has timed out".format(settings.runmode))
+                    settings.runmode ='normal'
                     settings.dump_file()
                     event_time = 0
             else:

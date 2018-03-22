@@ -95,9 +95,9 @@ function settings_editor(eSettings) {
             "title": "Settings",
             "type": "object",
             "properties": {
-                "weather": {
+                "runmode": {
                     "type":"string",
-                    "enum": ["normal","storm","cloudy"]
+                    "enum": ["normal","storm","cloudy","waterchange"]
                 }
             }
         }

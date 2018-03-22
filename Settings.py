@@ -17,13 +17,13 @@ class Settings(object):
     def __init__(self):
         try:
             self.read_file()
-            self.weather = 'normal' #always start with normal weather
+            self.runmode = 'normal' #always start with normal weather
             self.last_modified_time = os.stat(FILELOC).st_mtime
             self.dump_file()
         except IOError:
             self.logger.info("No settings file found...using defaults and creating file ")
 
-            self.weather = "normal"  # todo make this the enum
+            self.runmode = "normal"  # todo make this the enum
             self.catchup_on = True
             self.catchup_steps = 255
             self.catchup_time = 5
