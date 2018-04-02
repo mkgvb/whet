@@ -14,11 +14,17 @@
 
         <nav class="navbar navbar-default"> </nav>
 
+        <div id="overview-statuses">
+            <div id='temperature-status' class='col-xs-4'>00&#8457;</div> 
+            <div id='weather-status' class='col-xs-4'>weather:normal</div>
+            <div id='fan-status' class-'col-xs-4'>fan speed: 55%</div>
+        </div>
+
         <div id="channel-statuses"> </div>
         <div id="outlet-statuses" class="row"></div>
 
         <div id="light-schedule">
-            <h3> Schedule </h3>
+            <h3>Lighting Schedule</h3>
             <canvas id="myChart" width="400" height="200"></canvas>
             <table class="table table-striped table-responsive">
                 <tbody id="lightSchedule-content"> </tbody>

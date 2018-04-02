@@ -48,6 +48,10 @@ function connect() {
             draw_outletStatus(eparsed.outlet_status)
         }
 
+        if (eparsed.temperature != null) {
+            draw_temperature(eparsed.temperature)
+        }
+
         var d = new Date();
         var n = "(" + d.getHours() + ")" + d.toLocaleTimeString();
         $("#time").text(d);
@@ -152,6 +156,11 @@ function draw_ws_messages() {
     var theTemplate = Handlebars.getTemplate('ws-messages');
     var theCompiledHtml = theTemplate();
     content.html(theCompiledHtml);
+}
+
+function draw_temperature(temperature) {
+    var content = $("#temperature-status");
+    document.getElementById('temperature-status').innerHTML = temperature + '&#8457;';
 }
 
 
