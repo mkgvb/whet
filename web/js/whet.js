@@ -159,8 +159,9 @@ function draw_ws_messages() {
 }
 
 function draw_temperature(temperature) {
+    var value = temperature[0].value;
     var content = $("#temperature-status");
-    document.getElementById('temperature-status').innerHTML = temperature + '&#8457;';
+    document.getElementById('temperature-status').innerHTML = value + '&#8457;';
 }
 
 
