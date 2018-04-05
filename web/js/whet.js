@@ -52,6 +52,10 @@ function connect() {
             draw_temperature(eparsed.temperature)
         }
 
+        if (eparsed.FanContainer != null) {
+            draw_fanStatus(eparsed.FanContainer)
+        }
+
         var d = new Date();
         var n = "(" + d.getHours() + ")" + d.toLocaleTimeString();
         $("#time").text(d);
@@ -162,6 +166,12 @@ function draw_temperature(temperature) {
     var value = temperature[0].value;
     var content = $("#temperature-status");
     document.getElementById('temperature-status').innerHTML = value + '&#8457;';
+}
+
+function draw_fanStatus(fans) {
+    var value = fans[0].value;
+    var content = $("#fan-status");
+    document.getElementById('fan-status').innerHTML = 'Fan Speed: ' + value + '%';
 }
 
 
