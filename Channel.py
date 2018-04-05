@@ -79,7 +79,7 @@ class Channel(Thread):
         self.sendInfo['sleepTime'] = self.sleepTime
         self.sendInfo['delta'] = self.delta
         self.sendInfo['percent'] = round((self.cur / LED_MAX * 100))
-        self.sendInfo['weather'] = s.runmode
+        self.sendInfo['runmode'] = s.runmode
         self.sendInfo['alias'] = self.ls.get_alias(self.c_id)
         return self.sendInfo
 

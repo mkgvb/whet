@@ -164,14 +164,16 @@ function draw_ws_messages() {
 
 function draw_temperature(temperature) {
     var value = temperature[0].value;
-    var content = $("#temperature-status");
     document.getElementById('temperature-status').innerHTML = value + '&#8457;';
 }
 
 function draw_fanStatus(fans) {
     var value = fans[0].value;
-    var content = $("#fan-status");
     document.getElementById('fan-status').innerHTML = 'Fan Speed: ' + value + '%';
+}
+
+function draw_runmode(value) {
+    document.getElementById('runmode-status').innerHTML = 'Run Mode: ' + value;
 }
 
 
@@ -182,6 +184,8 @@ function draw_pwmChannel(c_obj) {
 
     // Compile the template
     var theTemplate = Handlebars.getTemplate('channel-status');
+
+    draw_runmode(c_obj[0].runmode)
 
     c_obj.forEach(function (val) {
 
