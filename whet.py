@@ -154,7 +154,6 @@ def main_loop():
                 logger.info("Dead Channels:%s | Dead Tornados:%s",
                             dead_channel_cnt, dead_tornado_cnt)
 
-            time.sleep(MAIN_LOOP_TIME)
             if settings.__dict__.get('outlet_run', False) and not settings.runmode == 'waterchange': 
                 from outlet import outlet
                 outlet.run()
@@ -162,7 +161,7 @@ def main_loop():
             loops += 1
 
             #revert to normal after set time
-            EVENT_TIMEOUT = 1800    #30 minutes = 1800
+            EVENT_TIMEOUT = 3600    #30 minutes = 1800
             if not settings.runmode == 'normal':
                 if event_time == 0:
                     logger.info("{} started".format(settings.runmode))
@@ -177,6 +176,7 @@ def main_loop():
 
 
 
+            time.sleep(MAIN_LOOP_TIME)
                 
 
     except KeyboardInterrupt:
