@@ -9,7 +9,7 @@ if (conn == null)
 
 function log(msg) {
     var control = $('#log');
-    control.html(control.html() + msg + '<br/>');
+    control.html(control.html() + '<pre>' +  msg + ' </pre> <br/>');
     control.scrollTop(control.scrollTop() + 200);
 }
 function connect() {
@@ -49,11 +49,15 @@ function connect() {
         }
 
         if (eparsed.temperature != null) {
-            draw_temperature(eparsed.temperature)
+            update_chart_doughnut_fans(eparsed.temperature);
         }
 
         if (eparsed.FanContainer != null) {
-            draw_fanStatus(eparsed.FanContainer)
+            update_chart_doughnut_fans(eparsed.FanContainer);
+        }
+
+        if (eparsed.watts != null) {
+            update_chart_doughnut_watts(eparsed.watts);
         }
 
         var d = new Date();
@@ -167,10 +171,7 @@ function draw_temperature(temperature) {
     document.getElementById('temperature-status').innerHTML = value + '&#8457;';
 }
 
-function draw_fanStatus(fans) {
-    var value = fans[0].value;
-    document.getElementById('fan-status').innerHTML = 'Fan Speed: ' + value + '%';
-}
+
 
 function draw_runmode(value) {
     document.getElementById('runmode-status').innerHTML = 'Run Mode: ' + value;

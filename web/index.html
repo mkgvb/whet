@@ -14,23 +14,46 @@
 
         <nav class="navbar navbar-default"> </nav>
 
-        <div id="overview-statuses" class='row'>
-            <div id='temperature-status' class='col-xs-4'></div> 
-            <div id='runmode-status' class='col-xs-4'></div>
-            <div id='fan-status' class-'col-xs-4'></div>
+
+
+        <div class="row">
+            <div id="overview-statuses" class='row'>
+                <div id='temperature-status' class='col-xs-4'></div>
+                <div id='runmode-status' class='col-xs-4'></div>
+            </div>
+
+            <div class="col-md-12 col-lg-12">
+                <div id="outlet-statuses" class="row"></div>
+            </div>
         </div>
 
-        <div id="channel-statuses"> </div>
-        <div id="outlet-statuses" class="row"></div>
 
-        <div id="light-schedule">
-            <h3>Lighting Schedule</h3>
-            <canvas id="myChart" width="400" height="200"></canvas>
-            <table class="table table-striped table-responsive">
-                <tbody id="lightSchedule-content"> </tbody>
-            </table>
+
+        <div class='row'>
+            <div class="col-xs-12 col-md-4 col-lg-4">
+                <canvas id="chart-doughnut-fans" width="878" height="328"></canvas>
+            </div>
+            <div class="col-xs-12 col-md-4 col-lg-4">
+                <canvas id="chart-doughnut-watts" width="878" height="328"></canvas>
+            </div>
+            <div class="col-xs-12 col-md-4 col-lg-4">
+                <canvas id="chart-doughnut-temperature" width="878" height="328"></canvas>
+            </div>
         </div>
 
+        <div class='row'>
+            <div id="channel-statuses"> </div>
+        </div>
+
+
+
+        <div class='row'>
+            <div class="col-md-12 col-lg-12">
+                <div id="light-schedule">
+                    <canvas id="myChart" width="1054" height="340"></canvas>
+                </div>
+            </div>
+        </div>
 
 
         <div id="ws-messages"> </div>
@@ -47,10 +70,11 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
     crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/sockjs/0.3/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 <script src="/web/js/bootstrap-switch.js"></script>
 <script src="/web/js/handlebars-v4.0.10.js"></script>
 <script src="/web/js/jsonedit.js"></script>
 <script src="/web/js/whet.js"></script>
+<script src="/web/js/whet-charts.js"></script>
 
 </html>
