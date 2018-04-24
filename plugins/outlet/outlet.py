@@ -9,10 +9,10 @@ from pushbullet import PushBullet
 from websocket import create_connection
 
 
-with open('json/env.json', mode='r') as env_file:
+with open('env.json', mode='r') as env_file:
     env = json.load(env_file)
 
-LOG_FILE_NAME = 'logs/outlet.log'
+LOG_FILE_NAME = 'log/outlet.log'
 LOGGING_LEVEL = logging.INFO
 
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
@@ -39,7 +39,7 @@ d = pytuya.OutletDevice(env['dev_id'], env['address'], env['local_key'])
 
 def run():
     connErrorCount = 0
-    t_info = json.load(open('json/outlet_schedule.json', mode='r'))
+    t_info = json.load(open('../../json/outlet_schedule.json', mode='r'))
     looptime = env['looptime']
     switch_status = {}
     

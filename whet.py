@@ -15,6 +15,9 @@ from WeatherType import WeatherType
 import json
 from objdict import ObjDict
 
+#plugins
+#import plugins.watts.watts
+
 DEBUG = True
 MAIN_LOOP_TIME = 5
 MAIN_LOOP_HEALTH_FREQ = 120
@@ -153,10 +156,6 @@ def main_loop():
                 loops = 0
                 logger.info("Dead Channels:%s | Dead Tornados:%s",
                             dead_channel_cnt, dead_tornado_cnt)
-
-            if settings.__dict__.get('outlet_run', False) and not settings.runmode == 'waterchange': 
-                from outlet import outlet
-                outlet.run()
 
             loops += 1
 
