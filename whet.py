@@ -4,7 +4,8 @@ import threading
 import time
 import os
 import Server
-import websocket
+import websockets
+import asyncio
 
 import LightSchedule
 import PCA9685
@@ -13,7 +14,6 @@ import Settings
 import Channel
 from WeatherType import WeatherType
 import json
-from objdict import ObjDict
 
 #plugins
 #import plugins.watts.watts
@@ -140,15 +140,17 @@ def main_loop():
 
 
             
-            a_data = []
-            conn = websocket.create_connection("ws://localhost:7999/chat/websocket?id=py", timeout=2)
-            for i, val in enumerate(channel_threads):
-                if val.is_alive:
-                    a_data.append(val.broadcast())
-            c_data = ObjDict()
-            c_data.status = a_data
-            conn.send(json.dumps(c_data, sort_keys=True, indent=4))
-            conn.close(reason="whet.py loop finished", timeout=2)
+            async def statusUpdate():
+                async with websockets.connect('ws://localhost:7999/chat/websocket?id=py') as websocket:
+                    a_data = []
+                    for i, val in enumerate(channel_threads):
+                        if val.is_alive:
+                            a_data.append(val.broadcast())
+                    c_data = {}
+                    c_data['status'] = a_data
+                    await websocket.send(json.dumps(c_data, sort_keys=True, indent=4))
+
+            asyncio.get_event_loop().run_until_complete(statusUpdate())
 
 
 
@@ -188,7 +190,6 @@ def main_loop():
         pwm.set_all(LED_MIN)
 
         logger.info('Killing server thread')
-        conn.close()
         tornado_server.stop()
         pwm.set_all(LED_MIN)
 
