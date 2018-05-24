@@ -3,12 +3,16 @@ import json
 import datetime
 import time
 import websocket
+import os, sys
+from whet.DataBase import DataBase
 
 
 class WattMeter():
+        
 
     def __init__(self):
 
+        self.db = DataBase('power')
         devices = pywemo.discover_devices()
         print(devices)
 
@@ -25,6 +29,7 @@ class WattMeter():
     @property
     def current_draw_watts(self):
         self.device.update_insight_params()
+        self.db.writeNow('{:.3f}'.format(round(self.device.current_power / 1000, 3)))
         return '{:.3f}'.format(round(self.device.current_power / 1000, 3))
 
 

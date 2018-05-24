@@ -4,22 +4,25 @@ $(document).ready(function () {
     WhetCharts.temperature = make_doughnut_chart(
         document.getElementById('chart-doughnut-temperature'),
         'Temperature',
+        '℉',
         '#457345',
         0, 100)
 
     WhetCharts.fan = make_doughnut_chart(
         document.getElementById('chart-doughnut-fans'),
         'Fan Speed %',
+        '%',
         '#457345',
         0, 100)
 
     WhetCharts.watts = make_doughnut_chart(
         document.getElementById('chart-doughnut-watts'),
         'Power Usage',
+        'w',
         '#457345',
         0, 100)
 
-    function make_doughnut_chart(ctx, title_in, color, init_value_in = 0, init_max_in = 100) {
+    function make_doughnut_chart(ctx, title_in, suffix_in, color, init_value_in = 0, init_max_in = 100) {
 
         return new Chart(ctx, {
             type: 'doughnut',
@@ -46,10 +49,11 @@ $(document).ready(function () {
                 },
                 elements: {
                     center: {
-                        text: init_value_in,
+                        text: init_value_in + suffix_in,
                         color: '#000000', // Default is #000000
                         fontStyle: 'Arial', // Default is Arial
-                        sidePadding: 35 // Defualt is 20 (as a percentage)
+                        sidePadding: 35, // Defualt is 20 (as a percentage)
+                        suffix: suffix_in
                     }
                 }
                 //     rotation: -1.0 * Math.PI, // start angle in radians
@@ -113,7 +117,7 @@ function update_chart_doughnut_fans(data_in) {
     var offset = 100 - value
 
     chart.data.datasets[0].data = [value, offset]
-    chart.options.elements.center.text = value + "%"
+    chart.options.elements.center.text = value + chart.options.elements.center.suffix
     //add
     // chart.data.datasets.forEach((dataset) => {
     //     console.log(dataset)
@@ -134,7 +138,7 @@ function update_chart_doughnut_watts(data_in) {
     var offset = max_value - value
 
     chart.data.datasets[0].data = [value, offset]
-    chart.options.elements.center.text = value + "w"
+    chart.options.elements.center.text = value + chart.options.elements.center.suffix
     //add
     // chart.data.datasets.forEach((dataset) => {
     //     console.log(dataset)
