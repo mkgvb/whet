@@ -29,8 +29,13 @@ class WattMeter():
     @property
     def current_draw_watts(self):
         self.device.update_insight_params()
+
+        if self.device.get_standby_state == 'off':
+            print("wemo is off wtf")
+            #self.device.on()
         self.db.writeNow('{:.3f}'.format(round(self.device.current_power / 1000, 3)))
         return '{:.3f}'.format(round(self.device.current_power / 1000, 3))
+
 
 
 if False:

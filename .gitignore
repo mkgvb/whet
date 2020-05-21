@@ -7,3 +7,6 @@ venv/
 outlet/log/outlet.log
 outlet/env.json
 json/schedule.json
+env.json
+*.log*
+*.db

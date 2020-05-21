@@ -6,6 +6,7 @@ import random
 FILELOC = 'json/schedule.json'
 
 HOURS = 24
+MULTIPLIER = .5 #used to reduce or increase? brightness, 1 is normal
 LED_MAX = 4095
 LED_MIN = 0
 LOGGER = logging.getLogger('__main__')
@@ -87,7 +88,7 @@ class LightSchedule(dict):
             if obj['id'] == channel:
                 for obj2 in obj['schedule']:
                     if obj2['hour'] == hour:
-                        return min(100, max(int(obj2['percent']), 0))
+                        return min(100, max(int(obj2['percent'] * MULTIPLIER ), 0))
 
         #imply no data is a 0
         return 0

@@ -49,7 +49,7 @@ function connect() {
         }
 
         if (eparsed.temperature != null) {
-            update_chart_doughnut_fans(eparsed.temperature);
+            update_chart_doughnut_temperature(eparsed.temperature[0].value);
         }
 
         if (eparsed.FanContainer != null) {

@@ -150,3 +150,16 @@ function update_chart_doughnut_watts(data_in) {
 
     chart.update()
 }
+
+function update_chart_doughnut_temperature(data_in) {
+    var max_value = 100;
+    // var value = Math.round(Math.random() * 100); //delete me
+    var value = Math.round(data_in)
+    var chart = WhetCharts.temperature
+    var offset = max_value - value
+
+    chart.data.datasets[0].data = [value, offset]
+    chart.options.elements.center.text = value + chart.options.elements.center.suffix
+
+    chart.update()
+}

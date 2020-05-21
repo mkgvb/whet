@@ -7,32 +7,36 @@
             "iswhite": false,
             "preview": {
                 "active": false,
-                "value": 1228
+                "value": 2047
             },
             "schedule": [
                 {
                     "hour": 16,
-                    "percent": 10
-                },
-                {
-                    "hour": 17,
-                    "percent": 35
-                },
-                {
-                    "hour": 18,
                     "percent": 25
                 },
                 {
+                    "hour": 17,
+                    "percent": 80
+                },
+                {
+                    "hour": 18,
+                    "percent": 50
+                },
+                {
                     "hour": 19,
-                    "percent": 35
+                    "percent": 80
                 },
                 {
                     "hour": 20,
-                    "percent": 20
+                    "percent": 75
                 },
                 {
-                    "hour": 21,
-                    "percent": 10
+                    "hour": 22,
+                    "percent": 0
+                },
+                {
+                    "hour": 23,
+                    "percent": 0
                 }
             ]
         },
@@ -43,7 +47,7 @@
             "iswhite": false,
             "preview": {
                 "active": false,
-                "value": 1228
+                "value": 2047
             },
             "schedule": [
                 {
@@ -60,31 +64,31 @@
                 },
                 {
                     "hour": 17,
-                    "percent": 25
+                    "percent": 50
                 },
                 {
                     "hour": 18,
-                    "percent": 35
+                    "percent": 80
                 },
                 {
                     "hour": 19,
-                    "percent": 25
+                    "percent": 50
                 },
                 {
                     "hour": 20,
-                    "percent": 5
+                    "percent": 25
                 },
                 {
                     "hour": 21,
-                    "percent": 5
+                    "percent": 15
                 },
                 {
                     "hour": 22,
-                    "percent": 30
+                    "percent": 10
                 },
                 {
                     "hour": 23,
-                    "percent": 15
+                    "percent": 0
                 }
             ]
         },
@@ -95,7 +99,7 @@
             "iswhite": true,
             "preview": {
                 "active": false,
-                "value": 1228
+                "value": 2047
             },
             "schedule": [
                 {
@@ -104,15 +108,15 @@
                 },
                 {
                     "hour": 17,
-                    "percent": 60
+                    "percent": 90
                 },
                 {
                     "hour": 18,
-                    "percent": 80
+                    "percent": 100
                 },
                 {
                     "hour": 19,
-                    "percent": 60
+                    "percent": 90
                 },
                 {
                     "hour": 20,
@@ -135,7 +139,7 @@
             "iswhite": true,
             "preview": {
                 "active": false,
-                "value": 1228
+                "value": 2047
             },
             "schedule": [
                 {
@@ -144,15 +148,15 @@
                 },
                 {
                     "hour": 17,
-                    "percent": 50
+                    "percent": 25
                 },
                 {
                     "hour": 18,
-                    "percent": 70
+                    "percent": 75
                 },
                 {
                     "hour": 19,
-                    "percent": 50
+                    "percent": 25
                 },
                 {
                     "hour": 20,
@@ -179,7 +183,7 @@
             "iswhite": true,
             "preview": {
                 "active": false,
-                "value": 1228
+                "value": 2047
             },
             "schedule": [
                 {
@@ -188,15 +192,15 @@
                 },
                 {
                     "hour": 17,
-                    "percent": 60
-                },
-                {
-                    "hour": 18,
                     "percent": 90
                 },
                 {
+                    "hour": 18,
+                    "percent": 100
+                },
+                {
                     "hour": 19,
-                    "percent": 70
+                    "percent": 90
                 },
                 {
                     "hour": 20,
