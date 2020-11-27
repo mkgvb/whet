@@ -6,7 +6,7 @@ import random
 FILELOC = 'json/schedule.json'
 
 HOURS = 24
-MULTIPLIER = .5 #used to reduce or increase? brightness, 1 is normal
+MULTIPLIER = .9 #used to reduce or increase? brightness, 1 is normal
 LED_MAX = 4095
 LED_MIN = 0
 LOGGER = logging.getLogger('__main__')
