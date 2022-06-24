@@ -57,10 +57,10 @@ class Channel(Thread):
             if (self.ls.get_preview_status(self.c_id)):
                 self.preview_worker()
 
-            if (s.weather == "storm"):
+            if (s.runmode == "storm"):
                 self.thunderstorm_worker()
 
-            if (s.weather == "cloudy"):
+            if (s.runmode == "cloudy"):
                 self.new_cloud_worker()
 
             time.sleep(self.sleepTime)
@@ -79,7 +79,7 @@ class Channel(Thread):
         self.sendInfo['sleepTime'] = self.sleepTime
         self.sendInfo['delta'] = self.delta
         self.sendInfo['percent'] = round((self.cur / LED_MAX * 100))
-        self.sendInfo['weather'] = s.weather
+        self.sendInfo['runmode'] = s.runmode
         self.sendInfo['alias'] = self.ls.get_alias(self.c_id)
         return self.sendInfo
 
@@ -103,26 +103,26 @@ class Channel(Thread):
 
 
     def new_cloud_worker(self):
-        speed = s.clouds_dim_speed
         count = 0
         time.sleep(self.c_id * 1.5)
-        while s.weather == "cloudy" and not self.cancelled:
+        while s.runmode == "cloudy" and not self.cancelled:
             if self.ls.get_iswhite(self.c_id):
-                #speed = random.randint(2,10)
                 speed = s.clouds_dim_speed
                 light_peak = random.randint(LED_MIN + 25, LED_MAX )
                 if count % 2 == 0: 
-                    light_peak = LED_MAX - 1000
+                    light_peak = LED_MAX - 2500
+                    self.smoothTransition(light_peak, speed)
                 else:
-                    light_peak = LED_MIN + 25
-                self.smoothTransition(light_peak, speed)
+                    light_peak = LED_MIN + 150
+                    self.smoothTransition(light_peak, speed)
+                    time.sleep(8/ speed)
             else:   #dim colored lights to something
                 self.smoothTransition(100, _speed=2)
                 time.sleep(1)
             s.read_file()
             count = count + 1
             
-        s.weather='normal'
+        s.runmode='normal'
         s.dump_file()
     def thunderstorm_worker(self):
         '''makes a thunderstorm'''
@@ -140,7 +140,7 @@ class Channel(Thread):
                 logger.info(
                     "Cant import SimpleAudio / play thunderstorm audio")
 
-        while s.weather == "storm" and not self.cancelled:
+        while s.runmode == "storm" and not self.cancelled:
             s.read_file()
 
             if not self.ls.get_iswhite(self.c_id):  #dont do lightning stikes

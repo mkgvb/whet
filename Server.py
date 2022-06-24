@@ -20,6 +20,25 @@ class RedirectHandler(tornado.web.RequestHandler):
     def get(self):
         self.redirect('web/')
 
+class RestHandler(tornado.web.RequestHandler):
+    def get(self, id):
+        response_obj = {}
+        response_obj['name'] = 'shitty rest response ' + str(id)
+
+        with open(LIGHT_SCHEDULE_FILE, 'r') as data_file:
+            self.write(data_file.read())
+        self.write("bonus")
+
+class ScheduleHandler(tornado.web.RequestHandler):
+    def get(self):
+        response_obj = {}
+        response_obj['name'] = 'shitty rest response ' + str(id)
+
+        with open(LIGHT_SCHEDULE_FILE, 'r') as data_file:
+            self.write(data_file.read())
+
+
+
 
 class ChatConnection(sockjs.tornado.SockJSConnection):
     """Chat connection implementation"""
@@ -82,7 +101,9 @@ class Server(Thread):
                 [
                     (r"/", RedirectHandler),
                     (r"/web", RedirectHandler),
-                    (r"/web/(.*)",tornado.web.StaticFileHandler,{"path":r"web/", "default_filename": "index.html"})
+                    (r"/web/schedule", ScheduleHandler),
+                    (r"/web/(.*)",tornado.web.StaticFileHandler,{"path":r"web/", "default_filename": "index.html"}),
+                    (r"/api/([0-9]+)", RestHandler),
                 ]
                 + ChatRouter.urls, debug=True
 

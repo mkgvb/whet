@@ -9,7 +9,7 @@ if (conn == null)
 
 function log(msg) {
     var control = $('#log');
-    control.html(control.html() + msg + '<br/>');
+    control.html(control.html() + '<pre>' +  msg + ' </pre> <br/>');
     control.scrollTop(control.scrollTop() + 200);
 }
 function connect() {
@@ -46,6 +46,18 @@ function connect() {
 
         if (eparsed.outlet_status != null) {
             draw_outletStatus(eparsed.outlet_status)
+        }
+
+        if (eparsed.temperature != null) {
+            update_chart_doughnut_temperature(eparsed.temperature[0].value);
+        }
+
+        if (eparsed.FanContainer != null) {
+            update_chart_doughnut_fans(eparsed.FanContainer);
+        }
+
+        if (eparsed.watts != null) {
+            update_chart_doughnut_watts(eparsed.watts);
         }
 
         var d = new Date();
@@ -154,6 +166,17 @@ function draw_ws_messages() {
     content.html(theCompiledHtml);
 }
 
+function draw_temperature(temperature) {
+    var value = temperature[0].value;
+    document.getElementById('temperature-status').innerHTML = value + '&#8457;';
+}
+
+
+
+function draw_runmode(value) {
+    document.getElementById('runmode-status').innerHTML = 'Run Mode: ' + value;
+}
+
 
 function draw_pwmChannel(c_obj) {
     var content = $("#channel-statuses");
@@ -162,6 +185,8 @@ function draw_pwmChannel(c_obj) {
 
     // Compile the template
     var theTemplate = Handlebars.getTemplate('channel-status');
+
+    draw_runmode(c_obj[0].runmode)
 
     c_obj.forEach(function (val) {
 

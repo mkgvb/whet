@@ -4,7 +4,8 @@ import threading
 import time
 import os
 import Server
-import websocket
+import websockets
+import asyncio
 
 import LightSchedule
 import PCA9685
@@ -13,12 +14,14 @@ import Settings
 import Channel
 from WeatherType import WeatherType
 import json
-from objdict import ObjDict
-from outlet import outlet
+
+#plugins
+#import plugins.watts.watts
 
 DEBUG = True
 MAIN_LOOP_TIME = 5
 MAIN_LOOP_HEALTH_FREQ = 120
+
 LED_MAX = 4095  # Max Brightness
 LED_MIN = 0     # Min Brightness (off)
 
@@ -51,10 +54,10 @@ def makeLogger():
     debug_handler.setFormatter(formatter)
     logger.addHandler(debug_handler)
 
-    # consoleHandler = logging.StreamHandler()
-    # consoleHandler.setLevel(logging.INFO)
-    # consoleHandler.setFormatter(formatter)
-    # logger.addHandler(consoleHandler)
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setLevel(logging.INFO)
+    consoleHandler.setFormatter(formatter)
+    logger.addHandler(consoleHandler)
     return logger
 
 
@@ -64,6 +67,7 @@ def main_loop():
 
     # counts for debug/ health report
     loops = 0
+    event_time = 0
     dead_tornado_cnt = 0
     dead_channel_cnt = 0
 
@@ -136,15 +140,17 @@ def main_loop():
 
 
             
-            a_data = []
-            conn = websocket.create_connection("ws://localhost:7999/chat/websocket?id=py", timeout=2)
-            for i, val in enumerate(channel_threads):
-                if val.is_alive:
-                    a_data.append(val.broadcast())
-            c_data = ObjDict()
-            c_data.status = a_data
-            conn.send(json.dumps(c_data, sort_keys=True, indent=4))
-            conn.close(reason="whet.py loop finished", timeout=2)
+            async def statusUpdate():
+                async with websockets.connect('ws://localhost:7999/chat/websocket?id=py') as websocket:
+                    a_data = []
+                    for i, val in enumerate(channel_threads):
+                        if val.is_alive:
+                            a_data.append(val.broadcast())
+                    c_data = {}
+                    c_data['status'] = a_data
+                    await websocket.send(json.dumps(c_data, sort_keys=True, indent=4))
+
+            asyncio.get_event_loop().run_until_complete(statusUpdate())
 
 
 
@@ -153,9 +159,26 @@ def main_loop():
                 logger.info("Dead Channels:%s | Dead Tornados:%s",
                             dead_channel_cnt, dead_tornado_cnt)
 
-            time.sleep(MAIN_LOOP_TIME)
-            if settings.__dict__.get('outlet_run', False): outlet.run()
             loops += 1
+
+            #revert to normal after set time
+            EVENT_TIMEOUT = 3600    #30 minutes = 1800
+            if not settings.runmode == 'normal':
+                if event_time == 0:
+                    logger.info("{} started".format(settings.runmode))
+                    event_time = time.time()
+                if time.time() - event_time > EVENT_TIMEOUT:
+                    logger.info("{} Event has timed out".format(settings.runmode))
+                    settings.runmode ='normal'
+                    settings.dump_file()
+                    event_time = 0
+            else:
+                event_time = 0
+
+
+
+            time.sleep(MAIN_LOOP_TIME)
+                
 
     except KeyboardInterrupt:
         logger.info('KeyboardInterrupt Quit')
@@ -167,8 +190,8 @@ def main_loop():
         pwm.set_all(LED_MIN)
 
         logger.info('Killing server thread')
-        conn.close()
         tornado_server.stop()
+        pwm.set_all(LED_MIN)
 
 
 if __name__ == "__main__":
