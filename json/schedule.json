@@ -1,188 +1,188 @@
 {
     "channels": [
         {
-            "id": 0,
-            "preview": {
-                "active": false,
-                "value": 2047
-            },
-            "iswhite": false,
-            "schedule": [
-                {
-                    "percent": 35,
-                    "hour": 18
-                },
-                {
-                    "percent": 68,
-                    "hour": 19
-                },
-                {
-                    "percent": 88,
-                    "hour": 20
-                },
-                {
-                    "percent": 20,
-                    "hour": 21
-                },
-                {
-                    "percent": 10,
-                    "hour": 22
-                }
-            ],
+            "alias": "red",
             "color": "#ff0000",
-            "alias": "red"
-        },
-        {
-            "id": 1,
+            "id": 0,
+            "iswhite": false,
             "preview": {
                 "active": false,
-                "value": 2047
+                "value": 4095
             },
-            "iswhite": false,
             "schedule": [
                 {
-                    "percent": 0,
-                    "hour": 15
+                    "hour": 18,
+                    "percent": 35
                 },
                 {
-                    "percent": 5,
-                    "hour": 16
+                    "hour": 19,
+                    "percent": 100
                 },
                 {
-                    "percent": 25,
-                    "hour": 17
+                    "hour": 20,
+                    "percent": 100
                 },
                 {
-                    "percent": 35,
-                    "hour": 18
+                    "hour": 21,
+                    "percent": 20
                 },
                 {
-                    "percent": 69,
-                    "hour": 19
-                },
-                {
-                    "percent": 90,
-                    "hour": 20
-                },
-                {
-                    "percent": 5,
-                    "hour": 21
-                },
-                {
-                    "percent": 30,
-                    "hour": 22
-                },
-                {
-                    "percent": 15,
-                    "hour": 23
+                    "hour": 22,
+                    "percent": 10
                 }
-            ],
+            ]
+        },
+        {
+            "alias": "blue",
             "color": "#0a00ff",
-            "alias": "blue"
-        },
-        {
-            "id": 2,
+            "id": 1,
+            "iswhite": false,
             "preview": {
-                "active": true,
-                "value": 2047
+                "active": false,
+                "value": 4095
             },
-            "iswhite": true,
             "schedule": [
                 {
-                    "percent": 60,
-                    "hour": 18
+                    "hour": 15,
+                    "percent": 0
                 },
                 {
-                    "percent": 89,
-                    "hour": 19
+                    "hour": 16,
+                    "percent": 5
                 },
                 {
-                    "percent": 100,
-                    "hour": 20
+                    "hour": 17,
+                    "percent": 25
                 },
                 {
-                    "percent": 25,
-                    "hour": 21
+                    "hour": 18,
+                    "percent": 35
                 },
                 {
-                    "percent": 1,
-                    "hour": 22
+                    "hour": 19,
+                    "percent": 100
+                },
+                {
+                    "hour": 20,
+                    "percent": 90
+                },
+                {
+                    "hour": 21,
+                    "percent": 5
+                },
+                {
+                    "hour": 22,
+                    "percent": 30
+                },
+                {
+                    "hour": 23,
+                    "percent": 15
                 }
-            ],
+            ]
+        },
+        {
+            "alias": "left",
             "color": "#969696",
-            "alias": "left"
-        },
-        {
-            "id": 3,
-            "preview": {
-                "active": true,
-                "value": 2047
-            },
+            "id": 2,
             "iswhite": true,
+            "preview": {
+                "active": false,
+                "value": 4095
+            },
             "schedule": [
                 {
-                    "percent": 50,
-                    "hour": 18
+                    "hour": 18,
+                    "percent": 60
                 },
                 {
-                    "percent": 70,
-                    "hour": 19
+                    "hour": 19,
+                    "percent": 100
                 },
                 {
-                    "percent": 70,
-                    "hour": 20
+                    "hour": 20,
+                    "percent": 100
                 },
                 {
-                    "percent": 25,
-                    "hour": 21
+                    "hour": 21,
+                    "percent": 25
                 },
                 {
-                    "percent": 1,
-                    "hour": 22
-                },
-                {
-                    "percent": 1,
-                    "hour": 23
+                    "hour": 22,
+                    "percent": 1
                 }
-            ],
+            ]
+        },
+        {
+            "alias": "middle",
             "color": "#000000",
-            "alias": "middle"
-        },
-        {
-            "id": 4,
-            "preview": {
-                "active": true,
-                "value": 2047
-            },
+            "id": 3,
             "iswhite": true,
+            "preview": {
+                "active": false,
+                "value": 4095
+            },
             "schedule": [
                 {
-                    "percent": 60,
-                    "hour": 18
+                    "hour": 18,
+                    "percent": 50
                 },
                 {
-                    "percent": 90,
-                    "hour": 19
+                    "hour": 19,
+                    "percent": 100
                 },
                 {
-                    "percent": 99,
-                    "hour": 20
+                    "hour": 20,
+                    "percent": 100
                 },
                 {
-                    "percent": 25,
-                    "hour": 21
+                    "hour": 21,
+                    "percent": 25
                 },
                 {
-                    "percent": 1,
-                    "hour": 22
+                    "hour": 22,
+                    "percent": 1
                 },
                 {
-                    "percent": 1,
-                    "hour": 23
+                    "hour": 23,
+                    "percent": 1
                 }
-            ],
+            ]
+        },
+        {
+            "alias": "right",
             "color": "#bfbf00",
-            "alias": "right"
+            "id": 4,
+            "iswhite": true,
+            "preview": {
+                "active": false,
+                "value": 4095
+            },
+            "schedule": [
+                {
+                    "hour": 18,
+                    "percent": 60
+                },
+                {
+                    "hour": 19,
+                    "percent": 100
+                },
+                {
+                    "hour": 20,
+                    "percent": 100
+                },
+                {
+                    "hour": 21,
+                    "percent": 25
+                },
+                {
+                    "hour": 22,
+                    "percent": 1
+                },
+                {
+                    "hour": 23,
+                    "percent": 1
+                }
+            ]
         }
     ]
 }
